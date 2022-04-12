@@ -1,7 +1,7 @@
 package com.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.dto.User;
+import com.entity.User;
 
 /**
  * 根据需求制定业务逻辑
