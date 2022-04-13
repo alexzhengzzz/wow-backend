@@ -1,9 +1,9 @@
-package com.entity;
+package com.dto;
 
 import lombok.Data;
 
 @Data
-public class User {
+public class LoginDTO {
     private Long id;
     private String name;
     private Integer age;

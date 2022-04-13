@@ -1,6 +1,5 @@
 package com;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.entity.User;
 import com.entity.Customer;
@@ -14,9 +13,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
+/**
+ * 测试mybatis, springboot 整合
+ */
 @MapperScan(basePackages = "com.mapper")
 @SpringBootTest
-class WowBackendApplicationTests {
+class MybatisTests {
 	@Autowired
 	private UserMapper userMapper;
 	@Autowired
@@ -41,6 +43,12 @@ class WowBackendApplicationTests {
 		System.out.println(("----- selectAll method test ------"));
 		Customer customer = customerService.getById(1);
 		System.out.println(customer.getCustId());
+		QueryWrapper<Customer> queryWrapper = new QueryWrapper<>();
+		queryWrapper.select("cust_id").eq("country", "china");
+		List<Customer> res = customerService.list(queryWrapper);
+		for (Customer r : res) {
+			System.out.println(r.getCustId());
+		}
 	}
 
 
