@@ -22,7 +22,8 @@ public enum ErrorCode {
     USER_PASSWORD_WRONG(111002002L, "wrong password. details: --> id : {0}", ErrorCodeType.USER),
     INSERT_USER_ERROR(111002003L, "add user error. details: --> id : {0}, name: {1}", ErrorCodeType.USER),
     USER_TOKEN_VERIFY_ERROR(111002004L, "TOKEN VERIFY ERROR. details: --> token : {0}", ErrorCodeType.USER),
-    USER_TOKEN_EXPIRED(111002004L, "TOKEN EXPIRED. details: --> token: {0}", ErrorCodeType.USER);
+    USER_TOKEN_EXPIRED(111002004L, "TOKEN EXPIRED. details: --> token: {0}", ErrorCodeType.USER),
+    USER_INFO_EXISTED(111002005L, "you may use other id or name. details: --> id : {0}, name: {1}", ErrorCodeType.USER);
 
     long code;
     String message;
