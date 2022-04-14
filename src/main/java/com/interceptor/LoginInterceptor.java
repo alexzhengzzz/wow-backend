@@ -15,15 +15,16 @@ public class LoginInterceptor implements HandlerInterceptor {
         String token = getAuthToken(request);
 
         //token不存在
-        if (token == null || token.equals("")) throw GeneralExceptionFactory.create(ErrorCode.USER_TOKEN_VERIFY_ERROR, token);
+        if (token == null || token.equals(""))
+            throw GeneralExceptionFactory.create(ErrorCode.USER_TOKEN_VERIFY_ERROR, token);
         //验证token
         String sub = JWTUtils.validateToken(token);
         if (sub == null || sub.equals(""))
             throw GeneralExceptionFactory.create(ErrorCode.USER_TOKEN_VERIFY_ERROR, token);
         //更新token有效时间 (如果需要更新其实就是产生一个新的token)
-        if (JWTUtils.isNeedUpdate(token)){
+        if (JWTUtils.isNeedUpdate(token)) {
             String newToken = JWTUtils.createToken(sub);
-            response.setHeader(JWTUtils.USER_LOGIN_TOKEN,newToken);
+            response.setHeader(JWTUtils.USER_LOGIN_TOKEN, newToken);
         }
         return true;
     }

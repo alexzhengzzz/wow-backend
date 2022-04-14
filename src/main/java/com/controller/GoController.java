@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/")
 public class GoController {
     private final Logger logger = LoggerFactory.getLogger(GoController.class);
+
     @GetMapping("/go")
     public String go() {
         logger.info("logger test success");
