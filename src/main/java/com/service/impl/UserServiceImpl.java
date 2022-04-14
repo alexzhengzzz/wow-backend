@@ -1,13 +1,16 @@
 package com.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bean.Response;
 import com.dto.LoginDTO;
 import com.entity.User;
+import com.exception.ErrorCode;
+import com.exception.GeneralExceptionFactory;
 import com.mapper.UserMapper;
 import com.service.UserService;
 import com.utils.cache.IGlobalCache;
+import com.utils.cache.JWTUtils;
 import com.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,14 +33,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user = userMapper.selectById(loginDTO.getId());
         // 2. 用户不存在
         if (user == null) {
-            throw new Exception("No user");
+            throw GeneralExceptionFactory.create(ErrorCode.USER_NOT_FOUND, loginDTO.getId());
         }
         // 3. 密码校验
         if (!user.getPassword().equals(loginDTO.getPassword())) {
-            throw new Exception("error password");
+            throw GeneralExceptionFactory.create(ErrorCode.USER_PASSWORD_WRONG, loginDTO.getId());
         }
         // 4. UserVO
-        UserVO userVo = getUserVO(user, "fake token");
+        String token = JWTUtils.createToken(user.getId().toString());
+        UserVO userVo = getUserVO(user, token);
         return new Response<>(userVo);
 
 
