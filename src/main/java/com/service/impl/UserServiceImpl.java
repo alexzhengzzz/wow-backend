@@ -17,29 +17,30 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
-    final static String USER_NAME = "admin";
-    final static String PWD = "admin";
-
     @Autowired
     private IGlobalCache globalCache;
 
-//    @Autowired
-//    private UserMapper userMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
-    public Response<UserVO> login(LoginDTO loginDTO) {
-//        User user = getByName(loginDTO.getName());
-//
-//        //用户信息校验和查询
-//        if (user == null){
-////            throw new ServiceException(ResultCodeEnum.LOGIN_FAIL);
-//            return new Response<>(null);
-//        }
-//        //密码校验
-//        if(!PWD.equals(loginDTO.getPassword())){
-////            throw new ServiceException(ResultCodeEnum.LOGIN_FAIL);
-//            return new Response<>(null);
-//        }
+    public Response<UserVO> login(LoginDTO loginDTO) throws Exception {
+
+        // 1. 查找该用户
+        User user = userMapper.selectById(loginDTO.getId());
+        // 2. 用户不存在
+        if (user == null) {
+            throw new Exception("No user");
+        }
+        // 3. 密码校验
+        if (!user.getPassword().equals(loginDTO.getPassword())) {
+            throw new Exception("error password");
+        }
+        // 4. UserVO
+        UserVO userVo = getUserVO(user, "fake token");
+        return new Response<>(userVo);
+
+
 //
 //        //缓存用户信息并设置过期时间
 //        UserVO userVO = new UserVO();
@@ -50,7 +51,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 //        //信息入库redis
 //        globalCache.set(RedisKeyEnum.OAUTH_APP_TOKEN.keyBuilder(userVO.getUid()), JSONObject.toJSONString(userVO), timeout);
 //
-        return null;
+    }
+
+    private UserVO getUserVO(User user, String token) {
+        UserVO userVO = new UserVO();
+        userVO.setId(user.getId());
+        userVO.setName(user.getName());
+        userVO.setToken(token);
+        return userVO;
     }
 
 

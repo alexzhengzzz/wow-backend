@@ -11,5 +11,5 @@ import com.vo.UserVO;
  */
 public interface UserService extends IService<User> {
 
-    Response<UserVO> login(LoginDTO loginDTO);
+    Response<UserVO> login(LoginDTO loginDTO) throws Exception;
 }
