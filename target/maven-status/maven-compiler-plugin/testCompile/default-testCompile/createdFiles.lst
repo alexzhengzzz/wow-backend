@@ -1,1 +1,4 @@
-com/wowbackend/WowBackendApplicationTests.class
+com/RedisTests.class
+com/MybatisTests.class
+com/generator/FastAutoGeneratorTest.class
+com/mock/MockUser.class

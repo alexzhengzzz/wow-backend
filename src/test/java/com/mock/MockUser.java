@@ -1,9 +1,6 @@
 package com.mock;
 
-import com.controller.LoginController;
 import com.entity.User;
-import com.fasterxml.jackson.annotation.ObjectIdGenerator;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.github.javafaker.Faker;
 import com.service.UserService;
 import org.junit.jupiter.api.Test;
