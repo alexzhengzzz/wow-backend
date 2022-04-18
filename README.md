@@ -38,5 +38,5 @@
 * logical model
 ![](https://aleximgzzzz.oss-cn-shanghai.aliyuncs.com/lc-python/202204181551813.png)
 * relational model
-![](https://aleximgzzzz.oss-cn-shanghai.aliyuncs.com/lc-python/202204181552777.png)
+![](https://aleximgzzzz.oss-cn-shanghai.aliyuncs.com/lc-python/202204181554303.png)
 
