@@ -33,3 +33,10 @@
 6. Mapper 
     * **entity**
 
+
+## DB Model(tmp)
+* logical model
+![](https://aleximgzzzz.oss-cn-shanghai.aliyuncs.com/lc-python/202204181551813.png)
+* relational model
+![](https://aleximgzzzz.oss-cn-shanghai.aliyuncs.com/lc-python/202204181552777.png)
+
