@@ -15,7 +15,7 @@ import java.sql.SQLException;
  */
 public class FastAutoGeneratorTest {
     private static final String username = "root";
-    private static final String password = "****";
+    private static final String password = "123456a";
     /**
      * 执行初始化数据库脚本
      */

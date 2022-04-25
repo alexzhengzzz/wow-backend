@@ -23,8 +23,8 @@
 /nbdist/
 /.nb-gradle/
 build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+**/src/main/**/build/
+**/src/test
 
 ### VS Code ###
 .vscode/
@@ -32,5 +32,6 @@ build/
 ### customized ###
 **/src/main/**/target/
 **/src/test/**/target/
+**/target
 **/.DS_Store
 #**/src/main/**/resources/application.yml 去掉yml配置

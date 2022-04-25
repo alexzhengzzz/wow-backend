@@ -4,8 +4,8 @@ spring:
     name: wow
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    #url: jdbc:mysql://localhost:3306/wow?characterEncoding=utf-8&userSSL=false
-    url: jdbc:mysql://67.207.80.139:3306/wow?characterEncoding=utf-8&userSSL=false
+    url: jdbc:mysql://localhost:3306/wow?characterEncoding=utf-8&userSSL=false
+#    url: jdbc:mysql://67.207.80.139:3306/wow?characterEncoding=utf-8&userSSL=false
     username: root
     password: 123456a
   redis:
@@ -35,5 +35,7 @@ jwt:
   tokenPrefix: "Bearer " #token前缀
   secret: "qwertyuiop7418520" #密钥
   expireTime: 60 #token有效时间 (分钟) 建议一小时以上
-
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 

@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.RedisTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 12.499 s - in com.RedisTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 12.208 s - in com.RedisTests

@@ -1,10 +1,10 @@
 package com.controller;
 
+import com.service.IUserService;
 import com.utils.cache.Response;
 import com.business.LoginBusiness;
 import com.dto.LoginDTO;
 import com.dto.RegisterDTO;
-import com.service.UserService;
 import com.vo.UserVO;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoginController {
 
     @Autowired
-    private UserService userService;
+    private IUserService userService;
 
     @Autowired
     private LoginBusiness loginBusiness;

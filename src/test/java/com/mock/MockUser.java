@@ -2,7 +2,7 @@ package com.mock;
 
 import com.entity.User;
 import com.github.javafaker.Faker;
-import com.service.UserService;
+import com.service.IUserService;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import java.util.UUID;
 @SpringBootTest
 public class MockUser {
     @Autowired
-    UserService userService;
+    IUserService userService;
     @Test
     public void mockUser() {
         int n = 10;
@@ -23,10 +23,10 @@ public class MockUser {
         for (int i = 0; i < n; i++) {
             User user = new User();
             user.setId(i + 1000000000000000L);
-            user.setName(faker.funnyName().name());
+            user.setFname(faker.funnyName().name());
             user.setPassword(UUID.randomUUID().toString());
             user.setEmail(faker.internet().emailAddress());
-            user.setRole_type(Character.valueOf('1'));
+            user.setRoleType(Character.valueOf('1'));
             userService.save(user);
         }
     }
