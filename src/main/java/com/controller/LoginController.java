@@ -1,6 +1,6 @@
 package com.controller;
 
-import com.bean.Response;
+import com.utils.cache.Response;
 import com.business.LoginBusiness;
 import com.dto.LoginDTO;
 import com.dto.RegisterDTO;

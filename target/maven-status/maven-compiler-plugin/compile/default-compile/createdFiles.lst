@@ -2,7 +2,6 @@ com/controller/LoginController.class
 com/bean/SwaggerProperties.class
 com/mapper/UserMapper.class
 com/service/impl/UserServiceImpl.class
-com/bean/Response.class
 com/exception/ErrorCodeType.class
 com/utils/cache/JWTUtils.class
 com/exception/GlobalExceptionHandler.class
@@ -18,6 +17,7 @@ com/entity/Customer.class
 com/exception/GlobalExceptionHandler$ExceptionHandlerProcessor.class
 com/service/impl/CustomerServiceImpl.class
 com/interceptor/LoginInterceptor.class
+com/utils/cache/Response.class
 com/exception/GlobalExceptionHandler$DataAccessExceptionHandlerProcessor.class
 com/controller/GoController.class
 com/entity/User.class
@@ -29,7 +29,9 @@ com/vo/UserVO.class
 com/dto/RegisterDTO.class
 com/exception/GeneralException.class
 com/config/RedisConfig.class
+com/business/LoginBusiness.class
 com/exception/ErrorCode.class
+com/business/impl/LoginBusinessImpl.class
 com/WowBackendApplication.class
 com/exception/GlobalExceptionHandler$IllegalArgumentExceptionHandlerProcessor.class
 com/mapper/CustomerMapper.class
