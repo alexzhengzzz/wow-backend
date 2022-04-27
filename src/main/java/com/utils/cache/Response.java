@@ -20,6 +20,20 @@ public class Response<T> implements Serializable {
         this.data = data;
     }
 
+    public Response(int code, T data) {
+        this.code = code;
+        this.data = data;
+    }
+
+    public Response(String message, int code) {
+        this.message = message;
+        this.code = code;
+    }
+
+    public Response(int code) {
+        this.code = code;
+    }
+
     public T getData() {
         return data;
     }

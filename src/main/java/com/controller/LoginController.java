@@ -7,12 +7,15 @@ import com.dto.LoginDTO;
 import com.dto.RegisterDTO;
 import com.vo.UserVO;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api")
 @Api("login")
 public class LoginController {
 
@@ -26,7 +29,6 @@ public class LoginController {
 //        User user = userService.getById(1);
 //        return new Response<>(user);
 //    }
-
     @PostMapping("/login")
     public Response<UserVO> login(@RequestBody LoginDTO loginDTO) {
         UserVO userVo = loginBusiness.login(loginDTO);
