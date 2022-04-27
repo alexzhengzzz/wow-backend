@@ -1,6 +1,6 @@
 package com.service;
 
-import com.entity.Customer;
+import com.entity.Individual;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -9,8 +9,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * </p>
  *
  * @author zmh
- * @since 2022-04-12
+ * @since 2022-04-26
  */
-public interface CustomerService extends IService<Customer> {
+public interface IIndividualService extends IService<Individual> {
 
 }

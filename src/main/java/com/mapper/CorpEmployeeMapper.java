@@ -1,7 +1,7 @@
 package com.mapper;
 
+import com.entity.CorpEmployee;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.entity.User;
 
 /**
  * <p>
@@ -9,8 +9,8 @@ import com.entity.User;
  * </p>
  *
  * @author zmh
- * @since 2022-04-25
+ * @since 2022-04-26
  */
-public interface UserMapper extends BaseMapper<User> {
+public interface CorpEmployeeMapper extends BaseMapper<CorpEmployee> {
 
 }

@@ -1,7 +1,7 @@
 package com.service;
 
+import com.entity.UserAddress;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.entity.User;
 
 /**
  * <p>
@@ -9,7 +9,8 @@ import com.entity.User;
  * </p>
  *
  * @author zmh
- * @since 2022-04-25
+ * @since 2022-04-26
  */
-public interface IUserService extends IService<User> {
+public interface IUserAddressService extends IService<UserAddress> {
+
 }

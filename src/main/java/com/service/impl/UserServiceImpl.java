@@ -1,8 +1,9 @@
-package com.service;
+package com.service.impl;
 
 import com.entity.User;
 import com.mapper.UserMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.service.IUserService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,5 +16,4 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
-
 }

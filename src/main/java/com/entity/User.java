@@ -1,27 +1,24 @@
 package com.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author zmh
- * @since 2022-04-25
+ * @since 2022-04-26
  */
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 主键ID
-     */
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    /**
-     * 邮箱
-     */
     private String email;
 
     private String password;
@@ -31,6 +28,10 @@ public class User implements Serializable {
     private String lname;
 
     private String fname;
+
+    private String employeeId;
+
+    private Long companyId;
 
 
     public Long getId() {
@@ -81,15 +82,33 @@ public class User implements Serializable {
         this.fname = fname;
     }
 
+    public String getEmployeeId() {
+        return employeeId;
+    }
+
+    public void setEmployeeId(String employeeId) {
+        this.employeeId = employeeId;
+    }
+
+    public Long getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
+    }
+
     @Override
     public String toString() {
         return "User{" +
-        "id=" + id +
-        ", email=" + email +
-        ", password=" + password +
-        ", roleType=" + roleType +
-        ", lname=" + lname +
-        ", fname=" + fname +
-        "}";
+                "id=" + id +
+                ", email=" + email +
+                ", password=" + password +
+                ", roleType=" + roleType +
+                ", lname=" + lname +
+                ", fname=" + fname +
+                ", employeeId=" + employeeId +
+                ", companyId=" + companyId +
+                "}";
     }
 }
