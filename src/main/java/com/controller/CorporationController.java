@@ -38,5 +38,15 @@ public class CorporationController {
     }
 
 
+    // delete corporation
+    @ApiOperation("delete existed corporation")
+    @DeleteMapping
+    public Response deleteCorporation(@RequestBody CorporationDTO corporationDTO) {
+        corporationBusiness.deleteCorporation(corporationDTO);
+        return new Response<>(200);
+    }
+
+
+
 
 }

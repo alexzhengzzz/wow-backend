@@ -24,11 +24,7 @@ public class LoginController {
 
     @Autowired
     private LoginBusiness loginBusiness;
-//    @GetMapping("/{userId}")
-//    public Response<User> getUserById(@PathVariable(value = "userId", required = true) Integer id) {
-//        User user = userService.getById(1);
-//        return new Response<>(user);
-//    }
+
     @PostMapping("/login")
     public Response<UserVO> login(@RequestBody LoginDTO loginDTO) {
         UserVO userVo = loginBusiness.login(loginDTO);

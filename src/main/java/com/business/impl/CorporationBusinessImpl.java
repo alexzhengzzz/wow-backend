@@ -43,6 +43,20 @@ public class CorporationBusinessImpl implements CorporationBusiness {
     }
 
     @Override
+    public void deleteCorporation(CorporationDTO corporationDTO) {
+        //  delete corporation according to company name
+        String companyName = corporationDTO.getCompanyName();
+        Corporation corporation = corporationMapper.selectOne(new QueryWrapper<Corporation>().eq("company_name", companyName));
+        if (corporation == null) {
+            throw GeneralExceptionFactory.create(ErrorCode.UNKNOWN_ERROR);
+        }
+        int res = corporationMapper.delete(new QueryWrapper<Corporation>().eq("company_name", companyName));
+        if (res != 1) {
+            throw GeneralExceptionFactory.create(ErrorCode.UNKNOWN_ERROR);
+        }
+    }
+
+    @Override
     public void addEmployeeToCorporation(CorpEmployeeDTO corpEmployeeDTO) {
         String companyName = corpEmployeeDTO.getCompanyName();
         String employeeId = corpEmployeeDTO.getEmployeeId();
@@ -52,6 +66,11 @@ public class CorporationBusinessImpl implements CorporationBusiness {
             throw GeneralExceptionFactory.create(ErrorCode.UNKNOWN_ERROR);
         }
         Long corp_id = co.getCorpId();
+        // check if exist in corp_employee
+        CorpEmployee ce = corpEmployeeMapper.selectOne(new QueryWrapper<CorpEmployee>().eq("corp_id", corp_id).eq("employee_id", employeeId));
+        if (ce != null) {
+            throw GeneralExceptionFactory.create(ErrorCode.INSERT_DB_ERROR);
+        }
         CorpEmployee corpEmployee = new CorpEmployee();
         corpEmployee.setEmployeeId(employeeId);
         corpEmployee.setCorpId(corp_id);
@@ -61,12 +80,16 @@ public class CorporationBusinessImpl implements CorporationBusiness {
         }
     }
 
+
     private Corporation getCorporation(CorporationDTO corporationDTO) {
         Corporation corporation = new Corporation();
         corporation.setCompanyName(corporationDTO.getCompanyName());
         corporation.setRegisterCode(corporationDTO.getRegisterCode());
         return corporation;
     }
+
+
+
 
 
 }

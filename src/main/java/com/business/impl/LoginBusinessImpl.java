@@ -64,7 +64,6 @@ public class LoginBusinessImpl implements LoginBusiness {
     public UserVO register(RegisterDTO registerDTO) throws RuntimeException {
         // 1. check info
         _checkUserInfo(registerDTO);
-
         // 2. create new user
         User newUser = new User();
         setNewUser(newUser, registerDTO);

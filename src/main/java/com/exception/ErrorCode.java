@@ -8,7 +8,8 @@ package com.exception;
  */
 enum ErrorCodeType {
     GENERAL,
-    USER
+    USER,
+    CORPORATION
 }
 
 public enum ErrorCode {
@@ -24,9 +25,12 @@ public enum ErrorCode {
     USER_TOKEN_VERIFY_ERROR(111002004L, "TOKEN VERIFY ERROR. details: --> {0}", ErrorCodeType.USER),
     USER_TOKEN_EXPIRED(111002004L, "TOKEN EXPIRED. details: --> {0}", ErrorCodeType.USER),
     USER_INFO_EXISTED(111002005L, "you may use other id or name. details: --> {0}", ErrorCodeType.USER),
-    USER_INFO_ILLEGAL(111002006L, "you may set null input", ErrorCodeType.USER);
+    USER_INFO_ILLEGAL(111002006L, "you may set null input", ErrorCodeType.USER),
+    UPDATE_DB_ERROR(111002007L, "update error", ErrorCodeType.USER),
+    DELETE_DB_ERROR(111002008L,"delete error" , ErrorCodeType.USER);
 
-    // DB_INSERT_ERROR
+    // CORPORATION 111 002 002
+
 
     long code;
     String message;
