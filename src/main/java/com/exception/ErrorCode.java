@@ -17,20 +17,23 @@ public enum ErrorCode {
     UNKNOWN_ERROR(111001001L, "unknown error problem {0}", ErrorCodeType.GENERAL),
     REQUIRED_PARAM_NOT_PRESENT(111001002L, "required param [{0}] not present", ErrorCodeType.GENERAL),
     REQUIRED_INFO_IS_EMPTY(111001003L, "required info [{0}] not present", ErrorCodeType.GENERAL),
+    DB_UPDATE_ERROR(111001004L, "update database error", ErrorCodeType.GENERAL),
+    DB_QUERY_ERROR(111001005L, "query database error", ErrorCodeType.GENERAL),
+    DB_DELETE_ERROR(111001006L, "delete database error", ErrorCodeType.GENERAL),
+    DB_INSERT_ERROR(111001007L, "insert database error", ErrorCodeType.GENERAL),
+    DB_INSERT_ERROR_EXISTED(111001008L, "insert database error, info existed", ErrorCodeType.GENERAL),
+    DB_QUERY_NOT_EXISTED_ERROR(111001009L, "query info not existed error", ErrorCodeType.GENERAL),
+    DB_QUERY_EXISTED_ERROR(111001010L, "query info not existed error", ErrorCodeType.GENERAL),
+    PERMISSION_DENIED(111001011L, "permission denied", ErrorCodeType.GENERAL),
+    ILLEGAL_DATA(111001012L, "illegal data", ErrorCodeType.GENERAL),
 
     // USER 111 002 001
     USER_NOT_FOUND(111002001L, "user not found. details: --> {0}", ErrorCodeType.USER),
     USER_PASSWORD_WRONG(111002002L, "wrong password. details: --> {0}", ErrorCodeType.USER),
-    INSERT_DB_ERROR(111002003L, "insert database error: --> {0}", ErrorCodeType.USER),
     USER_TOKEN_VERIFY_ERROR(111002004L, "TOKEN VERIFY ERROR. details: --> {0}", ErrorCodeType.USER),
     USER_TOKEN_EXPIRED(111002004L, "TOKEN EXPIRED. details: --> {0}", ErrorCodeType.USER),
     USER_INFO_EXISTED(111002005L, "you may use other id or name. details: --> {0}", ErrorCodeType.USER),
-    USER_INFO_ILLEGAL(111002006L, "you may set null input", ErrorCodeType.USER),
-    UPDATE_DB_ERROR(111002007L, "update error", ErrorCodeType.USER),
-    DELETE_DB_ERROR(111002008L,"delete error" , ErrorCodeType.USER);
-
-    // CORPORATION 111 002 002
-
+    USER_INFO_ILLEGAL(111002006L, "you may set null input", ErrorCodeType.USER);
 
     long code;
     String message;

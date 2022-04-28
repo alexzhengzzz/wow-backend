@@ -1,5 +1,6 @@
 package com.business.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.business.CorporationBusiness;
 import com.context.ServiceContext;
@@ -10,8 +11,8 @@ import com.entity.CorpEmployee;
 import com.entity.Corporation;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
-import com.mapper.CorpEmployeeMapper;
-import com.mapper.CorporationMapper;
+import com.service.ICorpEmployeeService;
+import com.service.ICorporationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,33 +22,33 @@ import org.springframework.stereotype.Component;
 public class CorporationBusinessImpl implements CorporationBusiness {
 
     @Autowired
-    private CorporationMapper corporationMapper;
+    private ICorporationService corporationService;
 
     @Autowired
-    private CorpEmployeeMapper corpEmployeeMapper;
+    private ICorpEmployeeService corpEmployeeService;
 
     @Override
     public void createCorporation(CorporationDTO corporationDTO) {
         ServiceContext serviceContext = ServiceContextHolder.getServiceContext();
         if (serviceContext == null || serviceContext.getAccessToken() == null) {
-            throw GeneralExceptionFactory.create(ErrorCode.UNKNOWN_ERROR);
+            throw GeneralExceptionFactory.create(ErrorCode.USER_TOKEN_VERIFY_ERROR);
         }
         String role_type = serviceContext.getAccessToken();
         if (!role_type.equals("0")) {
-            throw GeneralExceptionFactory.create(ErrorCode.UNKNOWN_ERROR);
+            throw GeneralExceptionFactory.create(ErrorCode.PERMISSION_DENIED);
         }
 
         // check if exist
         QueryWrapper<Corporation> q = new QueryWrapper<>();
         q.eq("company_name", corporationDTO.getCompanyName());
-        Corporation corporation = corporationMapper.selectOne(q);
+        Corporation corporation = corporationService.getOne(q);
         if (corporation != null) {
-            throw GeneralExceptionFactory.create(ErrorCode.INSERT_DB_ERROR);
+            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_EXISTED_ERROR);
         }
         corporation = getCorporation(corporationDTO);
-        int res = corporationMapper.insert(corporation);
-        if (res != 1) {
-            throw GeneralExceptionFactory.create(ErrorCode.INSERT_DB_ERROR);
+        Boolean isSuccess = corporationService.save(corporation);
+        if (isSuccess != true) {
+            throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR);
         }
     }
 
@@ -55,13 +56,13 @@ public class CorporationBusinessImpl implements CorporationBusiness {
     public void deleteCorporation(CorporationDTO corporationDTO) {
         //  delete corporation according to company name
         String companyName = corporationDTO.getCompanyName();
-        Corporation corporation = corporationMapper.selectOne(new QueryWrapper<Corporation>().eq("company_name", companyName));
+        Corporation corporation = corporationService.getOne(new LambdaQueryWrapper<Corporation>().eq(Corporation::getCompanyName, companyName));
         if (corporation == null) {
-            throw GeneralExceptionFactory.create(ErrorCode.UNKNOWN_ERROR);
+            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR);
         }
-        int res = corporationMapper.delete(new QueryWrapper<Corporation>().eq("company_name", companyName));
-        if (res != 1) {
-            throw GeneralExceptionFactory.create(ErrorCode.UNKNOWN_ERROR);
+        boolean isSuccess = corporationService.remove(new LambdaQueryWrapper<>(corporation).eq(Corporation::getCompanyName, companyName));
+        if (isSuccess != true) {
+            throw GeneralExceptionFactory.create(ErrorCode.DB_DELETE_ERROR);
         }
     }
 
@@ -70,22 +71,22 @@ public class CorporationBusinessImpl implements CorporationBusiness {
         String companyName = corpEmployeeDTO.getCompanyName();
         String employeeId = corpEmployeeDTO.getEmployeeId();
 
-        Corporation co = corporationMapper.selectOne(new QueryWrapper<Corporation>().eq("company_name", companyName));
+        Corporation co = corporationService.getOne(new LambdaQueryWrapper<Corporation>().eq(Corporation::getCompanyName, companyName));
         if (co == null) {
-            throw GeneralExceptionFactory.create(ErrorCode.UNKNOWN_ERROR);
+            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_EXISTED_ERROR);
         }
         Long corp_id = co.getCorpId();
         // check if exist in corp_employee
-        CorpEmployee ce = corpEmployeeMapper.selectOne(new QueryWrapper<CorpEmployee>().eq("corp_id", corp_id).eq("employee_id", employeeId));
+        CorpEmployee ce = corpEmployeeService.getOne(new LambdaQueryWrapper<CorpEmployee>().eq(CorpEmployee::getCorpId, corp_id).eq(CorpEmployee::getEmployeeId, employeeId));
         if (ce != null) {
-            throw GeneralExceptionFactory.create(ErrorCode.INSERT_DB_ERROR);
+            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_EXISTED_ERROR);
         }
         CorpEmployee corpEmployee = new CorpEmployee();
         corpEmployee.setEmployeeId(employeeId);
         corpEmployee.setCorpId(corp_id);
-        int res = corpEmployeeMapper.insert(corpEmployee);
-        if (res != 1) {
-            throw GeneralExceptionFactory.create(ErrorCode.UNKNOWN_ERROR);
+        Boolean isSuccess = corpEmployeeService.save(corpEmployee);
+        if (isSuccess != true) {
+            throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR);
         }
     }
 

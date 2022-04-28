@@ -21,7 +21,7 @@ public class UserAddressBusinessImpl implements IUserAddressBusiness {
         // check if existed user address
         UserAddress us = userAddressService.getById(userId);
         if (us == null) {
-            throw GeneralExceptionFactory.create(ErrorCode.UNKNOWN_ERROR, "User address not found");
+            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR);
         }
         // get user address
         UserAddress userAddress = getUserAddress(userId, userAddressDTO);

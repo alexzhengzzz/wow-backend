@@ -31,12 +31,14 @@
     * receive **DTO**
 5. Service
 6. Mapper 
-    * **entity**
+    * **entity/DO**
 
+![](https://aleximgzzzz.oss-cn-shanghai.aliyuncs.com/myblog/202204281102198.png)
 
 ## DB Model(tmp)
 * logical model
 ![](https://aleximgzzzz.oss-cn-shanghai.aliyuncs.com/lc-python/202204181551813.png)
 * relational model
 ![](https://aleximgzzzz.oss-cn-shanghai.aliyuncs.com/lc-python/202204181555253.png)
+
 

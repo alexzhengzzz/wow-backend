@@ -1,20 +1,22 @@
 package com.business.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.bean.LoginUser;
 import com.business.LoginBusiness;
 import com.dto.*;
 import com.entity.*;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
-import com.mapper.*;
+import com.service.ICorpEmployeeService;
+import com.service.ICorporationService;
+import com.service.IIndividualService;
+import com.service.IUserAddressService;
 import com.service.impl.UserServiceImpl;
 import com.utils.cache.IGlobalCache;
 import com.utils.cache.JWTUtils;
 import com.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,19 +30,16 @@ public class LoginBusinessImpl implements LoginBusiness {
     private UserServiceImpl userService;
 
     @Autowired
-    private UserAddressMapper userAddressMapper;
+    private IUserAddressService userAddressService;
 
     @Autowired
-    private UserMapper userMapper;
+    private IIndividualService iIndividualService;
 
     @Autowired
-    private IndividualMapper individualMapper;
+    private ICorporationService corporationService;
 
     @Autowired
-    private CorporationMapper corporationMapper;
-
-    @Autowired
-    private CorpEmployeeMapper corpEmployeeMapper;
+    private ICorpEmployeeService corpEmployeeService;
 
     @Autowired
     private IGlobalCache iGlobalCache;
@@ -48,7 +47,7 @@ public class LoginBusinessImpl implements LoginBusiness {
     @Override
     public UserVO login(LoginDTO loginDTO) {
         // 1. 查找该用户
-        User user = userService.getOne(new QueryWrapper<User>().eq("email", loginDTO.getEmail()), false);
+        User user = userService.getOne(new LambdaQueryWrapper<User>().eq(User::getEmail, loginDTO.getEmail()), false);
         // 2. 用户不存在
         if (user == null) {
             throw GeneralExceptionFactory.create(ErrorCode.USER_NOT_FOUND, loginDTO.getEmail());
@@ -83,18 +82,18 @@ public class LoginBusinessImpl implements LoginBusiness {
         // 2. create new user
         User newUser = new User();
         setNewUser(newUser, registerDTO);
-        int res = userMapper.insert(newUser);
-        if (res != 1) {
-            throw GeneralExceptionFactory.create(ErrorCode.INSERT_DB_ERROR);
+        boolean isSuccess = userService.save(newUser);
+        if (isSuccess != true) {
+            throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR);
         }
         Long userId = newUser.getId();
 
         // 3. create new user_address
         RegisterUserAddressDTO userAddressDTO =  registerDTO.getUserAddress();
         UserAddress userAddress = getUserAddress(userAddressDTO, userId);
-        res = userAddressMapper.insert(userAddress);
-        if (res != 1) {
-            throw GeneralExceptionFactory.create(ErrorCode.INSERT_DB_ERROR);
+        isSuccess = userAddressService.save(userAddress);
+        if (isSuccess != true) {
+            throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR);
         }
 
         // 3. user role type: 0 admin 1: individual 2: corp
@@ -106,7 +105,7 @@ public class LoginBusinessImpl implements LoginBusiness {
             case '1': {
                 RegisterIndividualDTO registerIndividualDTO = registerDTO.getIndividual();
                 Individual in = getIndividual(registerIndividualDTO, userId);
-                individualMapper.insert(in);
+                iIndividualService.save(in);
                 break;
             }
             case '2': {
@@ -114,7 +113,7 @@ public class LoginBusinessImpl implements LoginBusiness {
                 Long corp_id = _checkAndGetCorpId(registerDTO);
                 newUser.setCompanyId(corp_id);
                 newUser.setEmployeeId(registerCorporDTO.getEmployeeId());
-                userMapper.updateById(newUser);
+                userService.updateById(newUser);
                 break;
             }
         }
@@ -144,44 +143,34 @@ public class LoginBusinessImpl implements LoginBusiness {
         return userAddress;
     }
 
-    private Long _checkAndGetCorpId(@NotNull RegisterDTO registerDTO) {
+    private Long _checkAndGetCorpId(RegisterDTO registerDTO) {
         RegisterCorporDTO reco = registerDTO.getCorporate();
         String employee_id = reco.getEmployeeId();
         String company_name = reco.getCompanyName();
-        QueryWrapper<Corporation> q = new QueryWrapper<>();
-        q.eq("company_name", company_name);
-        Corporation co = corporationMapper.selectOne(q);
+        Corporation co = corporationService.getOne(new LambdaQueryWrapper<Corporation>().eq(Corporation::getCompanyName, company_name));
         if (co == null) {
-            throw GeneralExceptionFactory.create(ErrorCode.USER_INFO_ILLEGAL, company_name);
+            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR, company_name);
         }
-        Long id = co.getCorpId();
-        CorpEmployee res = corpEmployeeMapper.selectOne(new QueryWrapper<CorpEmployee>().eq("corp_id", id).eq("employee_id", employee_id));
+        Long corp_id = co.getCorpId();
+        CorpEmployee res = corpEmployeeService.getOne(new LambdaQueryWrapper<CorpEmployee>().eq(CorpEmployee::getEmployeeId, employee_id).eq(CorpEmployee::getCorpId, corp_id));
         if (res == null) {
-            throw GeneralExceptionFactory.create(ErrorCode.USER_INFO_ILLEGAL, "corp_id: " + id + "employee_id: " + employee_id);
+            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR, "corp_id: " + corp_id + "employee_id: " + employee_id);
         }
-        User user = userMapper.selectOne(new QueryWrapper<User>().eq("company_id", id).eq("employee_id", employee_id));
+        User user = userService.getOne(new LambdaQueryWrapper<User>().eq(User::getCompanyId, corp_id).eq(User::getEmployeeId, employee_id));
         if (user != null) {
-            throw GeneralExceptionFactory.create(ErrorCode.USER_INFO_EXISTED);
+            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR);
         }
-        return id;
+        return corp_id;
 
-    }
-
-    private Corporation setNewCorp(RegisterCorporDTO corp) {
-        Corporation corporation = new Corporation();
-        corporation.setCompanyName(corp.getCompanyName());
-        corporation.setRegisterCode(corp.getRegisterCode());
-        return corporation;
     }
 
     private void _checkUserInfo(RegisterDTO registerDTO) {
         // 1. check field
         isIllegal(registerDTO);
-
         // 2. check user existed
-        User user = userService.getOne(getQueryWrapperUser(registerDTO), false);
+        User user = userService.getOne(new LambdaQueryWrapper<User>().eq(User::getEmail, registerDTO.getEmail()), false);
         if (user != null) {
-            throw GeneralExceptionFactory.create(ErrorCode.USER_INFO_EXISTED, registerDTO.getEmail(), registerDTO.getFname() + " " + registerDTO.getLname());
+            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR, registerDTO.getEmail(), registerDTO.getFname() + " " + registerDTO.getLname());
         }
     }
 
@@ -193,7 +182,7 @@ public class LoginBusinessImpl implements LoginBusiness {
         String password = registerDTO.getPassword();
         Integer role_type = Integer.valueOf(registerDTO.getRole_type());
         if (StringUtils.isBlank(email) || StringUtils.isBlank(fname) || StringUtils.isBlank(lname) || StringUtils.isBlank(password) || (role_type > 2 && role_type < 0) ) {
-            throw GeneralExceptionFactory.create(ErrorCode.USER_INFO_ILLEGAL);
+            throw GeneralExceptionFactory.create(ErrorCode.ILLEGAL_DATA);
         }
     }
 
@@ -206,11 +195,6 @@ public class LoginBusinessImpl implements LoginBusiness {
         return user;
     }
 
-    private QueryWrapper<User> getQueryWrapperUser(RegisterDTO registerDTO) {
-        QueryWrapper<User> q = new QueryWrapper<>();
-        q.eq("email", registerDTO.getEmail());
-        return q;
-    }
 
     private UserVO getUserVO(User user, String token) {
         UserVO userVO = new UserVO();
