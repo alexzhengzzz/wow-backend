@@ -41,4 +41,6 @@
 * relational model
 ![](https://aleximgzzzz.oss-cn-shanghai.aliyuncs.com/lc-python/202204181555253.png)
 
+# Git flow
+![](https://aleximgzzzz.oss-cn-shanghai.aliyuncs.com/myblog/202204281212342.png)
 
