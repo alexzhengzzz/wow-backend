@@ -2,6 +2,8 @@ package com.business.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.business.CorporationBusiness;
+import com.context.ServiceContext;
+import com.context.ServiceContextHolder;
 import com.dto.CorpEmployeeDTO;
 import com.dto.CorporationDTO;
 import com.entity.CorpEmployee;
@@ -26,7 +28,14 @@ public class CorporationBusinessImpl implements CorporationBusiness {
 
     @Override
     public void createCorporation(CorporationDTO corporationDTO) {
-        // TODO: check if admin
+        ServiceContext serviceContext = ServiceContextHolder.getServiceContext();
+        if (serviceContext == null || serviceContext.getAccessToken() == null) {
+            throw GeneralExceptionFactory.create(ErrorCode.UNKNOWN_ERROR);
+        }
+        String role_type = serviceContext.getAccessToken();
+        if (!role_type.equals("0")) {
+            throw GeneralExceptionFactory.create(ErrorCode.UNKNOWN_ERROR);
+        }
 
         // check if exist
         QueryWrapper<Corporation> q = new QueryWrapper<>();

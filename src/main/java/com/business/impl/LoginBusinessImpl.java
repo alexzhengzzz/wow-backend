@@ -1,6 +1,7 @@
 package com.business.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.bean.LoginUser;
 import com.business.LoginBusiness;
 import com.dto.*;
 import com.entity.*;
@@ -8,6 +9,7 @@ import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
 import com.mapper.*;
 import com.service.impl.UserServiceImpl;
+import com.utils.cache.IGlobalCache;
 import com.utils.cache.JWTUtils;
 import com.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +42,9 @@ public class LoginBusinessImpl implements LoginBusiness {
     @Autowired
     private CorpEmployeeMapper corpEmployeeMapper;
 
+    @Autowired
+    private IGlobalCache iGlobalCache;
+
     @Override
     public UserVO login(LoginDTO loginDTO) {
         // 1. 查找该用户
@@ -50,13 +55,24 @@ public class LoginBusinessImpl implements LoginBusiness {
         }
         // 3. 密码校验
         String loginMD5pass = encryptPass(loginDTO.getPassword());
+        log.debug(loginMD5pass);
         if (!user.getPassword().equals(loginMD5pass)) {
             throw GeneralExceptionFactory.create(ErrorCode.USER_PASSWORD_WRONG, loginDTO.getEmail());
         }
         // 4. UserVO
         String token = JWTUtils.createToken(user.getEmail());
+        LoginUser loginUser = getLoginUser(user);
+        iGlobalCache.set("login:"+user.getEmail(), loginUser);
         UserVO userVo = getUserVO(user, token);
         return userVo;
+    }
+
+    private LoginUser getLoginUser(User user) {
+        LoginUser loginUser = new LoginUser();
+        loginUser.setEmail(user.getEmail());
+        loginUser.setUserId(user.getId());
+        loginUser.setRole(user.getRoleType());
+        return loginUser;
     }
 
     @Override
