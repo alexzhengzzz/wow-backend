@@ -3,6 +3,7 @@ package com.utils.cache.impl;
 import com.utils.cache.IGlobalCache;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
