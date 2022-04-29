@@ -1,9 +1,13 @@
 package com.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.entity.Corporation;
+import com.exception.ErrorCode;
+import com.exception.GeneralExceptionFactory;
 import com.mapper.CorporationMapper;
 import com.service.ICorporationService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,4 +21,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class CorporationServiceImpl extends ServiceImpl<CorporationMapper, Corporation> implements ICorporationService {
 
+    @Autowired
+    private CorporationMapper corporationMapper;
+
+    public Corporation getCorporationByName(String corporationName) {
+
+        Corporation corporation = corporationMapper.selectOne(new LambdaQueryWrapper<Corporation>().eq(Corporation::getCompanyName, corporationName));
+        if (corporation == null) {
+            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_ERROR);
+        }
+        return corporation;
+    }
 }

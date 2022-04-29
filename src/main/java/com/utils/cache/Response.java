@@ -1,5 +1,7 @@
 package com.utils.cache;
 
+import com.enums.ResponseCode;
+
 import java.io.Serializable;
 
 /**
@@ -23,6 +25,11 @@ public class Response<T> implements Serializable {
     public Response(int code, T data) {
         this.code = code;
         this.data = data;
+    }
+
+    public Response(ResponseCode responseCode) {
+        this.code = responseCode.getCode();
+        this.message = responseCode.getMsg();
     }
 
     public Response(String message, int code) {
