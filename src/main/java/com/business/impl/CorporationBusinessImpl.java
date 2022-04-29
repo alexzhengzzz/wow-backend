@@ -11,6 +11,7 @@ import com.dto.CorporationDTO;
 import com.entity.CorpEmployee;
 import com.entity.Corporation;
 import com.enums.Role;
+import com.enums.RoleType;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
 import com.service.ICorpEmployeeService;
@@ -62,7 +63,7 @@ public class CorporationBusinessImpl implements CorporationBusiness {
     }
 
     @Override
-    @PermissionChecker(requiredRole = Role.ADMIN)
+    @PermissionChecker(requiredRole = Role.USER, requiredRoleType = RoleType.CORPORATION)
     public void addEmployeeToCorporation(CorpEmployeeDTO corpEmployeeDTO) {
         String companyName = corpEmployeeDTO.getCompanyName();
         String employeeId = corpEmployeeDTO.getEmployeeId();
