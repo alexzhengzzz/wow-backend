@@ -1,19 +1,16 @@
 package com.context;
 
+import com.bean.LoginUser;
+import lombok.Data;
+
 /**
  * @author zhengmh
  * @Description
  * @date 2021/01/01 7:43 PM
  * Modified By:
  */
+@Data
 public class ServiceContext {
-    String accessToken;
+    LoginUser loginUser;
 
-    public String getAccessToken() {
-        return accessToken;
-    }
-
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
 }

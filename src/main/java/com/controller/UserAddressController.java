@@ -1,8 +1,10 @@
 package com.controller;
 
+import com.annotation.PermissionChecker;
 import com.business.impl.UserAddressBusinessImpl;
 import com.dto.UserAddressDTO;
 import com.entity.UserAddress;
+import com.enums.Role;
 import com.service.IUserAddressService;
 import com.utils.cache.Response;
 import io.swagger.annotations.ApiOperation;
@@ -27,6 +29,7 @@ public class UserAddressController {
 
     @ApiOperation("update user address")
     @PutMapping("/{userId}")
+    @PermissionChecker(requiredRole = Role.USER)
     public Response<String> updateUserAddressById(@PathVariable("userId") Long userId, @RequestBody UserAddressDTO userAddressDTO) {
         // update user address by email
         userAddressBusiness.updateUserAddressById(userId, userAddressDTO);

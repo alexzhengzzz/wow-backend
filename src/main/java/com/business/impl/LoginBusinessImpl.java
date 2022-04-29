@@ -3,8 +3,10 @@ package com.business.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.bean.LoginUser;
 import com.business.LoginBusiness;
+import com.context.ServiceContextHolder;
 import com.dto.*;
 import com.entity.*;
+import com.enums.Role;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
 import com.service.ICorpEmployeeService;
@@ -14,6 +16,7 @@ import com.service.IUserAddressService;
 import com.service.impl.UserServiceImpl;
 import com.utils.cache.IGlobalCache;
 import com.utils.cache.JWTUtils;
+import com.utils.cache.RoleUtils;
 import com.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -61,6 +64,7 @@ public class LoginBusinessImpl implements LoginBusiness {
         // 4. UserVO
         String token = JWTUtils.createToken(user.getEmail());
         LoginUser loginUser = getLoginUser(user);
+        ServiceContextHolder.getServiceContext().setLoginUser(loginUser);
         iGlobalCache.set("login:"+user.getEmail(), loginUser);
         UserVO userVo = getUserVO(user, token);
         return userVo;
@@ -70,7 +74,8 @@ public class LoginBusinessImpl implements LoginBusiness {
         LoginUser loginUser = new LoginUser();
         loginUser.setEmail(user.getEmail());
         loginUser.setUserId(user.getId());
-        loginUser.setRole(user.getRoleType());
+        loginUser.setRole(RoleUtils.getRole(user));
+        loginUser.setRoleType(RoleUtils.getRoleType(user));
         return loginUser;
     }
 
@@ -119,6 +124,8 @@ public class LoginBusinessImpl implements LoginBusiness {
         }
         // get user token
         String token = JWTUtils.createToken(newUser.getEmail());
+        LoginUser loginUser = getLoginUser(newUser);
+        ServiceContextHolder.getServiceContext().setLoginUser(loginUser);
         UserVO userVo = getUserVO(newUser, token);
         return userVo;
     }

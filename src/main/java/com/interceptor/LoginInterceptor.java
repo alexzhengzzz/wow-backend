@@ -3,6 +3,7 @@ package com.interceptor;
 import com.bean.LoginUser;
 import com.context.ServiceContext;
 import com.context.ServiceContextHolder;
+import com.enums.Role;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
 import com.utils.cache.IGlobalCache;
@@ -24,10 +25,14 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //http的header中获得token
+        LoginUser loginUser = new LoginUser();
         String token = getAuthToken(request);
         //token不存在
-        if (token == null || token.equals(""))
-            throw GeneralExceptionFactory.create(ErrorCode.USER_TOKEN_VERIFY_ERROR, token);
+        if (token == null || token.equals("")) {
+            loginUser.setRole(Role.ANONYMOUS);
+            saveToContext(loginUser);
+            return true;
+        }
         //验证token
         String sub = JWTUtils.validateToken(token);
         if (sub == null || sub.equals(""))
@@ -37,18 +42,11 @@ public class LoginInterceptor implements HandlerInterceptor {
             String newToken = JWTUtils.createToken(sub);
             response.setHeader(JWTUtils.USER_LOGIN_TOKEN, newToken);
         }
-
         // 登录过后解析出token中的用户信息
         String redisKey = "login:" + sub;
-        log.debug("redisKey:" + redisKey);
-        LoginUser loginUser = (LoginUser) redisCacheManager.get(redisKey);
-
-        if (loginUser.getRole() == null)  {
-            throw GeneralExceptionFactory.create(ErrorCode.USER_TOKEN_VERIFY_ERROR, token);
-        }
-        ServiceContext serviceContext = new ServiceContext();
-        serviceContext.setAccessToken(String.valueOf(loginUser.getRole()));
-        ServiceContextHolder.setServiceContext(serviceContext);
+//        log.debug("redisKey:" + redisKey);
+        loginUser = (LoginUser) redisCacheManager.get(redisKey);
+        saveToContext(loginUser);
         return true;
     }
 
@@ -64,5 +62,11 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         ServiceContextHolder.setServiceContext(null);
+    }
+
+    private void saveToContext(LoginUser loginUser) {
+        ServiceContext serviceContext = new ServiceContext();
+        serviceContext.setLoginUser(loginUser);
+        ServiceContextHolder.setServiceContext(serviceContext);
     }
 }

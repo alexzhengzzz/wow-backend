@@ -1,8 +1,10 @@
 package com.business.impl;
 
+import com.annotation.PermissionChecker;
 import com.business.IUserAddressBusiness;
 import com.dto.UserAddressDTO;
 import com.entity.UserAddress;
+import com.enums.Role;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
 import com.service.IUserAddressService;
@@ -17,6 +19,7 @@ public class UserAddressBusinessImpl implements IUserAddressBusiness {
     private IUserAddressService userAddressService;
 
     @Override
+    @PermissionChecker(requiredRole = Role.USER)
     public void updateUserAddressById(Long userId, UserAddressDTO userAddressDTO) {
         // check if existed user address
         UserAddress us = userAddressService.getById(userId);
