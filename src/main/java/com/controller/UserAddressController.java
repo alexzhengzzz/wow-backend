@@ -4,6 +4,7 @@ import com.annotation.PermissionChecker;
 import com.business.impl.UserAddressBusinessImpl;
 import com.dto.UserAddressDTO;
 import com.entity.UserAddress;
+import com.enums.ResponseCode;
 import com.enums.Role;
 import com.service.IUserAddressService;
 import com.utils.cache.Response;
@@ -30,10 +31,10 @@ public class UserAddressController {
     @ApiOperation("update user address")
     @PutMapping("/{userId}")
     @PermissionChecker(requiredRole = Role.USER)
-    public Response<String> updateUserAddressById(@PathVariable("userId") Long userId, @RequestBody UserAddressDTO userAddressDTO) {
+    public Response<ResponseCode> updateUserAddressById(@PathVariable("userId") Long userId, @RequestBody UserAddressDTO userAddressDTO) {
         // update user address by email
         userAddressBusiness.updateUserAddressById(userId, userAddressDTO);
         // return success
-        return new Response<>(200, "success");
+        return new Response<>(ResponseCode.SUCCESS);
     }
 }

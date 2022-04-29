@@ -33,6 +33,8 @@ public class User implements Serializable {
 
     private Long companyId;
 
+    private String phoneNum;
+
 
     public Long getId() {
         return id;
@@ -96,6 +98,14 @@ public class User implements Serializable {
 
     public void setCompanyId(Long companyId) {
         this.companyId = companyId;
+    }
+
+    public String getPhoneNum() {
+        return phoneNum;
+    }
+
+    public void setPhoneNum(String phoneNum) {
+        this.phoneNum = phoneNum;
     }
 
     @Override

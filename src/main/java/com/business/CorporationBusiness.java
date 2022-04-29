@@ -3,6 +3,9 @@ package com.business;
 
 import com.dto.CorpEmployeeDTO;
 import com.dto.CorporationDTO;
+import com.entity.User;
+
+import java.util.List;
 
 
 public interface CorporationBusiness {
@@ -13,5 +16,5 @@ public interface CorporationBusiness {
     void addEmployeeToCorporation(CorpEmployeeDTO corpEmployeeDTO);
 
 
-
+    List<User> getEmployeeList(String companyName);
 }

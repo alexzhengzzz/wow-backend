@@ -12,5 +12,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2022-04-26
  */
 public interface ICorporationService extends IService<Corporation> {
-
+    Corporation getCorporationByName(String name);
 }

@@ -200,6 +200,7 @@ public class LoginBusinessImpl implements LoginBusiness {
         user.setLname(registerDTO.getLname());
         user.setEmail(registerDTO.getEmail());
         user.setRoleType(registerDTO.getRole_type());
+        user.setPhoneNum(registerDTO.getPhoneNum());
         return user;
     }
 
