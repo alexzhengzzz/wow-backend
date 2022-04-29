@@ -1,4 +1,5 @@
 # WOW backend project using springboot
+* front end repo [Front-end](https://github.com/YunfanXu/wow-carRental)
 ## Tech Stack
 ### Framework
 * springboot2.X (backend framework)
@@ -44,3 +45,6 @@
 # Git flow
 ![](https://aleximgzzzz.oss-cn-shanghai.aliyuncs.com/myblog/202204281212342.png)
 
+# JWT token / redis / Spring AOP
+* Authorization and Authentication
+![](https://aleximgzzzz.oss-cn-shanghai.aliyuncs.com/myblog/202204290128932.png)
