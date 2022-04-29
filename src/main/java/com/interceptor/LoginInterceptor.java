@@ -4,6 +4,7 @@ import com.bean.LoginUser;
 import com.context.ServiceContext;
 import com.context.ServiceContextHolder;
 import com.enums.Role;
+import com.enums.RoleType;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
 import com.utils.cache.IGlobalCache;
@@ -30,6 +31,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         //token不存在
         if (token == null || token.equals("")) {
             loginUser.setRole(Role.ANONYMOUS);
+            loginUser.setRoleType(RoleType.GUEST);
             saveToContext(loginUser);
             return true;
         }
@@ -46,6 +48,9 @@ public class LoginInterceptor implements HandlerInterceptor {
         String redisKey = "login:" + sub;
 //        log.debug("redisKey:" + redisKey);
         loginUser = (LoginUser) redisCacheManager.get(redisKey);
+        if (loginUser == null) {
+            throw GeneralExceptionFactory.create(ErrorCode.USER_TOKEN_VERIFY_ERROR, "token expired please login again");
+        }
         saveToContext(loginUser);
         return true;
     }
