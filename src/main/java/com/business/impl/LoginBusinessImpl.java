@@ -126,6 +126,7 @@ public class LoginBusinessImpl implements LoginBusiness {
         String token = JWTUtils.createToken(newUser.getEmail());
         LoginUser loginUser = getLoginUser(newUser);
         ServiceContextHolder.getServiceContext().setLoginUser(loginUser);
+        iGlobalCache.set("login:"+newUser.getEmail(), loginUser);
         UserVO userVo = getUserVO(newUser, token);
         return userVo;
     }

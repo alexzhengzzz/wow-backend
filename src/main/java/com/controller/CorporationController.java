@@ -26,7 +26,6 @@ public class CorporationController {
     private CorporationBusiness corporationBusiness;
     @ApiOperation("add new corporation")
     @PostMapping
-    @PermissionChecker(requiredRole = Role.ADMIN, requiredRoleType = RoleType.CORPORATION)
     public Response createCorporation(@RequestBody CorporationDTO corporationDTO) {
         corporationBusiness.createCorporation(corporationDTO);
         return new Response<>(200);
