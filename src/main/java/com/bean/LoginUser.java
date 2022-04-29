@@ -1,5 +1,7 @@
 package com.bean;
 
+import com.enums.Role;
+import com.enums.RoleType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,6 +14,7 @@ import java.io.Serializable;
 public class LoginUser implements Serializable {
     private static final long serialVersionUID = 8841433872811285796L;
     private String email;
-    private Character role;
+    private Role role = Role.ANONYMOUS;
+    private RoleType roleType = RoleType.GUEST;
     private Long userId;
 }

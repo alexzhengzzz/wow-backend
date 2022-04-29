@@ -1,9 +1,12 @@
 package com.controller;
 
+import com.annotation.PermissionChecker;
 import com.business.CorporationBusiness;
 import com.dto.CorpEmployeeDTO;
 import com.dto.CorporationDTO;
 import com.dto.RegisterDTO;
+import com.enums.Role;
+import com.enums.RoleType;
 import com.service.ICorporationService;
 import com.service.impl.CorporationServiceImpl;
 import com.utils.cache.Response;
@@ -19,12 +22,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/corporation")
 @Api("Corporation")
 public class CorporationController {
-    private final Logger logger = LoggerFactory.getLogger(CorporationController.class);
-
     @Autowired
     private CorporationBusiness corporationBusiness;
     @ApiOperation("add new corporation")
     @PostMapping
+    @PermissionChecker(requiredRole = Role.ADMIN, requiredRoleType = RoleType.CORPORATION)
     public Response createCorporation(@RequestBody CorporationDTO corporationDTO) {
         corporationBusiness.createCorporation(corporationDTO);
         return new Response<>(200);

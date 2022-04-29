@@ -1,5 +1,6 @@
 package com.business.impl;
 
+import com.annotation.PermissionChecker;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.business.CorporationBusiness;
@@ -9,6 +10,7 @@ import com.dto.CorpEmployeeDTO;
 import com.dto.CorporationDTO;
 import com.entity.CorpEmployee;
 import com.entity.Corporation;
+import com.enums.Role;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
 import com.service.ICorpEmployeeService;
@@ -28,16 +30,8 @@ public class CorporationBusinessImpl implements CorporationBusiness {
     private ICorpEmployeeService corpEmployeeService;
 
     @Override
+    @PermissionChecker(requiredRole = Role.ADMIN)
     public void createCorporation(CorporationDTO corporationDTO) {
-        ServiceContext serviceContext = ServiceContextHolder.getServiceContext();
-        if (serviceContext == null || serviceContext.getAccessToken() == null) {
-            throw GeneralExceptionFactory.create(ErrorCode.USER_TOKEN_VERIFY_ERROR);
-        }
-        String role_type = serviceContext.getAccessToken();
-        if (!role_type.equals("0")) {
-            throw GeneralExceptionFactory.create(ErrorCode.PERMISSION_DENIED);
-        }
-
         // check if exist
         QueryWrapper<Corporation> q = new QueryWrapper<>();
         q.eq("company_name", corporationDTO.getCompanyName());
@@ -53,6 +47,7 @@ public class CorporationBusinessImpl implements CorporationBusiness {
     }
 
     @Override
+    @PermissionChecker(requiredRole = Role.ADMIN)
     public void deleteCorporation(CorporationDTO corporationDTO) {
         //  delete corporation according to company name
         String companyName = corporationDTO.getCompanyName();
@@ -67,6 +62,7 @@ public class CorporationBusinessImpl implements CorporationBusiness {
     }
 
     @Override
+    @PermissionChecker(requiredRole = Role.ADMIN)
     public void addEmployeeToCorporation(CorpEmployeeDTO corpEmployeeDTO) {
         String companyName = corpEmployeeDTO.getCompanyName();
         String employeeId = corpEmployeeDTO.getEmployeeId();
