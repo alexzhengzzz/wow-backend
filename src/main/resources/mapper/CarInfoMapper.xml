@@ -7,10 +7,12 @@
         <result column="year" property="year" jdbcType="VARCHAR"/>
         <result column="seat_num" property="seat" jdbcType="INTEGER"/>
         <result column="price_per_day" property="pricePerDay" jdbcType="VARCHAR"/>
+        <result column="vin_id" property="vin_id" jdbcType="VARCHAR"/>
+        <result column="image_url" property="image_url" jdbcType="VARCHAR"/>
     </resultMap>
 
     <select id = "getCarList" resultMap="BasicResultMap">
-        select model.model_name name, model.year year, model.seat_num seat_num, c.rental_rate_per_day price_per_day, o.name office_name
+        select v.vin_id vin_id,c.image_url image_url, model.model_name name, model.year year, model.seat_num seat_num, c.rental_rate_per_day price_per_day, o.name office_name
         from yzm_vehicles v
                  join yzm_office o
                       on v.office_id = o.office_id

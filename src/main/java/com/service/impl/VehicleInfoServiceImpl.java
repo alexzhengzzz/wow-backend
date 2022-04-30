@@ -5,9 +5,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.dto.VehicleInfoDTO;
 import com.mapper.CarInfoMapper;
 import com.service.ICarInfoService;
-import lombok.extern.slf4j.Slf4j;
+import com.service.util.CarInfoUtil;
+import com.utils.cache.vo.VehicleInfoVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -21,7 +21,7 @@ public class VehicleInfoServiceImpl implements ICarInfoService{
     private CarInfoMapper carInfoMapper;
 
     @Override
-    public List<VehicleInfoDTO> getCarList(){
+    public List<VehicleInfoVO> getCarList(){
         return CarInfoUtil.transferList(carInfoMapper.getCarList());
     }
 

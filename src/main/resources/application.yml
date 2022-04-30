@@ -21,7 +21,7 @@ spring:
         max-idle: 8
         min-idle: 0
 server:
-  port: 8080
+  port: 8086
 # ===== 自定义swagger配置 ===== #
 swagger:
   enable: true

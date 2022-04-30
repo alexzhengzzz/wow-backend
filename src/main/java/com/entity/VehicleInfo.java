@@ -4,6 +4,8 @@ import lombok.Data;
 
 @Data
 public class VehicleInfo {
+    private String vin_id;
+    private String image_url;
     private String name;
     private String year;
     // image 如何处理

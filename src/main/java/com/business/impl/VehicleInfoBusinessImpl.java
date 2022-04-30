@@ -17,6 +17,6 @@ public class VehicleInfoBusinessImpl implements VehicleInfoBusiness {
 
     @Override
     public List<VehicleInfoVO> getCarList(){
-        return CarInfoBusinessUtil.transferList(carInfoService.getCarList());
+        return carInfoService.getCarList();
     };
 }

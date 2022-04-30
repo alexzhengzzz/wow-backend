@@ -1,4 +1,4 @@
-package com.business.impl;
+package com.business.util;
 
 import com.dto.VehicleInfoDTO;
 import com.entity.VehicleInfo;
