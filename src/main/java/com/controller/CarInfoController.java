@@ -10,10 +10,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/carInfo")
+@RequestMapping("/api/carinfo")
 @Api("CarInfo")
 public class CarInfoController {
-    @Autowired(required = false)
+    @Autowired
     private VehicleInfoBusiness vehicleInfoBusiness;
 
     @ApiOperation("get entire carlist")
