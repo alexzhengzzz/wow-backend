@@ -26,7 +26,7 @@ import java.util.List;
  */
 @RestController
 @Api("coupons api")
-@RequestMapping("/coupons")
+@RequestMapping("/api/coupons")
 public class CouponsController {
     @Autowired
     private CouponsBusiness couponsBusiness;

@@ -1,8 +1,5 @@
 package com.vo;
 
-import com.dto.RegisterCorporDTO;
-import com.dto.RegisterIndividualDTO;
-import com.dto.RegisterUserAddressDTO;
 import lombok.Data;
 
 @Data
