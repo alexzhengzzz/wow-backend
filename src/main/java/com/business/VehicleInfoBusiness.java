@@ -1,6 +1,6 @@
 package com.business;
 
-import com.utils.cache.vo.VehicleInfoVO;
+import com.vo.VehicleInfoVO;
 
 import java.util.List;
 

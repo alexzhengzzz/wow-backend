@@ -5,7 +5,7 @@ import com.utils.cache.Response;
 import com.business.LoginBusiness;
 import com.dto.LoginDTO;
 import com.dto.RegisterDTO;
-import com.utils.cache.vo.UserVO;
+import com.vo.UserVO;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;

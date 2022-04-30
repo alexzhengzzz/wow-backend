@@ -1,4 +1,4 @@
-package com.utils.cache.vo;
+package com.vo;
 
 import com.entity.Coupons;
 import lombok.Data;

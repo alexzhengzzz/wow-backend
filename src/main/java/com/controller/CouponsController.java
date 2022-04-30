@@ -1,16 +1,14 @@
 package com.controller;
 
-import com.annotation.PermissionChecker;
 import com.business.CouponsBusiness;
 import com.dto.CouponCorpDTO;
 import com.dto.CouponIndividualDTO;
 
 import com.entity.Coupons;
-import com.entity.Individual;
 
 import com.enums.ResponseCode;
 import com.utils.cache.Response;
-import com.utils.cache.vo.CouponVO;
+import com.vo.CouponVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

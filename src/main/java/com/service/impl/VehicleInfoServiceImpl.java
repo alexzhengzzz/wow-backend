@@ -6,7 +6,7 @@ import com.dto.VehicleInfoDTO;
 import com.mapper.CarInfoMapper;
 import com.service.ICarInfoService;
 import com.service.util.CarInfoUtil;
-import com.utils.cache.vo.VehicleInfoVO;
+import com.vo.VehicleInfoVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

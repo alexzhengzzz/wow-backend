@@ -2,7 +2,7 @@ package com.controller;
 
 import com.business.CarBusiness;
 import com.utils.cache.Response;
-import com.utils.cache.vo.CarVO;
+import com.vo.CarVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

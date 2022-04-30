@@ -2,7 +2,7 @@ package com.business;
 
 import com.dto.LoginDTO;
 import com.dto.RegisterDTO;
-import com.utils.cache.vo.UserVO;
+import com.vo.UserVO;
 
 
 public interface LoginBusiness {

@@ -1,8 +1,7 @@
 package com.business.util;
 
 import com.dto.VehicleInfoDTO;
-import com.entity.VehicleInfo;
-import com.utils.cache.vo.VehicleInfoVO;
+import com.vo.VehicleInfoVO;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

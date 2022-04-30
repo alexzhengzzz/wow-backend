@@ -2,7 +2,7 @@ package com.business.impl;
 
 import com.business.VehicleInfoBusiness;
 import com.service.ICarInfoService;
-import com.utils.cache.vo.VehicleInfoVO;
+import com.vo.VehicleInfoVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

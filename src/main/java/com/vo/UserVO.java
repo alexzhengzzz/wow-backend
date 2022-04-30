@@ -1,4 +1,4 @@
-package com.utils.cache.vo;
+package com.vo;
 
 import lombok.Data;
 

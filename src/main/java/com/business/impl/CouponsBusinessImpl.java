@@ -22,7 +22,7 @@ import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
 import com.service.*;
 import com.utils.cache.TypeInfo;
-import com.utils.cache.vo.CouponVO;
+import com.vo.CouponVO;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
