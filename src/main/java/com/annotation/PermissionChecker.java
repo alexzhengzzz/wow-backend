@@ -11,6 +11,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface PermissionChecker {
-    Role requiredRole();
-    RoleType requiredRoleType() default RoleType.GUEST;
+    Role requiredRole() default Role.ANONYMOUS; // API for checking permissions
+    RoleType requiredRoleType() default RoleType.GUEST; // API for exact role type
 }

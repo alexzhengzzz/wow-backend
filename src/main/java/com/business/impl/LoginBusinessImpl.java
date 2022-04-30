@@ -2,6 +2,7 @@ package com.business.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.bean.LoginUser;
+import com.business.CorporationBusiness;
 import com.business.LoginBusiness;
 import com.context.ServiceContextHolder;
 import com.dto.*;
@@ -19,6 +20,7 @@ import com.utils.cache.RoleUtils;
 import com.utils.cache.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,27 +48,25 @@ public class LoginBusinessImpl implements LoginBusiness {
     @Autowired
     private IGlobalCache iGlobalCache;
 
+    @Autowired
+    private CorporationBusiness corporationBusiness;
+
     @Override
     public UserVO login(LoginDTO loginDTO) {
-        // 1. 查找该用户
+        // 1. query user
         User user = userService.getOne(new LambdaQueryWrapper<User>().eq(User::getEmail, loginDTO.getEmail()), false);
-        // 2. 用户不存在
+        // 2. no such user
         if (user == null) {
-            throw GeneralExceptionFactory.create(ErrorCode.USER_NOT_FOUND, loginDTO.getEmail());
+            throw GeneralExceptionFactory.create(ErrorCode.USER_NOT_FOUND);
         }
-        // 3. 密码校验
+        // 3. password check
         String loginMD5pass = encryptPass(loginDTO.getPassword());
-        log.debug(loginMD5pass);
+//        log.debug(loginMD5pass);
         if (!user.getPassword().equals(loginMD5pass)) {
-            throw GeneralExceptionFactory.create(ErrorCode.USER_PASSWORD_WRONG, loginDTO.getEmail());
+            throw GeneralExceptionFactory.create(ErrorCode.USER_PASSWORD_WRONG);
         }
-        // 4. UserVO
-        String token = JWTUtils.createToken(user.getEmail());
-        LoginUser loginUser = getLoginUser(user);
-        ServiceContextHolder.getServiceContext().setLoginUser(loginUser);
-        iGlobalCache.set("login:"+user.getEmail(), loginUser);
-        UserVO userVo = getUserVO(user, token);
-        return userVo;
+        // 4. redis = "login:{email}" : loginUser
+        return createAndSetTokenToCache(user);
     }
 
     private LoginUser getLoginUser(User user) {
@@ -93,7 +93,7 @@ public class LoginBusinessImpl implements LoginBusiness {
         Long userId = newUser.getId();
 
         // 3. create new user_address
-        RegisterUserAddressDTO userAddressDTO =  registerDTO.getUserAddress();
+        RegisterUserAddressDTO userAddressDTO = registerDTO.getUserAddress();
         UserAddress userAddress = getUserAddress(userAddressDTO, userId);
         isSuccess = userAddressService.save(userAddress);
         if (isSuccess != true) {
@@ -112,7 +112,7 @@ public class LoginBusinessImpl implements LoginBusiness {
                 iIndividualService.save(in);
                 break;
             }
-            case '2': {
+            case '2': { // check corporation existed
                 RegisterCorporDTO registerCorporDTO = registerDTO.getCorporate();
                 Long corp_id = _checkAndGetCorpId(registerDTO);
                 newUser.setCompanyId(corp_id);
@@ -122,10 +122,15 @@ public class LoginBusinessImpl implements LoginBusiness {
             }
         }
         // get user token
+        return createAndSetTokenToCache(newUser);
+    }
+
+    @NotNull
+    private UserVO createAndSetTokenToCache(User newUser) {
         String token = JWTUtils.createToken(newUser.getEmail());
         LoginUser loginUser = getLoginUser(newUser);
         ServiceContextHolder.getServiceContext().setLoginUser(loginUser);
-        iGlobalCache.set("login:"+newUser.getEmail(), loginUser);
+        iGlobalCache.set("login:" + newUser.getEmail(), loginUser);
         UserVO userVo = getUserVO(newUser, token);
         return userVo;
     }
@@ -156,7 +161,7 @@ public class LoginBusinessImpl implements LoginBusiness {
         String company_name = reco.getCompanyName();
         Corporation co = corporationService.getOne(new LambdaQueryWrapper<Corporation>().eq(Corporation::getCompanyName, company_name));
         if (co == null) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR, company_name);
+            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR, "corporation not found");
         }
         Long corp_id = co.getCorpId();
         CorpEmployee res = corpEmployeeService.getOne(new LambdaQueryWrapper<CorpEmployee>().eq(CorpEmployee::getEmployeeId, employee_id).eq(CorpEmployee::getCorpId, corp_id));
@@ -165,7 +170,7 @@ public class LoginBusinessImpl implements LoginBusiness {
         }
         User user = userService.getOne(new LambdaQueryWrapper<User>().eq(User::getCompanyId, corp_id).eq(User::getEmployeeId, employee_id));
         if (user != null) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR);
+            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR, "existed companyId and employeeId");
         }
         return corp_id;
 
@@ -177,7 +182,7 @@ public class LoginBusinessImpl implements LoginBusiness {
         // 2. check user existed
         User user = userService.getOne(new LambdaQueryWrapper<User>().eq(User::getEmail, registerDTO.getEmail()), false);
         if (user != null) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR, registerDTO.getEmail(), registerDTO.getFname() + " " + registerDTO.getLname());
+            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR, registerDTO.getEmail());
         }
     }
 
@@ -188,7 +193,7 @@ public class LoginBusinessImpl implements LoginBusiness {
         String lname = registerDTO.getLname();
         String password = registerDTO.getPassword();
         Integer role_type = Integer.valueOf(registerDTO.getRole_type());
-        if (StringUtils.isBlank(email) || StringUtils.isBlank(fname) || StringUtils.isBlank(lname) || StringUtils.isBlank(password) || (role_type > 2 && role_type < 0) ) {
+        if (StringUtils.isBlank(email) || StringUtils.isBlank(fname) || StringUtils.isBlank(lname) || StringUtils.isBlank(password) || (role_type > 2 && role_type < 0)) {
             throw GeneralExceptionFactory.create(ErrorCode.ILLEGAL_DATA);
         }
     }

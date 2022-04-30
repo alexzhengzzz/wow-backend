@@ -41,11 +41,9 @@ public class CorporationBusinessImpl implements CorporationBusiness {
     @PermissionChecker(requiredRole = Role.ADMIN)
     public void createCorporation(CorporationDTO corporationDTO) {
         // check if exist
-        QueryWrapper<Corporation> q = new QueryWrapper<>();
-        q.eq("company_name", corporationDTO.getCompanyName());
-        Corporation corporation = corporationService.getOne(q);
+        Corporation corporation = corporationService.getOne(new LambdaQueryWrapper<Corporation>().eq(Corporation::getCompanyName, corporationDTO.getCompanyName()));
         if (corporation != null) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_EXISTED_ERROR);
+            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_EXISTED_ERROR, "company existed");
         }
         corporation = getCorporation(corporationDTO);
         Boolean isSuccess = corporationService.save(corporation);
@@ -61,7 +59,7 @@ public class CorporationBusinessImpl implements CorporationBusiness {
         String companyName = corporationDTO.getCompanyName();
         Corporation corporation = corporationService.getOne(new LambdaQueryWrapper<Corporation>().eq(Corporation::getCompanyName, companyName));
         if (corporation == null) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR);
+            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR, "no such company in database");
         }
         boolean isSuccess = corporationService.remove(new LambdaQueryWrapper<>(corporation).eq(Corporation::getCompanyName, companyName));
         if (isSuccess != true) {
@@ -77,7 +75,7 @@ public class CorporationBusinessImpl implements CorporationBusiness {
 
         Corporation co = corporationService.getOne(new LambdaQueryWrapper<Corporation>().eq(Corporation::getCompanyName, companyName));
         if (co == null) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_EXISTED_ERROR);
+            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_EXISTED_ERROR, "no such company in database");
         }
         Long corp_id = co.getCorpId();
         // check if exist in corp_employee

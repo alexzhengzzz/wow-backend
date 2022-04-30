@@ -1,5 +1,6 @@
 package com.controller;
 
+import com.annotation.PermissionChecker;
 import com.business.CouponsBusiness;
 import com.dto.CouponCorpDTO;
 import com.dto.CouponIndividualDTO;
@@ -46,7 +47,6 @@ public class CouponsController {
         return new Response<>(couponVO);
     }
 
-    // delete coupons by couponId
     @ApiOperation("delete coupons by couponId")
     @DeleteMapping("/{couponId}")
     public Response<ResponseCode> deleteCouponByCouponId(@PathVariable("couponId") Long couponId){

@@ -30,9 +30,7 @@ public class CorporationController {
         return new Response<>(ResponseCode.SUCCESS);
     }
 
-
-    // delete corporation
-    @ApiOperation("delete existed corporation")
+    @ApiOperation("delete corporation, admin only")
     @DeleteMapping
     public Response<ResponseCode> deleteCorporation(@RequestBody CorporationDTO corporationDTO) {
         corporationBusiness.deleteCorporation(corporationDTO);
