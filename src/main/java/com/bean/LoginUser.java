@@ -12,6 +12,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginUser implements Serializable {
+    // !!! important deserialized version number
     private static final long serialVersionUID = 8841433872811285796L;
     private String email;
     private Role role = Role.ANONYMOUS;

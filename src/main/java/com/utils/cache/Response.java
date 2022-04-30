@@ -32,6 +32,12 @@ public class Response<T> implements Serializable {
         this.message = responseCode.getMsg();
     }
 
+    public Response(ResponseCode responseCode, T data) {
+        this.code = responseCode.getCode();
+        this.message = responseCode.getMsg();
+        this.data = data;
+    }
+
     public Response(String message, int code) {
         this.message = message;
         this.code = code;

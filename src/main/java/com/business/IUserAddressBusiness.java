@@ -1,8 +1,9 @@
 package com.business;
 
 import com.dto.UserAddressDTO;
+import com.entity.UserAddress;
 
 public interface IUserAddressBusiness {
 
-    void updateUserAddressById(Long userId, UserAddressDTO userAddressDTO);
+    UserAddress updateUserAddressById(Long userId, UserAddressDTO userAddressDTO);
 }

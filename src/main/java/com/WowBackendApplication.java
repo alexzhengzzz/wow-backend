@@ -16,7 +16,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableAspectJAutoProxy
 public class WowBackendApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(WowBackendApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(WowBackendApplication.class, args);
+    }
 }

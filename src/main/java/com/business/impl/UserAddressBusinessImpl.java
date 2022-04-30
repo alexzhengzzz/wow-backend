@@ -20,15 +20,14 @@ public class UserAddressBusinessImpl implements IUserAddressBusiness {
 
     @Override
     @PermissionChecker(requiredRole = Role.USER)
-    public void updateUserAddressById(Long userId, UserAddressDTO userAddressDTO) {
-        // check if existed user address
+    public UserAddress updateUserAddressById(Long userId, UserAddressDTO userAddressDTO) {
         UserAddress us = userAddressService.getById(userId);
         if (us == null) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR);
+            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR, "User address not existed");
         }
-        // get user address
-        UserAddress userAddress = getUserAddress(userId, userAddressDTO);
-        userAddressService.updateById(userAddress);
+        UserAddress newUserAddress = getUserAddress(userId, userAddressDTO);
+        userAddressService.updateById(newUserAddress);
+        return newUserAddress;
     }
 
     private UserAddress getUserAddress(Long userId, UserAddressDTO userAddressDTO) {

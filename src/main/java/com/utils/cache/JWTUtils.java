@@ -55,15 +55,16 @@ public class JWTUtils {
     }
 
     public void setExpireTime(int expireTimeInt) {
-        JWTUtils.expireTime = expireTimeInt*1000L*60;
+        JWTUtils.expireTime = expireTimeInt * 1000L * 60;
     }
 
     /**
      * 创建TOKEN
+     *
      * @param sub
      * @return
      */
-    public static String createToken(String sub){
+    public static String createToken(String sub) {
         return tokenPrefix + JWT.create()
                 .withSubject(sub)
                 .withExpiresAt(new Date(System.currentTimeMillis() + expireTime))
@@ -73,17 +74,18 @@ public class JWTUtils {
 
     /**
      * 验证token
+     *
      * @param token
      */
-    public static String validateToken(String token){
+    public static String validateToken(String token) {
         try {
             return JWT.require(Algorithm.HMAC512(secret))
                     .build()
                     .verify(token.replace(tokenPrefix, ""))
                     .getSubject();
-        } catch (TokenExpiredException e){
+        } catch (TokenExpiredException e) {
             throw GeneralExceptionFactory.create(ErrorCode.USER_TOKEN_EXPIRED, token);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw GeneralExceptionFactory.create(ErrorCode.USER_TOKEN_VERIFY_ERROR, token);
         }
     }
@@ -91,10 +93,11 @@ public class JWTUtils {
 
     /**
      * 检查token是否需要更新
+     *
      * @param token
      * @return
      */
-    public static boolean isNeedUpdate(String token){
+    public static boolean isNeedUpdate(String token) {
         //获取token过期时间
         Date expiresAt = null;
         try {
@@ -102,12 +105,12 @@ public class JWTUtils {
                     .build()
                     .verify(token.replace(tokenPrefix, ""))
                     .getExpiresAt();
-        } catch (TokenExpiredException e){
+        } catch (TokenExpiredException e) {
             throw GeneralExceptionFactory.create(ErrorCode.USER_TOKEN_EXPIRED, token);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw GeneralExceptionFactory.create(ErrorCode.USER_TOKEN_VERIFY_ERROR, token);
         }
         //如果剩余过期时间少于过期时常的一般时 需要更新
-        return (expiresAt.getTime()-System.currentTimeMillis()) < (expireTime>>1);
+        return (expiresAt.getTime() - System.currentTimeMillis()) < (expireTime >> 1);
     }
 }
