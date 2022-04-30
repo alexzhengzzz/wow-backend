@@ -15,6 +15,5 @@ public interface CorporationBusiness {
 
     void addEmployeeToCorporation(CorpEmployeeDTO corpEmployeeDTO);
 
-
     List<User> getEmployeeList(String companyName);
 }

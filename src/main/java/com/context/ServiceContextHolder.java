@@ -1,6 +1,6 @@
 package com.context;
 
-public class ServiceContextHolder implements AutoCloseable{
+public class ServiceContextHolder{
     private static final ThreadLocal<ServiceContext> holder = new ThreadLocal<>();
 
     public static ServiceContext getServiceContext() {
@@ -16,10 +16,8 @@ public class ServiceContextHolder implements AutoCloseable{
         holder.set(serviceContext);
     }
 
-    @Override
-    public void close() throws Exception {
-        if(holder != null) {
-            holder.remove();
-        }
+    public static void clear() {
+        holder.remove();
     }
+
 }
