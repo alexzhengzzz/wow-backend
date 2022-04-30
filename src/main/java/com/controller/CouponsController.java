@@ -31,13 +31,13 @@ public class CouponsController {
     @Autowired
     private CouponsBusiness couponsBusiness;
 
-    @ApiOperation("issue coupons to Corporation by companyName and discount")
+    @ApiOperation("issue coupons to all the employees of Corporation, will create a new batch")
     @PostMapping("/corporation")
     public Response<List<Coupons>> issueCouponsToCorporation(@RequestBody CouponCorpDTO couponCorpDTO){
         List<Coupons> res = couponsBusiness.issueCouponsToCorporation(couponCorpDTO);
         return new Response<>(ResponseCode.SUCCESS, res);
     }
-    @ApiOperation("issue coupons to Individual")
+    @ApiOperation("issue coupons to Individual, need a batchId")
     @PostMapping("/individual")
     public Response<Coupons> issueCouponsToIndividual(@RequestBody CouponIndividualDTO couponIndividualDTO){
         Coupons coupons = couponsBusiness.issueCouponsToIndividual(couponIndividualDTO);
@@ -57,6 +57,4 @@ public class CouponsController {
         couponsBusiness.deleteCouponByCouponId(couponId);
         return new Response<>(ResponseCode.SUCCESS);
     }
-
-
 }

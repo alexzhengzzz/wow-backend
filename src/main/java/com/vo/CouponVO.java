@@ -7,5 +7,5 @@ import java.util.List;
 
 @Data
 public class CouponVO {
-    private List<Coupons> couponsList;
+    private List<SingleCouponVO> couponsList;
 }

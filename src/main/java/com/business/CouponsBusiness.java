@@ -24,4 +24,7 @@ public interface CouponsBusiness {
 
     @Transactional
     void deleteCouponByCouponId(Long couponId);
+
+
+    void invalidateCouponById(Long couponId);
 }
