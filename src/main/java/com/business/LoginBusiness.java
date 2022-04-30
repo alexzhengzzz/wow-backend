@@ -2,8 +2,7 @@ package com.business;
 
 import com.dto.LoginDTO;
 import com.dto.RegisterDTO;
-import com.vo.UserVO;
-import org.springframework.stereotype.Component;
+import com.utils.cache.vo.UserVO;
 
 
 public interface LoginBusiness {

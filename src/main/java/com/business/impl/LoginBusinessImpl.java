@@ -17,7 +17,7 @@ import com.service.impl.UserServiceImpl;
 import com.utils.cache.IGlobalCache;
 import com.utils.cache.JWTUtils;
 import com.utils.cache.RoleUtils;
-import com.vo.UserVO;
+import com.utils.cache.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;

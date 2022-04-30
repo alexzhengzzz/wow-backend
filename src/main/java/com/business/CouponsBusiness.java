@@ -2,8 +2,12 @@ package com.business;
 
 import com.dto.CouponCorpDTO;
 import com.dto.CouponIndividualDTO;
+
+import com.utils.cache.vo.CouponVO;
+
 import com.entity.Coupons;
 import com.vo.CouponVO;
+
 import org.jetbrains.annotations.NotNull;
 import org.springframework.transaction.annotation.Transactional;
 

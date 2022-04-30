@@ -9,14 +9,20 @@ import com.business.CouponsBatchBussiness;
 import com.business.CouponsBusiness;
 import com.dto.CouponCorpDTO;
 import com.dto.CouponIndividualDTO;
+
+import com.entity.CouponCust;
+import com.entity.Coupons;
+import com.entity.User;
+
 import com.dto.CouponsBatchDTO;
 import com.entity.*;
+
 import com.enums.Role;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
 import com.service.*;
 import com.utils.cache.TypeInfo;
-import com.vo.CouponVO;
+import com.utils.cache.vo.CouponVO;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;

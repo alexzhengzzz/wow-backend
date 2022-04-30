@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.CarInfoMapper">
+
+    <resultMap id="BasicResultMap" type = "com.entity.VehicleInfo">
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="year" property="year" jdbcType="VARCHAR"/>
+        <result column="seat_num" property="seat" jdbcType="INTEGER"/>
+        <result column="price_per_day" property="pricePerDay" jdbcType="VARCHAR"/>
+        <result column="vin_id" property="vin_id" jdbcType="VARCHAR"/>
+        <result column="image_url" property="image_url" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id = "getCarList" resultMap="BasicResultMap">
+        select v.vin_id vin_id,c.image_url image_url, model.model_name name, model.year year, model.seat_num seat_num, c.rental_rate_per_day price_per_day, o.name office_name
+        from yzm_vehicles v
+                 join yzm_office o
+                      on v.office_id = o.office_id
+                 join yzm_car_class c
+                      on v.class_id = c.class_id
+                 join
+             (
+                 select m.model_id model_id, m.model_name model_name , m.year year, m.seat_num seat_num, a.man_name man_name
+                 from yzm_model m
+                          join 	yzm_manufacture a
+                                  on m.man_id = a.man_id
+             ) model
+             On v.model_id = model.model_id
+    </select>
+</mapper>
