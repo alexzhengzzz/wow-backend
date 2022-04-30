@@ -1,5 +1,7 @@
 # DataSource Config
 spring:
+  profiles:
+    active: default
   application:
     name: wow
   datasource:
@@ -19,8 +21,6 @@ spring:
         max-wait: -1
         max-idle: 8
         min-idle: 0
-server:
-  port: 8083
 swagger:
   enable: true
   application-name: ${spring.application.name}
@@ -37,4 +37,20 @@ jwt:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+---
+server:
+  port: 8080
+spring:
+  config:
+    activate:
+      on-profile: default
+---
+server:
+  port: 8083
+spring:
+  config:
+    activate:
+      on-profile: zmh
 
+
+# 启动方式 java -jar wow-backend-0.0.1-SNAPSHOT.jar --spring.profiles.active=zmh
