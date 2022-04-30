@@ -12,6 +12,7 @@ import java.io.Serializable;
  * @author zmh
  * @since 2022-04-29
  */
+@Deprecated
 @TableName("coupon_cust")
 public class CouponCust implements Serializable {
 

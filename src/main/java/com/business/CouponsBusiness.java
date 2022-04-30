@@ -2,16 +2,19 @@ package com.business;
 
 import com.dto.CouponCorpDTO;
 import com.dto.CouponIndividualDTO;
+import com.entity.Coupons;
 import com.vo.CouponVO;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 public interface CouponsBusiness {
     @Transactional
-    void issueCouponsToCorporation(@NotNull CouponCorpDTO couponCorpDTO);
+    List<Coupons> issueCouponsToCorporation(@NotNull CouponCorpDTO couponCorpDTO);
 
     @Transactional
-    void issueCouponsToIndividual(CouponIndividualDTO couponIndividualDTO);
+    Coupons issueCouponsToIndividual(CouponIndividualDTO couponIndividualDTO);
 
 
     CouponVO getValidCouponsByUserId(Long userId);

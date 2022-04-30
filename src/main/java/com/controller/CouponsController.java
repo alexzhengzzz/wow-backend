@@ -4,6 +4,7 @@ import com.annotation.PermissionChecker;
 import com.business.CouponsBusiness;
 import com.dto.CouponCorpDTO;
 import com.dto.CouponIndividualDTO;
+import com.entity.Coupons;
 import com.entity.Individual;
 import com.enums.ResponseCode;
 import com.service.ICouponsService;
@@ -14,6 +15,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
+
+import java.util.List;
 
 /**
  * <p>
@@ -32,15 +35,15 @@ public class CouponsController {
 
     @ApiOperation("issue coupons to Corporation by companyName and discount")
     @PostMapping("/corporation")
-    public Response<ResponseCode> issueCouponsToCorporation(@RequestBody CouponCorpDTO couponCorpDTO){
-        couponsBusiness.issueCouponsToCorporation(couponCorpDTO);
-        return new Response<>(ResponseCode.SUCCESS);
+    public Response<List<Coupons>> issueCouponsToCorporation(@RequestBody CouponCorpDTO couponCorpDTO){
+        List<Coupons> res = couponsBusiness.issueCouponsToCorporation(couponCorpDTO);
+        return new Response<>(ResponseCode.SUCCESS, res);
     }
     @ApiOperation("issue coupons to Individual")
     @PostMapping("/individual")
-    public Response<ResponseCode> issueCouponsToIndividual(@RequestBody CouponIndividualDTO couponIndividualDTO){
-        couponsBusiness.issueCouponsToIndividual(couponIndividualDTO);
-        return new Response<>(ResponseCode.SUCCESS);
+    public Response<Coupons> issueCouponsToIndividual(@RequestBody CouponIndividualDTO couponIndividualDTO){
+        Coupons coupons = couponsBusiness.issueCouponsToIndividual(couponIndividualDTO);
+        return new Response<>(ResponseCode.SUCCESS, coupons);
     }
 
     @ApiOperation("get valid coupons by userId")
