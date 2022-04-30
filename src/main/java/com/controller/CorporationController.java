@@ -1,9 +1,13 @@
 package com.controller;
 
+import com.annotation.PermissionChecker;
 import com.business.CorporationBusiness;
 import com.dto.CorpEmployeeDTO;
 import com.dto.CorporationDTO;
 import com.dto.RegisterDTO;
+import com.enums.ResponseCode;
+import com.enums.Role;
+import com.enums.RoleType;
 import com.service.ICorporationService;
 import com.service.impl.CorporationServiceImpl;
 import com.utils.cache.Response;
@@ -19,31 +23,29 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/corporation")
 @Api("Corporation")
 public class CorporationController {
-    private final Logger logger = LoggerFactory.getLogger(CorporationController.class);
-
     @Autowired
     private CorporationBusiness corporationBusiness;
     @ApiOperation("add new corporation")
     @PostMapping
-    public Response createCorporation(@RequestBody CorporationDTO corporationDTO) {
+    public Response<ResponseCode> createCorporation(@RequestBody CorporationDTO corporationDTO) {
         corporationBusiness.createCorporation(corporationDTO);
-        return new Response<>(200);
+        return new Response<>(ResponseCode.SUCCESS);
     }
 
     @ApiOperation("add new employee to existed corporation")
     @PostMapping("/employee")
-    public Response addEmployeeToCorporation(@RequestBody CorpEmployeeDTO corpEmployeeDTO) {
+    public Response<ResponseCode> addEmployeeToCorporation(@RequestBody CorpEmployeeDTO corpEmployeeDTO) {
         corporationBusiness.addEmployeeToCorporation(corpEmployeeDTO);
-        return new Response<>(200);
+        return new Response<>(ResponseCode.SUCCESS);
     }
 
 
     // delete corporation
     @ApiOperation("delete existed corporation")
     @DeleteMapping
-    public Response deleteCorporation(@RequestBody CorporationDTO corporationDTO) {
+    public Response<ResponseCode> deleteCorporation(@RequestBody CorporationDTO corporationDTO) {
         corporationBusiness.deleteCorporation(corporationDTO);
-        return new Response<>(200);
+        return new Response<>(ResponseCode.SUCCESS);
     }
 
 
