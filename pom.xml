@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com</groupId>
 	<artifactId>wow-backend</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>wow-backend</name>
 	<description>wow-backend</description>
 	<properties>
@@ -116,6 +116,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+
 			<exclusions>
 				<exclusion>
 					<groupId>com.vaadin.external.google</groupId>
@@ -151,8 +152,7 @@
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
-			<version>RELEASE</version>
-			<scope>compile</scope>
+			<version>7.5</version>
 		</dependency>
 
 
