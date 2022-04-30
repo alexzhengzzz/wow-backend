@@ -161,7 +161,7 @@ public class LoginBusinessImpl implements LoginBusiness {
         String company_name = reco.getCompanyName();
         Corporation co = corporationService.getOne(new LambdaQueryWrapper<Corporation>().eq(Corporation::getCompanyName, company_name));
         if (co == null) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR, company_name);
+            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR, "corporation not found");
         }
         Long corp_id = co.getCorpId();
         CorpEmployee res = corpEmployeeService.getOne(new LambdaQueryWrapper<CorpEmployee>().eq(CorpEmployee::getEmployeeId, employee_id).eq(CorpEmployee::getCorpId, corp_id));
@@ -170,7 +170,7 @@ public class LoginBusinessImpl implements LoginBusiness {
         }
         User user = userService.getOne(new LambdaQueryWrapper<User>().eq(User::getCompanyId, corp_id).eq(User::getEmployeeId, employee_id));
         if (user != null) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR);
+            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR, "existed companyId and employeeId");
         }
         return corp_id;
 
