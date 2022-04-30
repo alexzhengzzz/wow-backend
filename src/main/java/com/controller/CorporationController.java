@@ -1,21 +1,12 @@
 package com.controller;
 
-import com.annotation.PermissionChecker;
 import com.business.CorporationBusiness;
 import com.dto.CorpEmployeeDTO;
 import com.dto.CorporationDTO;
-import com.dto.RegisterDTO;
 import com.enums.ResponseCode;
-import com.enums.Role;
-import com.enums.RoleType;
-import com.service.ICorporationService;
-import com.service.impl.CorporationServiceImpl;
 import com.utils.cache.Response;
-import com.vo.UserVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

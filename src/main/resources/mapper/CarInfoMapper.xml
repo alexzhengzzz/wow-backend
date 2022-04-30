@@ -5,7 +5,7 @@
     <resultMap id="BasicResultMap" type = "com.entity.VehicleInfo">
         <result column="name" property="name" jdbcType="VARCHAR"/>
         <result column="year" property="year" jdbcType="VARCHAR"/>
-        <result column="seat_num" property="seat" jdbcType="INT"/>
+        <result column="seat_num" property="seat" jdbcType="INTEGER"/>
         <result column="price_per_day" property="pricePerDay" jdbcType="VARCHAR"/>
     </resultMap>
 

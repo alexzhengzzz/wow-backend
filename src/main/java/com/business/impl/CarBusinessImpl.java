@@ -1,11 +1,9 @@
 package com.business.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.business.CarBusiness;
 import com.entity.Car;
-import com.entity.User;
 import com.service.ICarService;
-import com.vo.CarVO;
+import com.utils.cache.vo.CarVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

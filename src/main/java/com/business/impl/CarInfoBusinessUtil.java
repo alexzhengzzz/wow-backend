@@ -2,8 +2,11 @@ package com.business.impl;
 
 import com.dto.VehicleInfoDTO;
 import com.entity.VehicleInfo;
-import com.vo.VehicleInfoVO;
+import com.utils.cache.vo.VehicleInfoVO;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class CarInfoBusinessUtil {
@@ -15,4 +18,13 @@ public class CarInfoBusinessUtil {
         vehicleInfoVo.setYear(vehicleInfoDTO.getYear());
         return vehicleInfoVo;
     }
+
+    public static List<VehicleInfoVO> transferList(List<VehicleInfoDTO> vehicleInfoDTOList){
+        List<VehicleInfoVO> res = new ArrayList();
+        for(VehicleInfoDTO dto:vehicleInfoDTOList){
+            res.add(transfer(dto));
+        }
+        return res;
+    }
+
 }

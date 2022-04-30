@@ -1,6 +1,6 @@
 package com.business;
 
-import com.vo.CarVO;
+import com.utils.cache.vo.CarVO;
 
 public interface CarBusiness {
     CarVO getInfo();

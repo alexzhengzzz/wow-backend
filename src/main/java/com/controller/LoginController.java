@@ -5,13 +5,11 @@ import com.utils.cache.Response;
 import com.business.LoginBusiness;
 import com.dto.LoginDTO;
 import com.dto.RegisterDTO;
-import com.vo.UserVO;
+import com.utils.cache.vo.UserVO;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController

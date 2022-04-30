@@ -6,9 +6,11 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 //@Mapper
 //@Repository
 public interface CarInfoMapper extends BaseMapper<VehicleInfo> {
     @Autowired
-    public VehicleInfo getCarList();
+    public List<VehicleInfo> getCarList();
 }

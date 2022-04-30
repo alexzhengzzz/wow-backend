@@ -2,7 +2,7 @@ package com.business;
 
 import com.dto.CouponCorpDTO;
 import com.dto.CouponIndividualDTO;
-import com.vo.CouponVO;
+import com.utils.cache.vo.CouponVO;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.transaction.annotation.Transactional;
 

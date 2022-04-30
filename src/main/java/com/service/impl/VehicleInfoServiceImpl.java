@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -20,8 +21,8 @@ public class VehicleInfoServiceImpl implements ICarInfoService{
     private CarInfoMapper carInfoMapper;
 
     @Override
-    public VehicleInfoDTO getCarList(){
-        return CarInfoUtil.transfer(carInfoMapper.getCarList());
+    public List<VehicleInfoDTO> getCarList(){
+        return CarInfoUtil.transferList(carInfoMapper.getCarList());
     }
 
     @Override

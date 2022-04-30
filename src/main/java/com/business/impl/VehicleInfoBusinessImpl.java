@@ -2,10 +2,12 @@ package com.business.impl;
 
 import com.business.VehicleInfoBusiness;
 import com.service.ICarInfoService;
-import com.vo.VehicleInfoVO;
+import com.utils.cache.vo.VehicleInfoVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 @Slf4j
@@ -14,7 +16,7 @@ public class VehicleInfoBusinessImpl implements VehicleInfoBusiness {
     private ICarInfoService carInfoService;
 
     @Override
-    public VehicleInfoVO getCarList(){
-        return CarInfoBusinessUtil.transfer(carInfoService.getCarList());
+    public List<VehicleInfoVO> getCarList(){
+        return CarInfoBusinessUtil.transferList(carInfoService.getCarList());
     };
 }
