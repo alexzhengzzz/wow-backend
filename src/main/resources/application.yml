@@ -14,7 +14,7 @@ spring:
     #host: 127.0.0.1
     host: 127.0.0.1
     port: 6379
-    password: # 如果未单独配置默认为空即可
+    password: 123456a
     timeout: 1000
     jedis:
       pool:
@@ -69,3 +69,10 @@ spring:
     activate:
       on-profile: zmh
 
+---
+server:
+  port: 8086
+spring:
+  config:
+    activate:
+      on-profile: zz

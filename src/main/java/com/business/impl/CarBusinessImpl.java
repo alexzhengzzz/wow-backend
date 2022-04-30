@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@Deprecated
 @Slf4j
 public class CarBusinessImpl implements CarBusiness {
 

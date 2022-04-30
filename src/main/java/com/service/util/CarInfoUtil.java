@@ -1,7 +1,7 @@
 package com.service.util;
 
-import com.entity.VehicleInfo;
-import com.vo.VehicleInfoVO;
+import com.entity.CarInfo;
+import com.vo.CarInfoVO;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -9,22 +9,24 @@ import java.util.List;
 
 @Component
 public class CarInfoUtil {
-    public static VehicleInfoVO transfer(VehicleInfo vehicleInfo){
-        VehicleInfoVO vehicleInfoVO = new VehicleInfoVO();
-        vehicleInfoVO.setName(vehicleInfo.getName());
-        vehicleInfoVO.setSeat(vehicleInfo.getSeat());
-        vehicleInfoVO.setPricePerDay(vehicleInfo.getPricePerDay());
-        vehicleInfoVO.setYear(vehicleInfo.getYear());
-        vehicleInfoVO.setImage_url(vehicleInfo.getImage_url());
-        vehicleInfoVO.setVin_id(vehicleInfo.getVin_id());
-        return vehicleInfoVO;
+    public static CarInfoVO transfer(CarInfo carInfo){
+        CarInfoVO carInfoVO = new CarInfoVO();
+        carInfoVO.setName(carInfo.getName());
+        carInfoVO.setSeat(carInfo.getSeat());
+        carInfoVO.setPricePerDay(carInfo.getPricePerDay());
+        carInfoVO.setYear(carInfo.getYear());
+        carInfoVO.setImage_url(carInfo.getImage_url());
+        carInfoVO.setVin_id(carInfo.getVin_id());
+        carInfoVO.setClass_type(carInfo.getClass_type());
+        carInfoVO.setStatus(carInfo.getStatus());
+        return carInfoVO;
     }
 
-    public static List<VehicleInfoVO> transferList(List<VehicleInfo> vehicleInfoList){
-        List<VehicleInfoVO> vehicleInfoVOList = new ArrayList<>();
-        for(VehicleInfo info:vehicleInfoList){
-            vehicleInfoVOList.add(transfer(info));
+    public static List<CarInfoVO> transferList(List<CarInfo> carInfoList){
+        List<CarInfoVO> carInfoVOList = new ArrayList<>();
+        for(CarInfo info: carInfoList){
+            carInfoVOList.add(transfer(info));
         }
-        return vehicleInfoVOList;
+        return carInfoVOList;
     }
 }
