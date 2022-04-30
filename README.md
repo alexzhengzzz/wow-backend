@@ -46,5 +46,12 @@
 ![](https://aleximgzzzz.oss-cn-shanghai.aliyuncs.com/myblog/202204281212342.png)
 
 # JWT token / redis / Spring AOP
-* Authorization and Authentication
+JWT token format:
+  * request header or request param
+      * Authorization: Bearer {token}
+
+### Authorization and Authentication Flow
+* summary
 ![](https://aleximgzzzz.oss-cn-shanghai.aliyuncs.com/myblog/202204290128932.png)
+* aop checker
+![](https://aleximgzzzz.oss-cn-shanghai.aliyuncs.com/myblog/202204291919768.png)

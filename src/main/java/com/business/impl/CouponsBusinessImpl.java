@@ -1,5 +1,6 @@
 package com.business.impl;
 
+import com.annotation.PermissionChecker;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.business.CorporationBusiness;
@@ -10,6 +11,8 @@ import com.entity.Corporation;
 import com.entity.CouponCust;
 import com.entity.Coupons;
 import com.entity.User;
+import com.enums.Role;
+import com.enums.RoleType;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
 import com.service.ICorporationService;
@@ -137,20 +140,15 @@ public class CouponsBusinessImpl implements CouponsBusiness {
     }
 
     @Override
+    @PermissionChecker(requiredRole = Role.ADMIN)
     public void deleteCouponByCouponId(Long couponId) {
         Boolean isSuccess = couponsService.removeById(couponId);
         if (!isSuccess) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_DELETE_ERROR);
+            throw GeneralExceptionFactory.create(ErrorCode.DB_DELETE_ERROR, "delete coupon failed");
         }
         isSuccess = couponCustService.remove(new LambdaQueryWrapper<CouponCust>().eq(CouponCust::getCouponId, couponId));
         if (!isSuccess) {
             throw GeneralExceptionFactory.create(ErrorCode.DB_DELETE_ERROR);
         }
     }
-
-//    private Corporation getCorportaion(CouponCorpDTO couponCorpDTO) {
-//        String companyName = couponCorpDTO.getCompanyName();
-//        Corporation corporation = corporationService.getCorporationByName(companyName);
-//        return corporation;
-//    }
 }

@@ -1,12 +1,6 @@
 package com.context;
 
-/**
- * @author zhengmh
- * @Description
- * @date 2021/01/01 7:44 PM
- * Modified By:
- */
-public class ServiceContextHolder {
+public class ServiceContextHolder implements AutoCloseable{
     private static final ThreadLocal<ServiceContext> holder = new ThreadLocal<>();
 
     public static ServiceContext getServiceContext() {
@@ -23,8 +17,7 @@ public class ServiceContextHolder {
     }
 
     @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
+    public void close() throws Exception {
         if(holder != null) {
             holder.remove();
         }

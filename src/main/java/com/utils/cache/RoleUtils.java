@@ -25,6 +25,7 @@ public class RoleUtils {
     public static Role getRole(User user) {
         return roleUserHashMap.get(user.getRoleType());
     }
+
     public static RoleType getRoleType(User user) {
         return roleTypeHashMap.get(user.getRoleType());
     }

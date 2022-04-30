@@ -42,23 +42,39 @@ public class PermitAspect {
         LoginUser loginUser = serviceContext.getLoginUser();
         PermissionChecker permissionChecker = getPermissionChecker(joinPoint);
         Role role = permissionChecker.requiredRole();
-        // check user group
-        if (loginUser == null) {
-            if (role != Role.ANONYMOUS) throw GeneralExceptionFactory.create(ErrorCode.PERMISSION_DENIED);
-        } else if (loginUser.getRole().ordinal() > permissionChecker.requiredRole().ordinal()) {
-            throw GeneralExceptionFactory.create(ErrorCode.PERMISSION_DENIED, "Permission denied");
-        }
-        // check required roletype
         RoleType roleType = permissionChecker.requiredRoleType();
-        if (roleType ==  null || roleType == RoleType.GUEST) return;
-        if (roleType != loginUser.getRoleType() && loginUser.getRoleType() != RoleType.ADMIN) {
-            throw GeneralExceptionFactory.create(ErrorCode.PERMISSION_DENIED, "Permission denied");
-        }
+        checkPermission(role, roleType, loginUser);
     }
 
     private PermissionChecker getPermissionChecker(ProceedingJoinPoint joinPoint) {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         PermissionChecker permissionChecker = methodSignature.getMethod().getAnnotation(PermissionChecker.class);
         return permissionChecker;
+    }
+
+    private void checkPermission(Role role, RoleType roleType, LoginUser loginUser) {
+        if (loginUser == null) {
+            defaultCheck(role, roleType);
+        } else {
+            roleLevelCheck(role, loginUser);
+            roleTypeCheck(roleType, loginUser);
+        }
+    }
+    private void defaultCheck(Role requiredRole, RoleType requiredRoleType) {
+        if (requiredRole != Role.ANONYMOUS || requiredRoleType != RoleType.GUEST) throw GeneralExceptionFactory.create(ErrorCode.PERMISSION_DENIED, "no legal login info");
+    }
+    // role level admin 0 , user 1, guest 2
+    private void roleLevelCheck(Role requiredRole, LoginUser loginUser) {
+        if (loginUser.getRole().ordinal() > requiredRole.ordinal()) {
+            throw GeneralExceptionFactory.create(ErrorCode.PERMISSION_DENIED, "Permission denied current role: " + loginUser.getRole(), "need role: " + requiredRole);
+        }
+    }
+    // check whether requiredRoleType is admin or requiredRoleType is the same as login user
+    private void roleTypeCheck(RoleType requiredRoleType, LoginUser loginUser) {
+        if (loginUser.getRoleType() == RoleType.ADMIN) return;
+        if (requiredRoleType ==  null || requiredRoleType == RoleType.GUEST) return; // guest is not check
+        if (requiredRoleType != loginUser.getRoleType()) {
+            throw GeneralExceptionFactory.create(ErrorCode.PERMISSION_DENIED, "Permission denied current roleType: " + loginUser.getRoleType(), "need roleType: " + requiredRoleType + " or admin");
+        }
     }
 }
