@@ -102,8 +102,10 @@ public class CorporationBusinessImpl implements CorporationBusiness {
         List<CorpEmployee> corpEmployees = corpEmployeeService.list(new LambdaQueryWrapper<CorpEmployee>().eq(CorpEmployee::getCorpId, corp_id));
         List<User> users = new ArrayList<>();
         for (CorpEmployee ce : corpEmployees) {
-            User user = userService.getOne(new LambdaQueryWrapper<User>().eq(User::getId, ce.getEmployeeId()));
-            users.add(user);
+            User user = userService.getOne(new LambdaQueryWrapper<User>().eq(User::getEmployeeId, ce.getEmployeeId()));
+            if (user!= null) {
+                users.add(user);
+            }
         }
         return users;
     }

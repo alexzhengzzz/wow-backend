@@ -6,10 +6,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@RestController()
 @RequestMapping("/")
 @Slf4j
 public class GoController {
+
     @GetMapping("/go")
     @SystemLog(businessName = "go interface")
     public String go() {

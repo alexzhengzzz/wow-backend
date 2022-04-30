@@ -64,6 +64,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         ServiceContextHolder.setServiceContext(null);
+        ServiceContextHolder.clear();
     }
 
     private void saveToContext(LoginUser loginUser) {
@@ -71,4 +72,5 @@ public class LoginInterceptor implements HandlerInterceptor {
         serviceContext.setLoginUser(loginUser);
         ServiceContextHolder.setServiceContext(serviceContext);
     }
+
 }
