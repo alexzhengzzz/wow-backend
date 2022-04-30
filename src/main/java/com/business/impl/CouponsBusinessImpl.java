@@ -10,7 +10,6 @@ import com.business.CouponsBusiness;
 import com.dto.CouponCorpDTO;
 import com.dto.CouponIndividualDTO;
 
-import com.entity.CouponCust;
 import com.entity.Coupons;
 import com.entity.User;
 
@@ -32,15 +31,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Component
 @Slf4j
 public class CouponsBusinessImpl implements CouponsBusiness {
     @Autowired
     private IUserService userService;
-    @Autowired
-    private ICouponCustService couponCustService;
     @Autowired
     private ICorporationService corporationService;
     @Autowired
@@ -155,45 +151,45 @@ public class CouponsBusinessImpl implements CouponsBusiness {
 
     @Override
     public CouponVO getValidCouponsByUserId(Long userId) {
-        // check userId role type
-        User user = userService.getById(userId);
-        if (user == null) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "no such userId");
-        }
-        if (user.getRoleType() != TypeInfo.getIndividualRoleType() && user.getRoleType() != TypeInfo.getCorporationRoleType()) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_ERROR);
-        }
-        CouponVO couponVO = new CouponVO();
-        List<Coupons> couponList = new ArrayList<>();
-        couponVO.setCouponsList(couponList);
-        List<CouponCust> couponCustList = couponCustService.list(new LambdaQueryWrapper<CouponCust>().eq(CouponCust::getCustId, userId));
-        if (couponCustList == null || couponCustList.size() == 0) {
-            return couponVO;
-        }
-        couponCustList.forEach(couponCust -> {
-            Coupons coupons = couponsService.getById(couponCust.getCouponId());
-            if (user.getRoleType() == TypeInfo.getIndividualRoleType()) {
-                if (!Objects.isNull(coupons.getValidFrom()) && !Objects.isNull(coupons.getValidTo()) &&  coupons.getValidTo().getTime() > System.currentTimeMillis()) {
-                    couponVO.getCouponsList().add(coupons);
-                }
-            } else if (user.getRoleType() == TypeInfo.getCorporationRoleType()) {
-                couponVO.getCouponsList().add(coupons);
-            }
-        });
-        return couponVO;
+//        // check userId role type
+//        User user = userService.getById(userId);
+//        if (user == null) {
+//            throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "no such userId");
+//        }
+//        if (user.getRoleType() != TypeInfo.getIndividualRoleType() && user.getRoleType() != TypeInfo.getCorporationRoleType()) {
+//            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_ERROR);
+//        }
+//        CouponVO couponVO = new CouponVO();
+//        List<Coupons> couponList = new ArrayList<>();
+//        couponVO.setCouponsList(couponList);
+//        List<CouponCust> couponCustList = couponCustService.list(new LambdaQueryWrapper<CouponCust>().eq(CouponCust::getCustId, userId));
+//        if (couponCustList == null || couponCustList.size() == 0) {
+//            return couponVO;
+//        }
+//        couponCustList.forEach(couponCust -> {
+//            Coupons coupons = couponsService.getById(couponCust.getCouponId());
+//            if (user.getRoleType() == TypeInfo.getIndividualRoleType()) {
+//                if (!Objects.isNull(coupons.getValidFrom()) && !Objects.isNull(coupons.getValidTo()) &&  coupons.getValidTo().getTime() > System.currentTimeMillis()) {
+//                    couponVO.getCouponsList().add(coupons);
+//                }
+//            } else if (user.getRoleType() == TypeInfo.getCorporationRoleType()) {
+//                couponVO.getCouponsList().add(coupons);
+//            }
+//        });
+        return null;
     }
 
     @Override
     @PermissionChecker(requiredRole = Role.ADMIN)
     public void deleteCouponByCouponId(Long couponId) {
-        Boolean isSuccess = couponsService.removeById(couponId);
-        if (!isSuccess) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_DELETE_ERROR, "delete coupon failed");
-        }
-        isSuccess = couponCustService.remove(new LambdaQueryWrapper<CouponCust>().eq(CouponCust::getCouponId, couponId));
-        if (!isSuccess) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_DELETE_ERROR);
-        }
+//        Boolean isSuccess = couponsService.removeById(couponId);
+//        if (!isSuccess) {
+//            throw GeneralExceptionFactory.create(ErrorCode.DB_DELETE_ERROR, "delete coupon failed");
+//        }
+//        isSuccess = couponCustService.remove(new LambdaQueryWrapper<CouponCust>().eq(CouponCust::getCouponId, couponId));
+//        if (!isSuccess) {
+//            throw GeneralExceptionFactory.create(ErrorCode.DB_DELETE_ERROR);
+//        }
     }
 
 
