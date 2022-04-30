@@ -114,7 +114,7 @@ public class CouponsBusinessImpl implements CouponsBusiness {
         // check userId role type
         User user = userService.getById(userId);
         if (user == null) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR);
+            throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "no such userId");
         }
         if (user.getRoleType() != TypeInfo.getIndividualRoleType() && user.getRoleType() != TypeInfo.getCorporationRoleType()) {
             throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_ERROR);
