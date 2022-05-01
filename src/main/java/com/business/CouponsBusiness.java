@@ -16,7 +16,6 @@ public interface CouponsBusiness {
     @Transactional
     List<Coupons> issueCouponsToCorporation(@NotNull CouponCorpDTO couponCorpDTO);
 
-    @Transactional
     Coupons issueCouponsToIndividual(CouponIndividualDTO couponIndividualDTO);
 
 

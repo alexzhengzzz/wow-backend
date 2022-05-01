@@ -18,6 +18,7 @@ import com.entity.*;
 
 import com.enums.Role;
 import com.exception.ErrorCode;
+import com.exception.GeneralException;
 import com.exception.GeneralExceptionFactory;
 import com.service.*;
 import com.utils.cache.TypeInfo;
@@ -28,7 +29,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -50,6 +55,8 @@ public class CouponsBusinessImpl implements CouponsBusiness {
     private ICouponsService couponsService;
     @Autowired
     private CouponsBatchBussiness couponsBatchBussiness;
+    @Autowired
+    private TransactionTemplate transactionManager;
     @Override
     @Transactional
     public List<Coupons> issueCouponsToCorporation(@NotNull CouponCorpDTO couponCorpDTO) {
@@ -86,7 +93,7 @@ public class CouponsBusinessImpl implements CouponsBusiness {
         CouponsBatchDTO couponsBatchDTO = new CouponsBatchDTO();
         couponsBatchDTO.setDiscount(couponCorpDTO.getDiscount());
         couponsBatchDTO.setCouponType(TypeInfo.getCouponCorporationType());
-        couponsBatchDTO.setStock(null);
+        couponsBatchDTO.setStock(0);
         couponsBatchDTO.setDetails(couponCorpDTO.getDetails());
         return couponsBatchDTO;
     }
@@ -102,28 +109,26 @@ public class CouponsBusinessImpl implements CouponsBusiness {
     }
 
     @Override
-//    @Transactional
+    @Transactional
     public Coupons issueCouponsToIndividual(CouponIndividualDTO couponIndividualDTO) {
-        // check userId role type
+        // check userId and role type
         checkParameters(couponIndividualDTO);
-        CouponsBatch couponsBatch = couponsBatchService.getById(couponIndividualDTO.getBatchId());
-        if (couponsBatch.getStock() == null || couponsBatch.getStock() <= 0) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "no more coupons");
-        }
-        Coupons coupons = setNewIndividualCoupon(couponIndividualDTO);
-        Boolean isSuccess = couponsService.save(coupons);
-        if (!isSuccess) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR);
-        }
-        couponsBatch.setStock(couponsBatch.getStock() - 1);
-        isSuccess = couponsBatchService.updateById(couponsBatch);
-        if (!isSuccess) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR);
-        }
+        Coupons coupons = null;
+        coupons = transactionManager.execute(status -> {
+            CouponsBatch couponsBatch = couponsBatchService.getOne(new LambdaQueryWrapper<CouponsBatch>().eq(CouponsBatch::getBatchId, couponIndividualDTO.getBatchId()).last("for update"));
+            if (couponsBatch.getStock() == null || couponsBatch.getStock() <= 0) {
+                throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "no more coupons");
+            }
+            couponsBatch.setStock(couponsBatch.getStock() - 1);
+            couponsBatchService.updateById(couponsBatch);
+            Coupons co  = setNewIndividualCoupon(couponIndividualDTO);
+            couponsService.save(co);
+            return co;
+        });
         return coupons;
     }
 
-    private void checkParameters(CouponIndividualDTO couponIndividualDTO) {
+    public void checkParameters(CouponIndividualDTO couponIndividualDTO) {
         User user = userService.getById(couponIndividualDTO.getUserId());
         if (user == null) {
             throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "no such individual user");
@@ -142,7 +147,7 @@ public class CouponsBusinessImpl implements CouponsBusiness {
         }
     }
 
-    private Coupons setNewIndividualCoupon(CouponIndividualDTO couponIndividualDTO) {
+    public Coupons setNewIndividualCoupon(CouponIndividualDTO couponIndividualDTO) {
         Coupons coupons = new Coupons();
         coupons.setUserId(couponIndividualDTO.getUserId());
         coupons.setBatchId(couponIndividualDTO.getBatchId());
