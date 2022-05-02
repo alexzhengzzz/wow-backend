@@ -11,19 +11,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/carinfo")
+@RequestMapping("/api/carInfo")
 @Api("CarInfo")
 public class CarInfoController {
     @Autowired
     private CarInfoBusiness carInfoBusiness;
 
-    @ApiOperation("get entire carlist")
+    @ApiOperation("get entire carList")
     @GetMapping("entire")
     public Response getAllCarList(){
         return new Response<>(carInfoBusiness.getCarList(0));
     }
 
-    @ApiOperation("get in-stock carlist")
+    @ApiOperation("get in-stock carList")
     @GetMapping("valid")
     public Response getValidCarList(){
         return new Response<>(carInfoBusiness.getCarList(1));

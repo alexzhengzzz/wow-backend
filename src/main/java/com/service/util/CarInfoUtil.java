@@ -1,4 +1,4 @@
-package com.utils.cache;
+package com.service.util;
 
 import com.entity.CarInfo;
 import com.vo.CarInfoVO;
