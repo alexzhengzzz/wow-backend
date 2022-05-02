@@ -1,5 +1,6 @@
-package com.interceptor;
+package com.interceptor.impl;
 
+import com.interceptor.RedisRateLimit;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -11,19 +12,16 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class RedisLimit {
-
+public class RedisRateLimitImpl implements RedisRateLimit {
     private static final String FAIL_CODE = "0";
-
-    private static String limit = "20";
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
     @Resource
     private DefaultRedisScript<String> redisScript;
 
-    public Boolean limit() {
+    public Boolean limit(String limit, Integer window_time) {
         try {
-            String key = String.valueOf(System.currentTimeMillis() / 1000);
+            String key = String.valueOf(System.currentTimeMillis() / window_time);
             List<String> lis = new ArrayList<>();
             lis.add(key);
             // key current time
