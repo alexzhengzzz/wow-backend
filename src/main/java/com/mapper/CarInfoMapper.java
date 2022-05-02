@@ -12,5 +12,5 @@ import java.util.List;
 //@Repository
 public interface CarInfoMapper extends BaseMapper<VehicleInfo> {
     @Autowired
-    public List<VehicleInfo> getCarList();
+    List<VehicleInfo> getCarList();
 }

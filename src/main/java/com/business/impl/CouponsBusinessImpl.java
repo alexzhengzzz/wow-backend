@@ -1,9 +1,11 @@
 package com.business.impl;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.json.JSON;
 import com.annotation.PermissionChecker;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.bean.CouponCacheBuilder;
 import com.business.CorporationBusiness;
 import com.business.CouponsBatchBussiness;
 import com.business.CouponsBusiness;
@@ -20,7 +22,10 @@ import com.enums.Role;
 import com.exception.ErrorCode;
 import com.exception.GeneralException;
 import com.exception.GeneralExceptionFactory;
+import com.google.gson.Gson;
+import com.interceptor.RedisLimit;
 import com.service.*;
+import com.utils.cache.IGlobalCache;
 import com.utils.cache.TypeInfo;
 import com.vo.CouponVO;
 import com.vo.CouponsBatchVO;
@@ -28,6 +33,9 @@ import com.vo.SingleCouponVO;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -35,10 +43,13 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+
 
 @Component
 @Slf4j
@@ -57,6 +68,18 @@ public class CouponsBusinessImpl implements CouponsBusiness {
     private CouponsBatchBussiness couponsBatchBussiness;
     @Autowired
     private TransactionTemplate transactionManager;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+    @Resource
+    private DefaultRedisScript<String> redisScript2;
+    @Autowired
+    private IGlobalCache globalCache;
+    @Autowired
+    private CouponCacheBuilder couponCacheBuilder;
+
+    private static final String COUPON_CACHE = "coupon:stock:";
+    private static final String IsMemberKey = "userid:batchid:ismembercheck";
+
     @Override
     @Transactional
     public List<Coupons> issueCouponsToCorporation(@NotNull CouponCorpDTO couponCorpDTO) {
@@ -108,25 +131,61 @@ public class CouponsBusinessImpl implements CouponsBusiness {
         return coupons;
     }
 
+    @Autowired
+    private KafkaTemplate<String,Object> kafkaTemplate;
+
+    private static final String TOPIC_NAME = "coupon.issued";
+
+    @Autowired
+    private RedisLimit redisLimit;
+
     @Override
-    @Transactional
     public Coupons issueCouponsToIndividual(CouponIndividualDTO couponIndividualDTO) {
-        // check userId and role type
+        // 1. check params
         checkParameters(couponIndividualDTO);
-        Coupons coupons = null;
-        coupons = transactionManager.execute(status -> {
-            CouponsBatch couponsBatch = couponsBatchService.getOne(new LambdaQueryWrapper<CouponsBatch>().eq(CouponsBatch::getBatchId, couponIndividualDTO.getBatchId()).last("for update"));
-            if (couponsBatch.getStock() == null || couponsBatch.getStock() <= 0) {
-                throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "no more coupons");
-            }
-            couponsBatch.setStock(couponsBatch.getStock() - 1);
-            couponsBatchService.updateById(couponsBatch);
-            Coupons co  = setNewIndividualCoupon(couponIndividualDTO);
-            couponsService.save(co);
-            return co;
+        // 2. redis limit rate
+        if (!redisLimit.limit()) {
+            throw GeneralExceptionFactory.create(ErrorCode.RATE_LIMIT_ERROR, "too many requests");
+        }
+        Long batchId = couponIndividualDTO.getBatchId();
+        // 3. check duplicate
+        checkIfDuplicate(couponIndividualDTO.getUserId(), batchId);
+        // 4. stock = stock - 1 if stock > 0 in redis
+        String key = COUPON_CACHE + batchId.toString();
+        List<String> keys = new ArrayList<>();
+        keys.add(key);
+        String res = stringRedisTemplate.execute(redisScript2, keys, String.valueOf(1));
+        if (res.equals("-500")){
+            log.warn("no such key\n" + res);
+            throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "please such coupon");
+        } else if (res.equals("-100")) {
+            // cache aside pattern
+            couponsBatchService.update(new LambdaUpdateWrapper<CouponsBatch>().set(CouponsBatch::getStock, 0).eq(CouponsBatch::getBatchId, batchId));
+            globalCache.del(key);
+            throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "no more coupons");
+        }
+        log.warn("剩余库存:" + res);
+        Coupons co  = setNewIndividualCoupon(couponIndividualDTO);
+        kafkaTemplate.send(TOPIC_NAME,new Gson().toJson(co)).addCallback(success->{
+//            String topic = success.getRecordMetadata().topic();
+//            int partition = success.getRecordMetadata().partition();
+//            long offset = success.getRecordMetadata().offset();
+//            log.info("发送成功:topic="+topic+", partition="+partition+",offset ="+offset + co.toString());
+        },failure->{
+            log.warn("发送失败:"+failure.getMessage());
         });
-        return coupons;
+        return co;
     }
+
+    private void checkIfDuplicate(Long userId, Long batchId) {
+        String curMemberKey =  userId+":"+batchId;
+        if (!globalCache.sGet(IsMemberKey).contains(curMemberKey)){
+            globalCache.sSet(IsMemberKey, curMemberKey);
+        } else {
+            throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "one person can only have one coupon");
+        }
+    }
+
 
     public void checkParameters(CouponIndividualDTO couponIndividualDTO) {
         User user = userService.getById(couponIndividualDTO.getUserId());

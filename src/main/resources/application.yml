@@ -1,4 +1,8 @@
-# DataSource Config
+logging:
+  level:
+    root: warn
+  file:
+    path: ./logs/application.log
 spring:
   profiles:
     active: default
@@ -23,6 +27,39 @@ spring:
         max-wait: -1
         max-idle: 8
         min-idle: 0
+  kafka:
+    bootstrap-servers: 67.207.80.139:9093
+    producer:
+      # 消息重发的次数。
+      retries: 3
+      retry-backoff-ms: 1000
+      #一个批次可以使用的内存大小
+      batch-size: 16384
+      # 设置生产者内存缓冲区的大小。
+      buffer-memory: 33554432
+      # 键的序列化方式
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      # 值的序列化方式
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all
+    consumer:
+      # 自动提交的时间间隔 在spring boot 2.X 版本是值的类型为Duration 需要符合特定的格式，如1S,1M,2H,5D
+#      auto-commit-interval: 1S
+      # 该属性指定了消费者在读取一个没有偏移量的分区或者偏移量无效的情况下该作何处理：
+#      auto-offset-reset: earliest
+      # 是否自动提交偏移量，默认值是true,为了避免出现重复数据和数据丢失，可以把它设置为false,然后手动提交偏移量
+      enable-auto-commit: false
+      # 键的反序列化方式
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      # 值的反序列化方式
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    listener:
+      # 手工ack，调用ack后立刻提交offset
+      ack-mode: manual_immediate
+      # 容器运行的线程数
+      concurrency: 4
+      # 避免出现主题未创建报错
+      missing-topics-fatal: false
 #  rabbitmq:
 #    host: 67.207.80.139
 #    #  rabbitmq主服务端口为5672,管理页面端口为15672
@@ -51,8 +88,8 @@ jwt:
   secret: "qwertyuiop7418520" #密钥
   expireTime: 60 #token有效时间 (分钟) 建议一小时以上
 mybatis-plus:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations: classpath:mapper/*.xml
 
 ---
