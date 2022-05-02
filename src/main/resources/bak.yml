@@ -3,7 +3,7 @@
 #    #  rabbitmq主服务端口为5672,管理页面端口为15672
 #    port: 5672
 #    username: admin
-#    password: 123456a
+#    password: ****
 #    #   设置回调函数
 #    #   confirm-type: 默认为None即不启用，
 #    #    correlated: 发布消息成功或失败到达交换机时触发回调方法
