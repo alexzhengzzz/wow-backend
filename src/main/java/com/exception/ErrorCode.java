@@ -26,6 +26,7 @@ public enum ErrorCode {
     DB_QUERY_EXISTED_ERROR(111001010L, "query info not existed error {0}", ErrorCodeType.GENERAL),
     PERMISSION_DENIED(111001011L, "permission denied {0}", ErrorCodeType.GENERAL),
     ILLEGAL_DATA(111001012L, "illegal data {0}", ErrorCodeType.GENERAL),
+    RATE_LIMIT_ERROR(111001013L, "{0}",ErrorCodeType.GENERAL),
 
     // USER 111 002 001
     USER_NOT_FOUND(111002001L, "user not found. details: --> {0}", ErrorCodeType.USER),
@@ -34,6 +35,7 @@ public enum ErrorCode {
     USER_TOKEN_EXPIRED(111002004L, "TOKEN EXPIRED. details: --> {0}", ErrorCodeType.USER),
     USER_INFO_EXISTED(111002005L, "you may use other id or name. details: --> {0}", ErrorCodeType.USER),
     USER_INFO_ILLEGAL(111002006L, "you may set null input", ErrorCodeType.USER);
+
 
     long code;
     String message;

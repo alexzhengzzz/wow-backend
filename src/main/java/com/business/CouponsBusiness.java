@@ -16,7 +16,6 @@ public interface CouponsBusiness {
     @Transactional
     List<Coupons> issueCouponsToCorporation(@NotNull CouponCorpDTO couponCorpDTO);
 
-    @Transactional
     Coupons issueCouponsToIndividual(CouponIndividualDTO couponIndividualDTO);
 
 
@@ -24,4 +23,7 @@ public interface CouponsBusiness {
 
     @Transactional
     void deleteCouponByCouponId(Long couponId);
+
+
+    void invalidateCouponById(Long couponId);
 }

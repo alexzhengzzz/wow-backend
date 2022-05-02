@@ -1,6 +1,6 @@
 package com.mapper;
 
-import com.entity.CouponCust;
+import com.entity.Vehicle;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -9,8 +9,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author zmh
- * @since 2022-04-29
+ * @since 2022-05-02
  */
-public interface CouponCustMapper extends BaseMapper<CouponCust> {
+public interface VehiclesMapper extends BaseMapper<Vehicle> {
 
 }

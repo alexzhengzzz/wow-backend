@@ -1,0 +1,15 @@
+#  rabbitmq:
+#    host: 67.207.80.139
+#    #  rabbitmq主服务端口为5672,管理页面端口为15672
+#    port: 5672
+#    username: admin
+#    password: ****
+#    #   设置回调函数
+#    #   confirm-type: 默认为None即不启用，
+#    #    correlated: 发布消息成功或失败到达交换机时触发回调方法
+#    #    simple: 具有两个功能
+#    #    1.与correlated相同
+#    #    2.可以使用rabbittemplate调用waitforconfirm或waitForConfirmsOrDie
+#    #     等待broker节点返回发送结果，根据结果来判定下一步逻辑
+#    publisher-confirm-type: correlated
+#    publisher-returns: true

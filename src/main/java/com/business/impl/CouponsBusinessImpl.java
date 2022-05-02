@@ -4,13 +4,13 @@ import cn.hutool.core.date.DateUtil;
 import com.annotation.PermissionChecker;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.bean.CouponCacheBuilder;
 import com.business.CorporationBusiness;
 import com.business.CouponsBatchBussiness;
 import com.business.CouponsBusiness;
 import com.dto.CouponCorpDTO;
 import com.dto.CouponIndividualDTO;
 
-import com.entity.CouponCust;
 import com.entity.Coupons;
 import com.entity.User;
 
@@ -20,27 +20,38 @@ import com.entity.*;
 import com.enums.Role;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
+import com.google.gson.Gson;
+import com.interceptor.CachePrepareServiceImpl;
+import com.interceptor.impl.RedisRateLimitImpl;
 import com.service.*;
+import com.utils.cache.IGlobalCache;
 import com.utils.cache.TypeInfo;
 import com.vo.CouponVO;
+import com.vo.CouponsBatchVO;
+import com.vo.SingleCouponVO;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+
 
 @Component
 @Slf4j
 public class CouponsBusinessImpl implements CouponsBusiness {
     @Autowired
     private IUserService userService;
-    @Autowired
-    private ICouponCustService couponCustService;
     @Autowired
     private ICorporationService corporationService;
     @Autowired
@@ -51,6 +62,29 @@ public class CouponsBusinessImpl implements CouponsBusiness {
     private ICouponsService couponsService;
     @Autowired
     private CouponsBatchBussiness couponsBatchBussiness;
+    @Autowired
+    private TransactionTemplate transactionManager;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+    @Resource
+    private DefaultRedisScript<String> redisScript2;
+    @Autowired
+    private IGlobalCache globalCache;
+    @Autowired
+    private CouponCacheBuilder couponCacheBuilder;
+    @Autowired
+    private KafkaTemplate<String,Object> kafkaTemplate;
+    @Autowired
+    private CachePrepareServiceImpl cachePrepareService;
+    @Autowired
+    private RedisRateLimitImpl redisRateLimitImpl;
+    private static final String TOPIC_NAME = "coupon.issued";
+    private static final String COUPON_CACHE = "coupon:stock:";
+    private static final String ISMEMBERKEY = "userid:batchid:ismembercheck";
+    private static final String LIMIT = "1000";
+    private static final Integer WINDOW_TIME = 1000; // 1000 MS
+    private static final Integer TOTAL_SEC_PER_DAY = 86400;
+
     @Override
     @Transactional
     public List<Coupons> issueCouponsToCorporation(@NotNull CouponCorpDTO couponCorpDTO) {
@@ -70,7 +104,7 @@ public class CouponsBusinessImpl implements CouponsBusiness {
             Coupons co = couponsService.getOne(new LambdaQueryWrapper<Coupons>().eq(Coupons::getUserId, user.getId()));
             // create new coupon
             if (co == null) {
-                Coupons coupons = setNewCoupon(couponCorpDTO, user, batchId);
+                Coupons coupons = setNewCoupon(user, batchId);
                 couponsService.save(coupons);
                 res.add(coupons);
             } else {
@@ -83,48 +117,114 @@ public class CouponsBusinessImpl implements CouponsBusiness {
         return res;
     }
 
-    private CouponsBatchDTO setCouponsBatchDTO(CouponCorpDTO couponCorpDTO) {
-        CouponsBatchDTO couponsBatchDTO = new CouponsBatchDTO();
-        couponsBatchDTO.setDiscount(couponCorpDTO.getDiscount());
-        couponsBatchDTO.setCouponType(TypeInfo.getCouponCorporationType());
-        couponsBatchDTO.setStock(null);
-        couponsBatchDTO.setDetails(couponCorpDTO.getDetails());
-        return couponsBatchDTO;
+    @Override
+    public Coupons issueCouponsToIndividual(CouponIndividualDTO couponIndividualDTO) {
+        // check params, rate, duplicate
+        checkParameters(couponIndividualDTO);
+        if (!redisRateLimitImpl.limit(LIMIT, WINDOW_TIME)) {
+            throw GeneralExceptionFactory.create(ErrorCode.RATE_LIMIT_ERROR, "too many requests");
+        }
+        Long batchId = couponIndividualDTO.getBatchId();
+//        checkIfDuplicateUserAndBatchId(couponIndividualDTO.getUserId(), batchId);
+
+        // stock = stock - 1 if stock > 0 in redis
+        String key = COUPON_CACHE + batchId.toString();
+        String res = stringRedisTemplate.execute(redisScript2, Arrays.asList(key), String.valueOf(1));
+        if (res.equals("-500")){
+            throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "please such coupon");
+        } else if (res.equals("-100")) {
+            couponsBatchService.update(new LambdaUpdateWrapper<CouponsBatch>().set(CouponsBatch::getStock, 0).eq(CouponsBatch::getBatchId, batchId));
+            globalCache.del(key);
+            throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "no more coupons");
+        }
+
+        Coupons co  = setNewIndividualCoupon(couponIndividualDTO);
+        sendToMQ(co);
+        return co;
     }
 
-    private Coupons setNewCoupon(CouponCorpDTO couponCorpDTO, User user, Long batchId) {
-        Coupons coupons = new Coupons();
-        coupons.setUserId(user.getId());
-        coupons.setValidTo(null);
-        coupons.setValidFrom(null);
-        coupons.setBatchId(batchId);
-        coupons.setIsUsed(false);
-        return coupons;
+
+    @Override
+    public CouponVO getValidCouponsByUserId(Long userId) {
+        // check userId role type
+        User user = userService.getById(userId);
+        if (user == null) {
+            throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "no such userId");
+        }
+        if (user.getRoleType() != TypeInfo.getIndividualRoleType() && user.getRoleType() != TypeInfo.getCorporationRoleType()) {
+            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_ERROR, "no available user");
+        }
+        CouponVO couponVO = new CouponVO();
+        List<SingleCouponVO> res = new ArrayList<>();
+        List<Coupons> couponsList = couponsService.list(new LambdaQueryWrapper<Coupons>().eq(Coupons::getUserId, userId).eq(Coupons::getIsUsed, false));
+        couponVO.setCouponsList(res);
+        if (couponsList == null || couponsList.size() == 0) {
+            return couponVO;
+        }
+        couponsList.forEach(co -> {
+            System.out.println(co);
+            if (user.getRoleType() == TypeInfo.getIndividualRoleType()) {
+                if (!Objects.isNull(co.getValidFrom()) && !Objects.isNull(co.getValidTo()) &&  co.getValidTo().after(new Timestamp(System.currentTimeMillis()))) {
+                    CouponsBatch couponsBatch = couponsBatchService.getById(co.getBatchId());
+                    SingleCouponVO single = getSingleCouponVO(couponsBatch, co);
+                    res.add(single);
+                }
+            } else if (user.getRoleType() == TypeInfo.getCorporationRoleType()) {
+                CouponsBatch couponsBatch = couponsBatchService.getById(co.getBatchId());
+                SingleCouponVO single = getSingleCouponVO(couponsBatch, co);
+                res.add(single);
+            }
+        });
+        return couponVO;
     }
 
     @Override
-    @Transactional
-    public Coupons issueCouponsToIndividual(CouponIndividualDTO couponIndividualDTO) {
-        // check userId role type
-        checkParameters(couponIndividualDTO);
-        CouponsBatch couponsBatch = couponsBatchService.getById(couponIndividualDTO.getBatchId());
-        if (couponsBatch.getStock() == null || couponsBatch.getStock() <= 0) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "no more coupons");
-        }
-        Coupons coupons = setNewIndividualCoupon(couponIndividualDTO);
-        Boolean isSuccess = couponsService.save(coupons);
+    @PermissionChecker(requiredRole = Role.ADMIN)
+    public void deleteCouponByCouponId(Long couponId) {
+        Boolean isSuccess = couponsService.removeById(couponId);
         if (!isSuccess) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR);
+            throw GeneralExceptionFactory.create(ErrorCode.DB_DELETE_ERROR, "delete coupon failed");
         }
-        couponsBatch.setStock(couponsBatch.getStock() - 1);
-        isSuccess = couponsBatchService.updateById(couponsBatch);
-        if (!isSuccess) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR);
-        }
-        return coupons;
     }
 
-    private void checkParameters(CouponIndividualDTO couponIndividualDTO) {
+    @Override
+    public void invalidateCouponById(Long couponId) {
+        Coupons coupons = couponsService.getById(couponId);
+        if (coupons == null) {
+            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_ERROR, "no such coupon");
+        }
+        coupons.setIsUsed(true);
+        Boolean isSuccess = couponsService.updateById(coupons);
+        if (!isSuccess) {
+            throw GeneralExceptionFactory.create(ErrorCode.DB_UPDATE_ERROR, "invalidate coupon failed");
+        }
+    }
+
+    private void checkIfDuplicateUserAndBatchId(Long userId, Long batchId) {
+        String curMemberKey =  userId+":"+batchId;
+        if (!globalCache.sGet(ISMEMBERKEY).contains(curMemberKey)){
+            globalCache.sSetAndTime(ISMEMBERKEY, TOTAL_SEC_PER_DAY, curMemberKey);
+        } else {
+            throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "one person can only have one coupon");
+        }
+    }
+
+    private void sendToMQ(Coupons co) {
+        kafkaTemplate.send(TOPIC_NAME,new Gson().toJson(co)).addCallback(success->{
+//            String topic = success.getRecordMetadata().topic();
+//            int partition = success.getRecordMetadata().partition();
+//            long offset = success.getRecordMetadata().offset();
+//            log.info("发送成功:topic="+topic+", partition="+partition+",offset ="+offset + co.toString());
+        },failure->{
+            log.warn("发送失败:"+failure.getMessage());
+        });
+    }
+
+    public void checkParameters(CouponIndividualDTO couponIndividualDTO) {
+        // check if has batchId
+        if (!cachePrepareService.getCouponsBatchBloomFilter().mightContain(couponIndividualDTO.getBatchId())) {
+            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_ERROR, "no such coupons batch");
+        }
         User user = userService.getById(couponIndividualDTO.getUserId());
         if (user == null) {
             throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "no such individual user");
@@ -143,7 +243,39 @@ public class CouponsBusinessImpl implements CouponsBusiness {
         }
     }
 
-    private Coupons setNewIndividualCoupon(CouponIndividualDTO couponIndividualDTO) {
+    private CouponsBatchDTO setCouponsBatchDTO(CouponCorpDTO couponCorpDTO) {
+        CouponsBatchDTO couponsBatchDTO = new CouponsBatchDTO();
+        couponsBatchDTO.setDiscount(couponCorpDTO.getDiscount());
+        couponsBatchDTO.setCouponType(TypeInfo.getCouponCorporationType());
+        couponsBatchDTO.setStock(0);
+        couponsBatchDTO.setDetails(couponCorpDTO.getDetails());
+        return couponsBatchDTO;
+    }
+
+    private Coupons setNewCoupon(User user, Long batchId) {
+        Coupons coupons = new Coupons();
+        coupons.setUserId(user.getId());
+        coupons.setValidTo(null);
+        coupons.setValidFrom(null);
+        coupons.setBatchId(batchId);
+        coupons.setIsUsed(false);
+        return coupons;
+    }
+
+    private SingleCouponVO getSingleCouponVO(CouponsBatch couponsBatch, Coupons co) {
+        SingleCouponVO single = new SingleCouponVO();
+        CouponsBatchVO couponsBatchVO = new CouponsBatchVO();
+        couponsBatchVO.setBatchId(couponsBatch.getBatchId());
+        couponsBatchVO.setDetails(couponsBatch.getDetails());
+        couponsBatchVO.setCouponType(couponsBatch.getCouponType());
+        couponsBatchVO.setDiscount(couponsBatch.getDiscount());
+        couponsBatchVO.setStock(couponsBatch.getStock());
+        single.setCouponsBatchVO(couponsBatchVO);
+        single.setCoupons(co);
+        return single;
+    }
+
+    public Coupons setNewIndividualCoupon(CouponIndividualDTO couponIndividualDTO) {
         Coupons coupons = new Coupons();
         coupons.setUserId(couponIndividualDTO.getUserId());
         coupons.setBatchId(couponIndividualDTO.getBatchId());
@@ -152,49 +284,5 @@ public class CouponsBusinessImpl implements CouponsBusiness {
         coupons.setValidFrom(couponIndividualDTO.getValidFrom());
         return coupons;
     }
-
-    @Override
-    public CouponVO getValidCouponsByUserId(Long userId) {
-        // check userId role type
-        User user = userService.getById(userId);
-        if (user == null) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "no such userId");
-        }
-        if (user.getRoleType() != TypeInfo.getIndividualRoleType() && user.getRoleType() != TypeInfo.getCorporationRoleType()) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_ERROR);
-        }
-        CouponVO couponVO = new CouponVO();
-        List<Coupons> couponList = new ArrayList<>();
-        couponVO.setCouponsList(couponList);
-        List<CouponCust> couponCustList = couponCustService.list(new LambdaQueryWrapper<CouponCust>().eq(CouponCust::getCustId, userId));
-        if (couponCustList == null || couponCustList.size() == 0) {
-            return couponVO;
-        }
-        couponCustList.forEach(couponCust -> {
-            Coupons coupons = couponsService.getById(couponCust.getCouponId());
-            if (user.getRoleType() == TypeInfo.getIndividualRoleType()) {
-                if (!Objects.isNull(coupons.getValidFrom()) && !Objects.isNull(coupons.getValidTo()) &&  coupons.getValidTo().getTime() > System.currentTimeMillis()) {
-                    couponVO.getCouponsList().add(coupons);
-                }
-            } else if (user.getRoleType() == TypeInfo.getCorporationRoleType()) {
-                couponVO.getCouponsList().add(coupons);
-            }
-        });
-        return couponVO;
-    }
-
-    @Override
-    @PermissionChecker(requiredRole = Role.ADMIN)
-    public void deleteCouponByCouponId(Long couponId) {
-        Boolean isSuccess = couponsService.removeById(couponId);
-        if (!isSuccess) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_DELETE_ERROR, "delete coupon failed");
-        }
-        isSuccess = couponCustService.remove(new LambdaQueryWrapper<CouponCust>().eq(CouponCust::getCouponId, couponId));
-        if (!isSuccess) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_DELETE_ERROR);
-        }
-    }
-
 
 }

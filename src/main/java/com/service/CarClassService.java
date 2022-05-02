@@ -1,6 +1,6 @@
 package com.service;
 
-import com.entity.CouponCust;
+import com.entity.CarClass;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -9,8 +9,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * </p>
  *
  * @author zmh
- * @since 2022-04-29
+ * @since 2022-05-02
  */
-public interface ICouponCustService extends IService<CouponCust> {
+public interface CarClassService extends IService<CarClass> {
 
 }
