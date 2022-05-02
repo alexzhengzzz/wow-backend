@@ -9,14 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/car")
-@Api("Car")
-public class CarController{
+@RequestMapping("/api/carMaintain")
+@Api("CarMaintain")
+public class CarMaintainController {
 
     @Autowired
     CarBusiness carBusiness;
 
-    @ApiOperation("get carInfo by ID")
+    @ApiOperation("未完成")
     @GetMapping
     public Response<CarVO> get(){
         CarVO carVO = carBusiness.getInfo();

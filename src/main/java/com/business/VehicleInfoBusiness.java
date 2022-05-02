@@ -1,9 +1,9 @@
 package com.business;
 
-import com.vo.VehicleInfoVO;
+import com.vo.CarInfoVO;
 
 import java.util.List;
 
 public interface VehicleInfoBusiness{
-    List<VehicleInfoVO> getCarList();
+    public List<CarInfoVO> getCarList();
 }

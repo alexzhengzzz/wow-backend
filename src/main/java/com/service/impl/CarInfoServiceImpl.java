@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.dto.VehicleInfoDTO;
 import com.mapper.CarInfoMapper;
 import com.service.ICarInfoService;
-import com.utils.cache.CarInfoUtil;
-import com.vo.VehicleInfoVO;
+import com.service.util.CarInfoUtil;
+import com.vo.CarInfoVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +16,12 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
-public class VehicleInfoServiceImpl implements ICarInfoService{
+public class CarInfoServiceImpl implements ICarInfoService{
     @Autowired
     private CarInfoMapper carInfoMapper;
 
     @Override
-    public List<VehicleInfoVO> getCarList(){
+    public List<CarInfoVO> getCarList(){
         return CarInfoUtil.transferList(carInfoMapper.getCarList());
     }
 

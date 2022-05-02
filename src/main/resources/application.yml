@@ -1,8 +1,4 @@
-logging:
-  level:
-    root: info
-#  file:
-#    path: ./logs/application.log
+# DataSource Config
 spring:
   profiles:
     active: dev
@@ -10,7 +6,7 @@ spring:
     name: wow
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/wow?characterEncoding=utf-8&userSSL=false
+    url: jdbc:mysql://67.207.80.139:3306/wow?characterEncoding=utf-8&userSSL=false
     username: root
     password: 123456a
   redis:
