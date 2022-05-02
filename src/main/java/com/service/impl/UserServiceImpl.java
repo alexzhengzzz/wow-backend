@@ -1,6 +1,9 @@
 package com.service.impl;
 
+import com.entity.Office;
 import com.entity.User;
+import com.exception.ErrorCode;
+import com.exception.GeneralExceptionFactory;
 import com.mapper.UserMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.service.IUserService;
@@ -16,4 +19,11 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
+    public User getUserById(Long id) {
+        User user = this.baseMapper.selectById(id);
+        if (user == null) {
+            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_ERROR, "User id not found");
+        }
+        return user;
+    }
 }
