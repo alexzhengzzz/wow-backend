@@ -81,7 +81,7 @@ public class CouponsBusinessImpl implements CouponsBusiness {
     private static final String TOPIC_NAME = "coupon.issued";
     private static final String COUPON_CACHE = "coupon:stock:";
     private static final String ISMEMBERKEY = "userid:batchid:ismembercheck";
-    private static final String LIMIT = "10";
+    private static final String LIMIT = "1000";
     private static final Integer WINDOW_TIME = 1000; // 1000 MS
     private static final Integer TOTAL_SEC_PER_DAY = 86400;
 
@@ -125,7 +125,7 @@ public class CouponsBusinessImpl implements CouponsBusiness {
             throw GeneralExceptionFactory.create(ErrorCode.RATE_LIMIT_ERROR, "too many requests");
         }
         Long batchId = couponIndividualDTO.getBatchId();
-        checkIfDuplicateUserAndBatchId(couponIndividualDTO.getUserId(), batchId);
+//        checkIfDuplicateUserAndBatchId(couponIndividualDTO.getUserId(), batchId);
 
         // stock = stock - 1 if stock > 0 in redis
         String key = COUPON_CACHE + batchId.toString();

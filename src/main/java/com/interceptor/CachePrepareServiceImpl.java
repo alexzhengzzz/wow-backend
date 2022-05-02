@@ -3,17 +3,12 @@ package com.interceptor;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.bean.CouponCacheBuilder;
 import com.entity.CouponsBatch;
-import com.google.common.base.Charsets;
 import com.google.common.hash.BloomFilter;
-import com.google.common.hash.Funnel;
 import com.google.common.hash.Funnels;
-import com.google.common.hash.PrimitiveSink;
 import com.service.impl.CouponsBatchServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
