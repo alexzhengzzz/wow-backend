@@ -12,7 +12,8 @@ public class GeneralExceptionFactory {
     public static GeneralException create(ErrorCode code, Object... args) {
         return create(code, null, args);
     }
-
+    private GeneralExceptionFactory() {
+    }
     public static GeneralException create(ErrorCode code, Throwable t, Object... args) {
         GeneralException exception = new GeneralException(code, t);
         String message = code.message;

@@ -11,8 +11,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.List;
+
 @Component
 @Slf4j
 public class CachePrepareServiceImpl implements InitializingBean {
@@ -35,8 +35,8 @@ public class CachePrepareServiceImpl implements InitializingBean {
         return couponsBatchBloomFilter;
     }
 
-    private List<CouponsBatch> addCouponBatchToCache(){
-        List<CouponsBatch> couponsBatchList = couponsBatchService.list(new LambdaQueryWrapper<CouponsBatch>().ge(CouponsBatch::getStock,0));
+    private List<CouponsBatch> addCouponBatchToCache() {
+        List<CouponsBatch> couponsBatchList = couponsBatchService.list(new LambdaQueryWrapper<CouponsBatch>().ge(CouponsBatch::getStock, 0));
         for (CouponsBatch couponsBatch : couponsBatchList) {
             couponCacheBuilder.prepare(couponsBatch.getBatchId(), couponsBatch.getStock());
         }

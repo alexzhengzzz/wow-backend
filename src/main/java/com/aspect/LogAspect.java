@@ -1,6 +1,8 @@
 package com.aspect;
 
 import com.annotation.SystemLog;
+import com.exception.ErrorCode;
+import com.exception.GeneralExceptionFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -18,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 public class LogAspect {
     @Pointcut("@annotation(com.annotation.SystemLog)")
     public void pt(){
-
+        //joinPoint for around
     }
 
     @Around("pt()")
@@ -27,7 +29,7 @@ public class LogAspect {
         try {
             handleBefore(joinPoint);
             result = joinPoint.proceed();
-            handleAfter(joinPoint, result);
+            handleAfter(result);
         } finally {
             log.info("------------------end------------------" + System.lineSeparator());
         }
@@ -35,6 +37,9 @@ public class LogAspect {
     }
     private void handleBefore(ProceedingJoinPoint joinPoint) {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attributes == null) {
+            throw GeneralExceptionFactory.create(ErrorCode.UNKNOWN_ERROR, "bad request");
+        }
         HttpServletRequest request = attributes.getRequest();
         SystemLog systemLog = getSystemLog(joinPoint);
         log.info("------------------start------------------");
@@ -48,11 +53,10 @@ public class LogAspect {
 
     private SystemLog getSystemLog(ProceedingJoinPoint joinPoint) {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-        SystemLog systemLog = methodSignature.getMethod().getAnnotation(SystemLog.class);
-        return systemLog;
+        return methodSignature.getMethod().getAnnotation(SystemLog.class);
     }
 
-    private void handleAfter(ProceedingJoinPoint joinPoint, Object result) {
+    private void handleAfter(Object result) {
         log.info("Response: {}", result);
     }
 

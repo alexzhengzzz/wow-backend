@@ -26,6 +26,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
+/**
+ * @author alexzhengzzz
+ * @create 2019-08-12 11:24:00
+ * @description login business
+ */
 @Component
 @Slf4j
 public class LoginBusinessImpl implements LoginBusiness {
@@ -61,7 +66,6 @@ public class LoginBusinessImpl implements LoginBusiness {
         }
         // 3. password check
         String loginMD5pass = encryptPass(loginDTO.getPassword());
-//        log.debug(loginMD5pass);
         if (!user.getPassword().equals(loginMD5pass)) {
             throw GeneralExceptionFactory.create(ErrorCode.USER_PASSWORD_WRONG);
         }
@@ -79,15 +83,15 @@ public class LoginBusinessImpl implements LoginBusiness {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public UserVO register(RegisterDTO registerDTO) throws RuntimeException {
         // 1. check info
-        _checkUserInfo(registerDTO);
+        checkUserInfo(registerDTO);
         // 2. create new user
         User newUser = new User();
         setNewUser(newUser, registerDTO);
         boolean isSuccess = userService.save(newUser);
-        if (isSuccess != true) {
+        if (!isSuccess) {
             throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR);
         }
         Long userId = newUser.getId();
@@ -96,13 +100,13 @@ public class LoginBusinessImpl implements LoginBusiness {
         RegisterUserAddressDTO userAddressDTO = registerDTO.getUserAddress();
         UserAddress userAddress = getUserAddress(userAddressDTO, userId);
         isSuccess = userAddressService.save(userAddress);
-        if (isSuccess != true) {
+        if (!isSuccess) {
             throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR);
         }
 
         // 3. user role type: 0 admin 1: individual 2: corp
-        Character role_type = registerDTO.getRole_type();
-        switch (role_type) {
+        Character roleType = registerDTO.getRole_type();
+        switch (roleType) {
             case '0': {
                 break;
             }
@@ -112,13 +116,17 @@ public class LoginBusinessImpl implements LoginBusiness {
                 iIndividualService.save(in);
                 break;
             }
-            case '2': { // check corporation existed
+            // check corporation existed
+            case '2': {
                 RegisterCorporDTO registerCorporDTO = registerDTO.getCorporate();
-                Long corp_id = _checkAndGetCorpId(registerDTO);
-                newUser.setCompanyId(corp_id);
+                Long corpId = checkAndGetCorpId(registerDTO);
+                newUser.setCompanyId(corpId);
                 newUser.setEmployeeId(registerCorporDTO.getEmployeeId());
                 userService.updateById(newUser);
                 break;
+            }
+            default: {
+                throw GeneralExceptionFactory.create(ErrorCode.USER_INFO_ILLEGAL, "role type illegal");
             }
         }
         // get user token
@@ -131,8 +139,7 @@ public class LoginBusinessImpl implements LoginBusiness {
         LoginUser loginUser = getLoginUser(newUser);
         ServiceContextHolder.getServiceContext().setLoginUser(loginUser);
         iGlobalCache.set("login:" + newUser.getEmail(), loginUser);
-        UserVO userVo = getUserVO(newUser, token);
-        return userVo;
+        return getUserVO(newUser, token);
     }
 
     private Individual getIndividual(RegisterIndividualDTO registerIndividualDTO, Long userId) {
@@ -155,28 +162,28 @@ public class LoginBusinessImpl implements LoginBusiness {
         return userAddress;
     }
 
-    private Long _checkAndGetCorpId(RegisterDTO registerDTO) {
+    private Long checkAndGetCorpId(RegisterDTO registerDTO) {
         RegisterCorporDTO reco = registerDTO.getCorporate();
-        String employee_id = reco.getEmployeeId();
-        String company_name = reco.getCompanyName();
-        Corporation co = corporationService.getOne(new LambdaQueryWrapper<Corporation>().eq(Corporation::getCompanyName, company_name));
+        String employeeId = reco.getEmployeeId();
+        String companyName = reco.getCompanyName();
+        Corporation co = corporationService.getOne(new LambdaQueryWrapper<Corporation>().eq(Corporation::getCompanyName, companyName));
         if (co == null) {
             throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR, "corporation not found");
         }
-        Long corp_id = co.getCorpId();
-        CorpEmployee res = corpEmployeeService.getOne(new LambdaQueryWrapper<CorpEmployee>().eq(CorpEmployee::getEmployeeId, employee_id).eq(CorpEmployee::getCorpId, corp_id));
+        Long corpId = co.getCorpId();
+        CorpEmployee res = corpEmployeeService.getOne(new LambdaQueryWrapper<CorpEmployee>().eq(CorpEmployee::getEmployeeId, employeeId).eq(CorpEmployee::getCorpId, corpId));
         if (res == null) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR, "corp_id: " + corp_id + "employee_id: " + employee_id);
+            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR, "corpId: " + corpId + "employeeId: " + employeeId);
         }
-        User user = userService.getOne(new LambdaQueryWrapper<User>().eq(User::getCompanyId, corp_id).eq(User::getEmployeeId, employee_id));
+        User user = userService.getOne(new LambdaQueryWrapper<User>().eq(User::getCompanyId, corpId).eq(User::getEmployeeId, employeeId));
         if (user != null) {
             throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR, "existed companyId and employeeId");
         }
-        return corp_id;
+        return corpId;
 
     }
 
-    private void _checkUserInfo(RegisterDTO registerDTO) {
+    private void checkUserInfo(RegisterDTO registerDTO) {
         // 1. check field
         isIllegal(registerDTO);
         // 2. check user existed
@@ -192,8 +199,8 @@ public class LoginBusinessImpl implements LoginBusiness {
         String fname = registerDTO.getFname();
         String lname = registerDTO.getLname();
         String password = registerDTO.getPassword();
-        Integer role_type = Integer.valueOf(registerDTO.getRole_type());
-        if (StringUtils.isBlank(email) || StringUtils.isBlank(fname) || StringUtils.isBlank(lname) || StringUtils.isBlank(password) || (role_type > 2 && role_type < 0)) {
+        Integer roleType = Integer.valueOf(registerDTO.getRole_type());
+        if (StringUtils.isBlank(email) || StringUtils.isBlank(fname) || StringUtils.isBlank(lname) || StringUtils.isBlank(password) || (roleType > 2 && roleType < 0)) {
             throw GeneralExceptionFactory.create(ErrorCode.ILLEGAL_DATA);
         }
     }

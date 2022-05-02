@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.CarInfoMapper">
 
-    <resultMap id="BasicResultMap" type = "com.entity.CarInfo">
+    <resultMap id="BasicResultMap" type = "com.entity.info.CarInfo">
         <result column="name" property="name" jdbcType="VARCHAR"/>
         <result column="year" property="year" jdbcType="VARCHAR"/>
         <result column="seat_num" property="seat" jdbcType="INTEGER"/>

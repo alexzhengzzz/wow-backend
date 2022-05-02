@@ -5,7 +5,7 @@ import com.entity.Office;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author zmh

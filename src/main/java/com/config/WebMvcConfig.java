@@ -1,12 +1,8 @@
 package com.config;
 
 import com.interceptor.LoginInterceptor;
-import com.utils.cache.IGlobalCache;
-import com.utils.cache.impl.RedisCacheManager;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -28,7 +24,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(getLoginInterceptor())
                 .addPathPatterns("/api/**")
                 .excludePathPatterns("/swagger-ui/**")
-                .excludePathPatterns("/login")//开放登录路径
+                .excludePathPatterns("/login")
                 .excludePathPatterns("/register");
     }
 

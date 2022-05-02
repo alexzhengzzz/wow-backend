@@ -2,7 +2,6 @@ package com.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.entity.Coupons;
-import com.entity.User;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
 import com.mapper.CouponsMapper;

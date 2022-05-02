@@ -1,11 +1,11 @@
 package com.mapper;
 
-import com.entity.RentalOrder;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.entity.RentalOrder;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author com

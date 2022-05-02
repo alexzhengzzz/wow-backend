@@ -134,7 +134,7 @@ public class GlobalExceptionHandler implements HandlerExceptionResolver {
 
         @Override
         Map<String, Object> handleCurrentException(Exception ex) {
-            Map<String, Object> attributes = new HashMap<>();
+            Map<String, Object> attributes = new HashMap<>(2);
             GeneralException exception = (GeneralException)ex;
             attributes.put("code", exception.getCode().code);
             attributes.put("message", exception.getMessage());

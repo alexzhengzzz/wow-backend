@@ -1,15 +1,12 @@
 package com.business.impl;
 
-import com.annotation.PermissionChecker;
 import com.business.CouponsBatchBussiness;
 import com.dto.CouponsBatchDTO;
 import com.entity.CouponsBatch;
-import com.enums.Role;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
 import com.interceptor.CachePrepareServiceImpl;
 import com.service.ICouponsBatchService;
-import com.service.ICouponsService;
 import com.utils.cache.TypeInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -39,12 +36,13 @@ public class CouponsBatchBussinessImpl implements CouponsBatchBussiness {
             throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "couponsBatch is null or discount is null");
         }
         Integer stock = couponsBatchDTO.getStock();
-        if (couponsBatchDTO.getCouponType() == TypeInfo.getCouponIndividualType()) {
+        if (couponsBatchDTO.getCouponType().equals(TypeInfo.getCouponIndividualType())) {
             if (stock == null || stock <= 0) {
                 throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "invalid stock");
             }
-            cachePrepareService.getCouponsBatchBloomFilter().put(couponsBatch.getBatchId()); // add to bloom filter
-        } else if (couponsBatchDTO.getCouponType() == TypeInfo.getCouponCorporationType()) {
+            // add to bloom filter
+            cachePrepareService.getCouponsBatchBloomFilter().put(couponsBatch.getBatchId());
+        } else if (couponsBatchDTO.getCouponType().equals(TypeInfo.getCouponCorporationType())) {
             stock = null;
         }
         couponsBatch.setCouponType(couponsBatchDTO.getCouponType());

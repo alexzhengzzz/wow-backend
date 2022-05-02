@@ -3,6 +3,7 @@ package com.vo;
 import lombok.Data;
 
 import java.math.BigDecimal;
+
 @Data
 public class CouponsBatchVO {
     private Long batchId;

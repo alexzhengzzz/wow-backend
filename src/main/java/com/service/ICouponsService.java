@@ -1,12 +1,11 @@
 package com.service;
 
-import com.dto.CouponCorpDTO;
-import com.entity.Coupons;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.entity.Coupons;
 
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author zmh
