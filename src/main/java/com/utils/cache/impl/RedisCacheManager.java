@@ -323,8 +323,9 @@ public final class RedisCacheManager implements IGlobalCache {
     public boolean lSetAll(String key, List<Object> value, long time) {
         try {
             redisTemplate.opsForList().leftPushAll(key, value);
-            if (time > 0)
+            if (time > 0) {
                 expire(key, time);
+            }
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -374,8 +375,9 @@ public final class RedisCacheManager implements IGlobalCache {
     public boolean rSetAll(String key, List<Object> value, long time) {
         try {
             redisTemplate.opsForList().rightPushAll(key, value);
-            if (time > 0)
+            if (time > 0) {
                 expire(key, time);
+            }
             return true;
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,11 +1,11 @@
 package com.mapper;
 
-import com.entity.Individual;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.entity.Individual;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author zmh

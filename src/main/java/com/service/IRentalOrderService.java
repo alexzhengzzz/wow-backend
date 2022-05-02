@@ -1,12 +1,11 @@
 package com.service;
 
-import com.dto.OrderDTO;
-import com.entity.RentalOrder;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.entity.RentalOrder;
 
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author com

@@ -1,6 +1,5 @@
 package com.vo;
 
-import com.entity.Coupons;
 import lombok.Data;
 
 import java.util.List;

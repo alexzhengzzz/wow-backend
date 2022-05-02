@@ -1,17 +1,16 @@
 package com.service.impl;
 
-import com.entity.CarClass;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.entity.Vehicle;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
 import com.mapper.VehiclesMapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.service.VehicleService;
 import org.springframework.stereotype.Service;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author zmh

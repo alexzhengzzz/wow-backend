@@ -8,11 +8,10 @@ import lombok.Data;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author com
@@ -48,7 +47,6 @@ public class RentalOrder implements Serializable {
     private BigDecimal endOdometer;
 
     private BigDecimal dailyLimitOdometer;
-
 
 
 }

@@ -12,8 +12,8 @@ public class CarInfoVO {
     private String class_type;
     // image 如何处理
     private Long seat;
-   // private final String powerMode = "Gasoline";
-   // private final Double mpg = 1.0;
-   // private final String driveMode = "Manual";
+    // private final String powerMode = "Gasoline";
+    // private final Double mpg = 1.0;
+    // private final String driveMode = "Manual";
     private String pricePerDay;
 }

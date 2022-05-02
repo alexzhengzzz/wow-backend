@@ -1,13 +1,12 @@
 package com.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 
 import java.io.Serializable;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author zmh
@@ -61,10 +60,10 @@ public class Individual implements Serializable {
     @Override
     public String toString() {
         return "Individual{" +
-        "userId=" + userId +
-        ", driverLicence=" + driverLicence +
-        ", insuranceCompany=" + insuranceCompany +
-        ", insuranceNumber=" + insuranceNumber +
-        "}";
+                "userId=" + userId +
+                ", driverLicence=" + driverLicence +
+                ", insuranceCompany=" + insuranceCompany +
+                ", insuranceNumber=" + insuranceNumber +
+                "}";
     }
 }

@@ -3,11 +3,12 @@ package com.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author zmh
@@ -82,12 +83,12 @@ public class Vehicle implements Serializable {
     @Override
     public String toString() {
         return "YzmVehicles{" +
-        "vinId=" + vinId +
-        ", plateNumber=" + plateNumber +
-        ", classId=" + classId +
-        ", status=" + status +
-        ", officeId=" + officeId +
-        ", modelId=" + modelId +
-        "}";
+                "vinId=" + vinId +
+                ", plateNumber=" + plateNumber +
+                ", classId=" + classId +
+                ", status=" + status +
+                ", officeId=" + officeId +
+                ", modelId=" + modelId +
+                "}";
     }
 }

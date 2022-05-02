@@ -82,7 +82,8 @@ public class CouponsBusinessImpl implements CouponsBusiness {
     private static final String COUPON_CACHE = "coupon:stock:";
     private static final String ISMEMBERKEY = "userid:batchid:ismembercheck";
     private static final String LIMIT = "1000";
-    private static final Integer WINDOW_TIME = 1000; // 1000 MS
+    // 1000 MS
+    private static final Integer WINDOW_TIME = 1000;
     private static final Integer TOTAL_SEC_PER_DAY = 86400;
 
     @Override
@@ -95,7 +96,7 @@ public class CouponsBusinessImpl implements CouponsBusiness {
 
         // list all the employee/user of the corporation
         List<User> lis = corporationBusiness.getEmployeeList(couponCorpDTO.getCompanyName());
-        if (lis == null || lis.size() == 0) {
+        if (lis == null || lis.isEmpty()) {
             throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR);
         }
         List<Coupons> res = new ArrayList<>();
@@ -151,25 +152,24 @@ public class CouponsBusinessImpl implements CouponsBusiness {
         if (user == null) {
             throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "no such userId");
         }
-        if (user.getRoleType() != TypeInfo.getIndividualRoleType() && user.getRoleType() != TypeInfo.getCorporationRoleType()) {
+        if (user.getRoleType().equals(TypeInfo.getIndividualRoleType()) && user.getRoleType().equals(TypeInfo.getCorporationRoleType())) {
             throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_ERROR, "no available user");
         }
         CouponVO couponVO = new CouponVO();
         List<SingleCouponVO> res = new ArrayList<>();
         List<Coupons> couponsList = couponsService.list(new LambdaQueryWrapper<Coupons>().eq(Coupons::getUserId, userId).eq(Coupons::getIsUsed, false));
         couponVO.setCouponsList(res);
-        if (couponsList == null || couponsList.size() == 0) {
+        if (couponsList == null || couponsList.isEmpty()) {
             return couponVO;
         }
         couponsList.forEach(co -> {
-            System.out.println(co);
-            if (user.getRoleType() == TypeInfo.getIndividualRoleType()) {
+            if (user.getRoleType().equals(TypeInfo.getIndividualRoleType())) {
                 if (!Objects.isNull(co.getValidFrom()) && !Objects.isNull(co.getValidTo()) &&  co.getValidTo().after(new Timestamp(System.currentTimeMillis()))) {
                     CouponsBatch couponsBatch = couponsBatchService.getById(co.getBatchId());
                     SingleCouponVO single = getSingleCouponVO(couponsBatch, co);
                     res.add(single);
                 }
-            } else if (user.getRoleType() == TypeInfo.getCorporationRoleType()) {
+            } else if (user.getRoleType().equals(TypeInfo.getCorporationRoleType())) {
                 CouponsBatch couponsBatch = couponsBatchService.getById(co.getBatchId());
                 SingleCouponVO single = getSingleCouponVO(couponsBatch, co);
                 res.add(single);
@@ -215,9 +215,7 @@ public class CouponsBusinessImpl implements CouponsBusiness {
 //            int partition = success.getRecordMetadata().partition();
 //            long offset = success.getRecordMetadata().offset();
 //            log.info("发送成功:topic="+topic+", partition="+partition+",offset ="+offset + co.toString());
-        },failure->{
-            log.warn("发送失败:"+failure.getMessage());
-        });
+        },failure-> log.warn("发送失败:"+failure.getMessage()));
     }
 
     public void checkParameters(CouponIndividualDTO couponIndividualDTO) {
@@ -229,12 +227,14 @@ public class CouponsBusinessImpl implements CouponsBusiness {
         if (user == null) {
             throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "no such individual user");
         }
-        if (user.getRoleType() != TypeInfo.getIndividualRoleType()) {
+        if (user.getRoleType().equals(TypeInfo.getIndividualRoleType())) {
             throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "user id error");
         }
         Timestamp start = couponIndividualDTO.getValidFrom();
         Timestamp end = couponIndividualDTO.getValidTo();
-        if (start == null && end == null) return; // forever valid
+        if (start == null && end == null) {
+            return; // forever valid
+        }
         if (start == null || end == null) {
             throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "illegal time");
         }

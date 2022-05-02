@@ -8,9 +8,6 @@ import com.entity.*;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
 import com.service.IRentalOrderService;
-import com.service.IUserService;
-import com.service.OfficeService;
-import com.service.VehicleService;
 import com.service.impl.CouponsServiceImpl;
 import com.service.impl.OfficeServiceImpl;
 import com.service.impl.UserServiceImpl;
@@ -47,13 +44,12 @@ public class RentalOrderBusinessImpl implements RentalOrderBusiness {
         if (!isSuccess) {
             throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "save rental order failed");
         }
-        return;
     }
 
     @Override
     public List<OrderVO> getOrderByUserId(Long userId) {
         List<RentalOrder> orders = rentalOrderService.list(new LambdaQueryWrapper<RentalOrder>().eq(RentalOrder::getUserId, userId));
-        if (orders == null || orders.size() == 0) {
+        if (orders == null || orders.isEmpty()) {
             throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_ERROR, "no order found");
         }
         return convertToOrderVOs(orders);
@@ -95,8 +91,7 @@ public class RentalOrderBusinessImpl implements RentalOrderBusiness {
         Coupons coupons = orderDTO.getCouponId() == null ? null : couponsService.getById(orderDTO.getCouponId());
         Office pickLoc = officeService.getLocById(orderDTO.getPickLocId());
         Office dropLoc = officeService.getLocById(orderDTO.getPickLocId());
-        RentalOrder rentalOrder = setNewRentalOrder(orderDTO, vehicle, user, coupons, pickLoc, dropLoc);
-        return rentalOrder;
+        return setNewRentalOrder(orderDTO, vehicle, user, coupons, pickLoc, dropLoc);
     }
 
     private RentalOrder setNewRentalOrder(OrderDTO orderDTO, Vehicle vehicle, User user, Coupons coupons, Office pickLoc, Office dropLoc) {

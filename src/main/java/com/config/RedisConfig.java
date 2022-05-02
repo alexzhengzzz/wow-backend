@@ -4,50 +4,22 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
-import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import redis.clients.jedis.JedisPoolConfig;
 
 @EnableCaching
 @Configuration
 public class RedisConfig {
-
-//    @Value("${spring.redis.host}")
-//    private String host;
-//    @Value("${spring.redis.database}")
-//    private Integer database;
-//    @Value("${spring.redis.port}")
-//    private Integer port;
-//    @Value("${spring.redis.password}")
-//    private String pwd;
-
-//    @Primary
-//    @Bean(name = "jedisPoolConfig")
-//    @ConfigurationProperties(prefix = "spring.redis.pool")
-//    public JedisPoolConfig jedisPoolConfig() {
-//        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-//        jedisPoolConfig.setMaxWaitMillis(10000);
-//        return jedisPoolConfig;
-//    }
-//
 
     private Jackson2JsonRedisSerializer<Object> serializer() {
         // 使用Jackson2JsonRedisSerializer来序列化和反序列化redis的value值

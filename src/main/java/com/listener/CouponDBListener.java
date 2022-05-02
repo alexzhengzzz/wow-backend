@@ -14,21 +14,23 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
+
 public class CouponDBListener {
     @Autowired
     private ICouponsService couponService;
 
     private static final String TOPIC_NAME = "coupon.issued";
-    @KafkaListener(topics = {TOPIC_NAME},groupId = "zmh1")
+
+    @KafkaListener(topics = {TOPIC_NAME}, groupId = "zmh1")
     public void onMessage(ConsumerRecord<?, ?> record, Acknowledgment ack,
-                          @Header(KafkaHeaders.RECEIVED_TOPIC) String topic){
+                          @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
 //        log.debug("消费消息："+record.topic()+"----"+record.partition()+"----"+record.value());
         Boolean isSuccess = couponService.save(new Gson().fromJson((String) record.value(), Coupons.class));
-        if (isSuccess){
+        if (isSuccess) {
             ack.acknowledge();
         } else {
             ack.nack(1000);
-            log.warn("消费失败："+record.topic()+"----"+record.partition()+"----"+record.value());
+            log.warn("消费失败：" + record.topic() + "----" + record.partition() + "----" + record.value());
         }
 
     }

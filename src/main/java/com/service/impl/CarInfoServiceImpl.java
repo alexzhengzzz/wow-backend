@@ -11,17 +11,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
 @Service
-public class CarInfoServiceImpl implements ICarInfoService{
+public class CarInfoServiceImpl implements ICarInfoService {
     @Autowired
     private CarInfoMapper carInfoMapper;
 
     @Override
-    public List<CarInfoVO> getCarList(){
+    public List<CarInfoVO> getCarList() {
         return CarInfoUtil.transferList(carInfoMapper.getCarList());
     }
 
@@ -52,7 +53,7 @@ public class CarInfoServiceImpl implements ICarInfoService{
 
     @Override
     public Map<String, Object> getMap(Wrapper<VehicleInfoDTO> queryWrapper) {
-        return null;
+        return new HashMap<>();
     }
 
     @Override

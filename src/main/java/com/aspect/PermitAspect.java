@@ -1,7 +1,6 @@
 package com.aspect;
 
 import com.annotation.PermissionChecker;
-import com.annotation.SystemLog;
 import com.bean.LoginUser;
 import com.context.ServiceContext;
 import com.context.ServiceContextHolder;
@@ -24,7 +23,7 @@ import org.springframework.stereotype.Component;
 public class PermitAspect {
     @Pointcut("@annotation(com.annotation.PermissionChecker)")
     public void pt(){
-
+        // pointcut
     }
 
     @Around("pt()")
@@ -34,6 +33,7 @@ public class PermitAspect {
             handleBefore(joinPoint);
             result = joinPoint.proceed();
         } finally {
+           log.info("pt()");
         }
         return result;
     }
@@ -48,8 +48,7 @@ public class PermitAspect {
 
     private PermissionChecker getPermissionChecker(ProceedingJoinPoint joinPoint) {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-        PermissionChecker permissionChecker = methodSignature.getMethod().getAnnotation(PermissionChecker.class);
-        return permissionChecker;
+        return methodSignature.getMethod().getAnnotation(PermissionChecker.class);
     }
 
     private void checkPermission(Role role, RoleType roleType, LoginUser loginUser) {
@@ -61,7 +60,9 @@ public class PermitAspect {
         }
     }
     private void defaultCheck(Role requiredRole, RoleType requiredRoleType) {
-        if (requiredRole != Role.ANONYMOUS || requiredRoleType != RoleType.GUEST) throw GeneralExceptionFactory.create(ErrorCode.PERMISSION_DENIED, "no legal login info");
+        if (requiredRole != Role.ANONYMOUS || requiredRoleType != RoleType.GUEST) {
+            throw GeneralExceptionFactory.create(ErrorCode.PERMISSION_DENIED, "no legal login info");
+        }
     }
     // role level admin 0 , user 1, guest 2
     private void roleLevelCheck(Role requiredRole, LoginUser loginUser) {
@@ -71,8 +72,12 @@ public class PermitAspect {
     }
     // check whether requiredRoleType is admin or requiredRoleType is the same as login user
     private void roleTypeCheck(RoleType requiredRoleType, LoginUser loginUser) {
-        if (loginUser.getRoleType() == RoleType.ADMIN) return;
-        if (requiredRoleType ==  null || requiredRoleType == RoleType.GUEST) return; // guest is not check
+        if (loginUser.getRoleType() == RoleType.ADMIN) {
+            return;
+        }
+        if (requiredRoleType ==  null || requiredRoleType == RoleType.GUEST) {
+            return; // guest is not check
+        }
         if (requiredRoleType != loginUser.getRoleType()) {
             throw GeneralExceptionFactory.create(ErrorCode.PERMISSION_DENIED, "Permission denied current roleType: " + loginUser.getRoleType(), "need roleType: " + requiredRoleType + " or admin");
         }

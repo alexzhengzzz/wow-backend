@@ -35,8 +35,9 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         // validate & update token
         String sub = JWTUtils.validateToken(token);
-        if (sub == null || sub.equals(""))
+        if (sub == null || sub.equals("")) {
             throw GeneralExceptionFactory.create(ErrorCode.USER_TOKEN_VERIFY_ERROR, "not a valid token");
+        }
         if (JWTUtils.isNeedUpdate(token)) {
             String newToken = JWTUtils.createToken(sub);
             response.setHeader(JWTUtils.USER_LOGIN_TOKEN, newToken);

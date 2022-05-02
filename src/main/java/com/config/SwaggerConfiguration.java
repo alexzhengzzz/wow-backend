@@ -1,8 +1,6 @@
 package com.config;
 
 import com.bean.SwaggerProperties;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
 import io.swagger.models.auth.In;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.boot.SpringBootVersion;
@@ -19,6 +17,7 @@ import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
+
 import java.lang.reflect.Field;
 import java.util.*;
 
