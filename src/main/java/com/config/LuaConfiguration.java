@@ -5,6 +5,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.scripting.support.ResourceScriptSource;
+
+/**
+ * @author alexzhengzzz
+ * @date 2022/5/3
+ */
 @Configuration
 public class LuaConfiguration {
     // limit request
@@ -16,7 +21,7 @@ public class LuaConfiguration {
         return redisScript;
     }
 
-    // stock = stock - 1
+    // stock = stock - 1, atomic
     @Bean
     public DefaultRedisScript<String> redisScript2() {
         DefaultRedisScript<String> redisScript = new DefaultRedisScript<>();

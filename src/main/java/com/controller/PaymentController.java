@@ -22,7 +22,7 @@ import java.util.List;
  * @since 2022-05-02
  */
 @Slf4j
-@Api("controller only for test")
+@Api("payment controller")
 @RestController()
 @RequestMapping("/api/payment")
 public class PaymentController {

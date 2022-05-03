@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.*;
 public class CorporationController {
     @Autowired
     private CorporationBusiness corporationBusiness;
-    @ApiOperation("add new corporation")
+
+    @ApiOperation("add new corporation, admin only!!!")
     @PostMapping
     public Response<ResponseCode> createCorporation(@RequestBody CorporationDTO corporationDTO) {
         corporationBusiness.createCorporation(corporationDTO);
@@ -36,8 +37,6 @@ public class CorporationController {
         corporationBusiness.deleteCorporation(corporationDTO);
         return new Response<>(ResponseCode.SUCCESS);
     }
-
-
 
 
 }

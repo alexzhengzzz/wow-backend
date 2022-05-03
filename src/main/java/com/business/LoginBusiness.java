@@ -2,6 +2,7 @@ package com.business;
 
 import com.dto.LoginDTO;
 import com.dto.RegisterDTO;
+import com.vo.TokenInfoVO;
 import com.vo.UserVO;
 
 
@@ -11,5 +12,5 @@ public interface LoginBusiness {
 
     UserVO login(LoginDTO loginDTO);
 
-    String refreshToken(String token);
+    TokenInfoVO refreshToken(String token);
 }

@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 @Slf4j
@@ -41,8 +42,8 @@ public class CorporationBusinessImpl implements CorporationBusiness {
     public void createCorporation(CorporationDTO corporationDTO) {
         // check if exist
         Corporation corporation = corporationService.getOne(new LambdaQueryWrapper<Corporation>().eq(Corporation::getCompanyName, corporationDTO.getCompanyName()));
-        if (corporation != null) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_EXISTED_ERROR, "company existed");
+        if (!Objects.isNull(corporation)) {
+            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_EXISTED_ERROR, "corporation existed");
         }
         corporation = getCorporation(corporationDTO);
         Boolean isSuccess = corporationService.save(corporation);

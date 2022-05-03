@@ -5,6 +5,6 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class CouponVO {
+public class CouponsVO {
     private List<SingleCouponVO> couponsList;
 }

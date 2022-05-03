@@ -17,6 +17,8 @@ import com.service.impl.UserServiceImpl;
 import com.utils.cache.IGlobalCache;
 import com.utils.cache.JWTUtils;
 import com.utils.cache.RoleUtils;
+import com.vo.TokenContent;
+import com.vo.TokenInfoVO;
 import com.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -55,14 +57,14 @@ public class LoginBusinessImpl implements LoginBusiness {
 
     @Autowired
     private CorporationBusiness corporationBusiness;
-
+    private final static String TOKEN_KEY_HEADER = "login:";
     @Override
     public UserVO login(LoginDTO loginDTO) {
         // 1. query user
         User user = userService.getOne(new LambdaQueryWrapper<User>().eq(User::getEmail, loginDTO.getEmail()), false);
         // 2. no such user
         if (user == null) {
-            throw GeneralExceptionFactory.create(ErrorCode.USER_NOT_FOUND);
+            throw GeneralExceptionFactory.create(ErrorCode.USER_NOT_FOUND, "null");
         }
         // 3. password check
         String loginMD5pass = encryptPass(loginDTO.getPassword());
@@ -74,12 +76,19 @@ public class LoginBusinessImpl implements LoginBusiness {
     }
 
     @Override
-    public String refreshToken(String token) {
-        String sub = JWTUtils.validateToken(token);
-        String redisKey = "login:" + sub;
+    public TokenInfoVO refreshToken(String token) {
+        TokenContent tokenContent = JWTUtils.resolveToken(token);
+        String sub = tokenContent.getSubject();
+        String redisKey = TOKEN_KEY_HEADER + sub;
         LoginUser loginUser = (LoginUser) iGlobalCache.get(redisKey);
-        log.warn("refresh token, redis key: {}, loginUser: {}", redisKey, loginUser);
-        return JWTUtils.createToken(sub) + "," + loginUser.toString();
+        return convertToTokenInfoVO(loginUser, tokenContent);
+    }
+
+    public static TokenInfoVO convertToTokenInfoVO(LoginUser item, TokenContent tokenContent) {
+        TokenInfoVO result = new TokenInfoVO();
+        result.setLoginUser(item);
+        result.setToken(tokenContent);
+        return result;
     }
 
     private LoginUser getLoginUser(User user) {

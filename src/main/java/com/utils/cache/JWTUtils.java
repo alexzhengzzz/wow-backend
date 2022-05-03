@@ -3,9 +3,11 @@ package com.utils.cache;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
+import com.vo.TokenContent;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -88,6 +90,23 @@ public class JWTUtils {
         } catch (Exception e) {
             throw GeneralExceptionFactory.create(ErrorCode.USER_TOKEN_VERIFY_ERROR, token);
         }
+    }
+
+    public static TokenContent resolveToken(String token) {
+        TokenContent tokenContent = new TokenContent();
+        try {
+            tokenContent.setSubject(JWT.decode(token).getSubject());
+            tokenContent.setPayload(JWT.decode(token).getPayload());
+            tokenContent.setExpireAt(JWT.decode(token).getExpiresAt());
+            tokenContent.setSignature(JWT.decode(token).getSignature());
+            tokenContent.setHeader(JWT.decode(token).getHeader());
+            return tokenContent;
+        } catch (JWTDecodeException e) {
+            throw GeneralExceptionFactory.create(ErrorCode.USER_TOKEN_VERIFY_ERROR, "decode failed");
+        } catch (Exception e) {
+            throw GeneralExceptionFactory.create(ErrorCode.USER_TOKEN_VERIFY_ERROR, token);
+        }
+
     }
 
 

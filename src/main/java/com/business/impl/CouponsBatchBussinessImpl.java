@@ -41,7 +41,9 @@ public class CouponsBatchBussinessImpl implements CouponsBatchBussiness {
                 throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "invalid stock");
             }
             // add to bloom filter
-            cachePrepareService.getCouponsBatchBloomFilter().put(couponsBatch.getBatchId());
+            //if (cachePrepareService.getCouponsBatchBloomFilter() != null) {
+            //    cachePrepareService.getCouponsBatchBloomFilter().put(couponsBatch.getBatchId());
+            //}
         } else if (couponsBatchDTO.getCouponType().equals(TypeInfo.getCouponCorporationType())) {
             stock = null;
         }
