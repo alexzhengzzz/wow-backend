@@ -27,6 +27,7 @@ public enum ErrorCode {
     PERMISSION_DENIED(111001011L, "permission denied {0}", ErrorCodeType.GENERAL),
     ILLEGAL_DATA(111001012L, "illegal data {0}", ErrorCodeType.GENERAL),
     RATE_LIMIT_ERROR(111001013L, "{0}",ErrorCodeType.GENERAL),
+    PAYMENT_ERROR(111001014L, "{0}", ErrorCodeType.GENERAL),
 
     // USER 111 002 001
     USER_NOT_FOUND(111002001L, "user not found. details: --> {0}", ErrorCodeType.USER),

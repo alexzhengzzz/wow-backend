@@ -10,4 +10,6 @@ public interface LoginBusiness {
     UserVO register(RegisterDTO registerDTO);
 
     UserVO login(LoginDTO loginDTO);
+
+    String refreshToken(String token);
 }

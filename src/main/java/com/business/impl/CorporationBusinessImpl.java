@@ -14,7 +14,7 @@ import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
 import com.service.ICorpEmployeeService;
 import com.service.ICorporationService;
-import com.service.IUserService;
+import com.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,7 +33,7 @@ public class CorporationBusinessImpl implements CorporationBusiness {
     private ICorpEmployeeService corpEmployeeService;
 
     @Autowired
-    private IUserService userService;
+    private UserService userService;
 
 
     @Override
