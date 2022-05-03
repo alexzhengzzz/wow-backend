@@ -73,6 +73,15 @@ public class LoginBusinessImpl implements LoginBusiness {
         return createAndSetTokenToCache(user);
     }
 
+    @Override
+    public String refreshToken(String token) {
+        String sub = JWTUtils.validateToken(token);
+        String redisKey = "login:" + sub;
+        LoginUser loginUser = (LoginUser) iGlobalCache.get(redisKey);
+        log.warn("refresh token, redis key: {}, loginUser: {}", redisKey, loginUser);
+        return JWTUtils.createToken(sub) + "," + loginUser.toString();
+    }
+
     private LoginUser getLoginUser(User user) {
         LoginUser loginUser = new LoginUser();
         loginUser.setEmail(user.getEmail());

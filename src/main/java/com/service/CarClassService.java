@@ -12,5 +12,5 @@ import com.entity.CarClass;
  * @since 2022-05-02
  */
 public interface CarClassService extends IService<CarClass> {
-
+    CarClass getCarClassInfoById(Integer id);
 }

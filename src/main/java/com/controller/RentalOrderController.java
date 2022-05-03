@@ -4,6 +4,7 @@ import com.business.RentalOrderBusiness;
 import com.dto.OrderDTO;
 import com.enums.ResponseCode;
 import com.utils.cache.Response;
+import com.vo.OrderInvoiceVO;
 import com.vo.OrderVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,11 +27,12 @@ import java.util.List;
 public class RentalOrderController {
     @Autowired
     private RentalOrderBusiness rentalOrderBusiness;
+
     @ApiOperation("place an order")
     @PostMapping
-    public Response<ResponseCode> placeOrder(@RequestBody OrderDTO orderDTO) {
-        rentalOrderBusiness.placeOrder(orderDTO);
-        return new Response(ResponseCode.SUCCESS, "success");
+    public Response<OrderInvoiceVO> placeOrder(@RequestBody OrderDTO orderDTO) {
+        OrderInvoiceVO orderInvoiceVO = rentalOrderBusiness.placeOrder(orderDTO);
+        return new Response(ResponseCode.SUCCESS, orderInvoiceVO);
     }
 
 //    @ApiOperation("get order by order id")

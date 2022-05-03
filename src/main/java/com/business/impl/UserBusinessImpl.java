@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserBusinessImpl implements IUserBusiness {
     @Autowired
-    private IUserService userService;
+    private UserService userService;
 
     @Autowired
     private IUserAddressService userAddressService;

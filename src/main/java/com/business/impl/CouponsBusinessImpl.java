@@ -51,7 +51,7 @@ import java.util.Objects;
 @Slf4j
 public class CouponsBusinessImpl implements CouponsBusiness {
     @Autowired
-    private IUserService userService;
+    private UserService userService;
     @Autowired
     private ICorporationService corporationService;
     @Autowired

@@ -11,5 +11,5 @@ import com.entity.User;
  * @author zmh
  * @since 2022-04-25
  */
-public interface IUserService extends IService<User> {
+public interface UserService extends IService<User> {
 }
