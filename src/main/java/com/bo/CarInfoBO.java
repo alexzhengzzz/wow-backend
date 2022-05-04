@@ -2,6 +2,8 @@ package com.bo;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class CarInfoBO {
     private String vin_id;
@@ -15,5 +17,7 @@ public class CarInfoBO {
     private final String powerMode = "Gasoline";
     private final Double mpg = 1.0;
     private final String driveMode = "Manual";
-    private String pricePerDay;
+    private BigDecimal pricePerDay;
+    private BigDecimal overFee;
+    private BigDecimal limitMilePerDay;
 }

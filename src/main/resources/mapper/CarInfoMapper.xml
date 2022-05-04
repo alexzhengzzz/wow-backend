@@ -11,10 +11,13 @@
         <result column="image_url" property="image_url" jdbcType="VARCHAR"/>
         <result column="class_type" property="class_type" jdbcType="VARCHAR"/>
         <result column="status" property="status" jdbcType="VARCHAR"/>
+        <result column="over_fee" property="overFee" jdbcType="DECIMAL"/>
+        <result column="daily_mile_limit" property="limitMilePerDay" jdbcType="DECIMAL"/>
+
     </resultMap>
 
     <select id = "getCarList" resultMap="BasicResultMap">
-        select v.vin_id vin_id,v.status status, c.image_url image_url, c.class_type class_type, model.model_name name, model.year year, model.seat_num seat_num, c.rental_rate_per_day price_per_day, o.name office_name
+        select v.vin_id vin_id,c.daily_mile_limit daily_mile_limit, c.over_fee over_fee ,v.status status, c.image_url image_url, c.class_type class_type, model.model_name name, model.year year, model.seat_num seat_num, c.rental_rate_per_day price_per_day, o.name office_name
         from yzm_vehicles v
                  join yzm_office o
                       on v.office_id = o.office_id
