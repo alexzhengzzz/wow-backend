@@ -11,7 +11,8 @@ spring:
     password: 123456a
   redis:
     database: 0
-    host: localhost
+    host: 67.207.80.139
+    #host: localhost
     port: 6379
     password: 123456a
     timeout: 1000
