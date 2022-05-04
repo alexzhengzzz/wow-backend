@@ -6,7 +6,8 @@ import com.dto.CouponIndividualDTO;
 import com.entity.Coupons;
 import com.enums.ResponseCode;
 import com.utils.cache.Response;
-import com.vo.CouponVO;
+import com.vo.CouponWithOutIdVO;
+import com.vo.CouponsVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,16 +38,16 @@ public class CouponsController {
     }
     @ApiOperation("issue coupons to Individual, need a batchId")
     @PostMapping("/individual")
-    public Response<Coupons> issueCouponsToIndividual(@RequestBody CouponIndividualDTO couponIndividualDTO){
-        Coupons coupons = couponsBusiness.issueCouponsToIndividual(couponIndividualDTO);
+    public Response<CouponWithOutIdVO> issueCouponsToIndividual(@RequestBody CouponIndividualDTO couponIndividualDTO){
+        CouponWithOutIdVO coupons = couponsBusiness.issueCouponsToIndividual(couponIndividualDTO);
         return new Response<>(ResponseCode.SUCCESS, coupons);
     }
 
     @ApiOperation("get valid coupons by userId")
     @GetMapping("/u/{userId}")
-    public Response<CouponVO> getValidCouponsByUserId(@PathVariable("userId") Long userId){
-        CouponVO couponVO = couponsBusiness.getValidCouponsByUserId(userId);
-        return new Response<>(couponVO);
+    public Response<CouponsVO> getValidCouponsByUserId(@PathVariable("userId") Long userId){
+        CouponsVO couponsVO = couponsBusiness.getValidCouponsByUserId(userId);
+        return new Response<>(couponsVO);
     }
 
     @ApiOperation("delete coupons by couponId")

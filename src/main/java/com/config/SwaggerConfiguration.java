@@ -1,7 +1,6 @@
 package com.config;
 
 import com.bean.SwaggerProperties;
-import io.swagger.models.auth.In;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.boot.SpringBootVersion;
 import org.springframework.context.annotation.Bean;
@@ -49,22 +48,19 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
                 .build()
 
                 // 支持的通讯协议集合
-                .protocols(newHashSet("https", "http"))
+                .protocols(newHashSet("https", "http"));
 
-                // 授权信息设置，必要的header token等认证信息
-                .securitySchemes(securitySchemes())
-
-                // 授权信息全局应用
-                .securityContexts(securityContexts());
+                //// 授权信息设置，必要的header token等认证信息
+                //.securitySchemes(securitySchemes())
+                //
+                //// 授权信息全局应用
+                //.securityContexts(securityContexts());
     }
 
-    /**
-     * API 页面上半部分展示信息
-     */
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder().title(swaggerProperties.getApplicationName() + " Api Doc")
                 .description(swaggerProperties.getApplicationDescription())
-                .contact(new Contact("lighter", null, "123456@gmail.com"))
+                .contact(new Contact("alexzhengzzz", "https://github.com/alexzhengzzz", "mz2986@nyu.edu"))
                 .version("Application Version: " + swaggerProperties.getApplicationVersion() + ", Spring Boot Version: " + SpringBootVersion.getVersion())
                 .build();
     }
@@ -73,7 +69,7 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
      * 设置授权信息
      */
     private List<SecurityScheme> securitySchemes() {
-        ApiKey apiKey = new ApiKey("BASE_TOKEN", "token", In.HEADER.toValue());
+        ApiKey apiKey = new ApiKey("Authorization", "Authorization", "header");
         return Collections.singletonList(apiKey);
     }
 
@@ -83,7 +79,7 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
     private List<SecurityContext> securityContexts() {
         return Collections.singletonList(
                 SecurityContext.builder()
-                        .securityReferences(Collections.singletonList(new SecurityReference("BASE_TOKEN", new AuthorizationScope[]{new AuthorizationScope("global", "")})))
+                        .securityReferences(Collections.singletonList(new SecurityReference("Authorization", new AuthorizationScope[]{new AuthorizationScope("global", "")})))
                         .build()
         );
     }

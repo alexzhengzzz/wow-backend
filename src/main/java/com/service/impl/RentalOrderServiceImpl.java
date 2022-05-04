@@ -25,4 +25,13 @@ public class RentalOrderServiceImpl extends ServiceImpl<RentalOrderMapper, Renta
         }
         return order;
     }
+
+    @Override
+    public RentalOrder getOrderByOrderAndUserId(Long orderId, Long userId) {
+        RentalOrder order = this.getById(orderId);
+        if (order == null || !order.getUserId().equals(userId)) {
+            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_ERROR, "order id not found");
+        }
+        return order;
+    }
 }

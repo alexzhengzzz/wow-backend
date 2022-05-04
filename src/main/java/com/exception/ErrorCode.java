@@ -28,10 +28,11 @@ public enum ErrorCode {
     ILLEGAL_DATA(111001012L, "illegal data {0}", ErrorCodeType.GENERAL),
     RATE_LIMIT_ERROR(111001013L, "{0}",ErrorCodeType.GENERAL),
     PAYMENT_ERROR(111001014L, "{0}", ErrorCodeType.GENERAL),
+    NULL_POINTER(111001015L, "null pointer value", ErrorCodeType.GENERAL),
 
     // USER 111 002 001
     USER_NOT_FOUND(111002001L, "user not found. details: --> {0}", ErrorCodeType.USER),
-    USER_PASSWORD_WRONG(111002002L, "wrong password. details: --> {0}", ErrorCodeType.USER),
+    USER_PASSWORD_WRONG(111002002L, "wrong password. details", ErrorCodeType.USER),
     USER_TOKEN_VERIFY_ERROR(111002004L, "TOKEN VERIFY ERROR. details: --> {0}", ErrorCodeType.USER),
     USER_TOKEN_EXPIRED(111002004L, "TOKEN EXPIRED. details: --> {0}", ErrorCodeType.USER),
     USER_INFO_EXISTED(111002005L, "you may use other id or name. details: --> {0}", ErrorCodeType.USER),

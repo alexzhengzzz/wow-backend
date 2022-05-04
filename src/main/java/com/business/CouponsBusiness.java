@@ -3,7 +3,8 @@ package com.business;
 import com.dto.CouponCorpDTO;
 import com.dto.CouponIndividualDTO;
 
-import com.vo.CouponVO;
+import com.vo.CouponWithOutIdVO;
+import com.vo.CouponsVO;
 
 import com.entity.Coupons;
 
@@ -16,10 +17,10 @@ public interface CouponsBusiness {
     @Transactional
     List<Coupons> issueCouponsToCorporation(@NotNull CouponCorpDTO couponCorpDTO);
 
-    Coupons issueCouponsToIndividual(CouponIndividualDTO couponIndividualDTO);
+    CouponWithOutIdVO issueCouponsToIndividual(CouponIndividualDTO couponIndividualDTO);
 
 
-    CouponVO getValidCouponsByUserId(Long userId);
+    CouponsVO getValidCouponsByUserId(Long userId);
 
     @Transactional
     void deleteCouponByCouponId(Long couponId);

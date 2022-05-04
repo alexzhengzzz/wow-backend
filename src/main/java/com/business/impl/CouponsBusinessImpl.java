@@ -10,24 +10,25 @@ import com.business.CouponsBatchBussiness;
 import com.business.CouponsBusiness;
 import com.dto.CouponCorpDTO;
 import com.dto.CouponIndividualDTO;
-
-import com.entity.Coupons;
-import com.entity.User;
-
 import com.dto.CouponsBatchDTO;
-import com.entity.*;
-
+import com.entity.Coupons;
+import com.entity.CouponsBatch;
+import com.entity.User;
 import com.enums.Role;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
 import com.google.gson.Gson;
 import com.interceptor.CachePrepareServiceImpl;
 import com.interceptor.impl.RedisRateLimitImpl;
-import com.service.*;
+import com.service.ICorporationService;
+import com.service.ICouponsBatchService;
+import com.service.ICouponsService;
+import com.service.UserService;
 import com.utils.cache.IGlobalCache;
 import com.utils.cache.TypeInfo;
-import com.vo.CouponVO;
+import com.vo.CouponWithOutIdVO;
 import com.vo.CouponsBatchVO;
+import com.vo.CouponsVO;
 import com.vo.SingleCouponVO;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -119,14 +120,14 @@ public class CouponsBusinessImpl implements CouponsBusiness {
     }
 
     @Override
-    public Coupons issueCouponsToIndividual(CouponIndividualDTO couponIndividualDTO) {
+    public CouponWithOutIdVO issueCouponsToIndividual(CouponIndividualDTO couponIndividualDTO) {
         // check params, rate, duplicate
         checkParameters(couponIndividualDTO);
         if (!redisRateLimitImpl.limit(LIMIT, WINDOW_TIME)) {
             throw GeneralExceptionFactory.create(ErrorCode.RATE_LIMIT_ERROR, "too many requests");
         }
         Long batchId = couponIndividualDTO.getBatchId();
-//        checkIfDuplicateUserAndBatchId(couponIndividualDTO.getUserId(), batchId);
+        checkIfDuplicateUserAndBatchId(couponIndividualDTO.getUserId(), batchId);
 
         // stock = stock - 1 if stock > 0 in redis
         String key = COUPON_CACHE + batchId.toString();
@@ -141,12 +142,22 @@ public class CouponsBusinessImpl implements CouponsBusiness {
 
         Coupons co  = setNewIndividualCoupon(couponIndividualDTO);
         sendToMQ(co);
-        return co;
+        return convertToCouponWithOutIdVO(co);
+    }
+
+    public static CouponWithOutIdVO convertToCouponWithOutIdVO(Coupons item) {
+        CouponWithOutIdVO result = new CouponWithOutIdVO();
+        result.setValidFrom(item.getValidFrom());
+        result.setValidTo(item.getValidTo());
+        result.setBatchId(item.getBatchId());
+        result.setUserId(item.getUserId());
+        result.setIsUsed(item.getIsUsed());
+        return result;
     }
 
 
     @Override
-    public CouponVO getValidCouponsByUserId(Long userId) {
+    public CouponsVO getValidCouponsByUserId(Long userId) {
         // check userId role type
         User user = userService.getById(userId);
         if (user == null) {
@@ -155,12 +166,12 @@ public class CouponsBusinessImpl implements CouponsBusiness {
         if (user.getRoleType().equals(TypeInfo.getIndividualRoleType()) && user.getRoleType().equals(TypeInfo.getCorporationRoleType())) {
             throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_ERROR, "no available user");
         }
-        CouponVO couponVO = new CouponVO();
+        CouponsVO couponsVO = new CouponsVO();
         List<SingleCouponVO> res = new ArrayList<>();
         List<Coupons> couponsList = couponsService.list(new LambdaQueryWrapper<Coupons>().eq(Coupons::getUserId, userId).eq(Coupons::getIsUsed, false));
-        couponVO.setCouponsList(res);
+        couponsVO.setCouponsList(res);
         if (couponsList == null || couponsList.isEmpty()) {
-            return couponVO;
+            return couponsVO;
         }
         couponsList.forEach(co -> {
             if (user.getRoleType().equals(TypeInfo.getIndividualRoleType())) {
@@ -175,7 +186,7 @@ public class CouponsBusinessImpl implements CouponsBusiness {
                 res.add(single);
             }
         });
-        return couponVO;
+        return couponsVO;
     }
 
     @Override
@@ -220,14 +231,14 @@ public class CouponsBusinessImpl implements CouponsBusiness {
 
     public void checkParameters(CouponIndividualDTO couponIndividualDTO) {
         // check if has batchId
-        if (!cachePrepareService.getCouponsBatchBloomFilter().mightContain(couponIndividualDTO.getBatchId())) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_ERROR, "no such coupons batch");
-        }
+        //if (!cachePrepareService.getCouponsBatchBloomFilter().mightContain(couponIndividualDTO.getBatchId())) {
+        //    throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_ERROR, "no such coupons batch");
+        //}
         User user = userService.getById(couponIndividualDTO.getUserId());
         if (user == null) {
             throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "no such individual user");
         }
-        if (user.getRoleType().equals(TypeInfo.getIndividualRoleType())) {
+        if (!user.getRoleType().equals(TypeInfo.getIndividualRoleType())) {
             throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "user id error");
         }
         Timestamp start = couponIndividualDTO.getValidFrom();

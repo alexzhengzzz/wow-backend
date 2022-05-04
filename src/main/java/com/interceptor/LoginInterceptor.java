@@ -21,9 +21,12 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Autowired
     private RedisCacheManager redisCacheManager;
 
+    private final static String TOKEN_KEY_HEADER = "login:";
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         LoginUser loginUser = new LoginUser();
+        // get token from request and headers, format: bearer {token part}
         String token = getAuthToken(request);
         // set default login user
         if (token == null || token.equals("")) {
@@ -44,7 +47,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
 
         // try to get loginUser from cache
-        String redisKey = "login:" + sub;
+        String redisKey = TOKEN_KEY_HEADER + sub;
         loginUser = (LoginUser) redisCacheManager.get(redisKey);
         if (loginUser == null) {
             throw GeneralExceptionFactory.create(ErrorCode.USER_TOKEN_VERIFY_ERROR, "login state expired, please login again");

@@ -35,6 +35,7 @@ public class RedisConfig {
         jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
         return jackson2JsonRedisSerializer;
     }
+
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory factory) {
 
@@ -48,15 +49,13 @@ public class RedisConfig {
                 // 禁用空值
                 .disableCachingNullValues();
 
-        return RedisCacheManager.builder(factory)
-                .cacheDefaults(config)
-                .build();
-}
+        return RedisCacheManager.builder(factory).cacheDefaults(config).build();
+    }
 
     /**
      * 配置redisTemplate针对不同key和value场景下不同序列化的方式
      *
-     * @param  Redis连接工厂
+     * @param
      * @return
      */
     @Bean
