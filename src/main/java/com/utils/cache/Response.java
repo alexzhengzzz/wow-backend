@@ -45,7 +45,7 @@ public class Response<T> implements Serializable {
         Response response = new Response();
         long errorCode = e.getCode().getCode();
         response.setCode((int) errorCode);
-        response.setMessage(e.getCode().getMessage());
+        response.setMessage(e.getMessage());
         return response;
     }
 

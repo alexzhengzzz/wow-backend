@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/individual")
 @Slf4j
@@ -22,7 +24,7 @@ public class IndividualController {
     @ApiOperation("update Individual information")
     @PutMapping("/{userId}")
     @PermissionChecker(requiredRole = Role.USER)
-    public Response<Individual> updateIndividualInfo(@PathVariable("userId") Long userId, @RequestBody IndividualDTO individualDTO) {
+    public Response<Individual> updateIndividualInfo(@PathVariable("userId") Long userId, @Valid @RequestBody IndividualDTO individualDTO) {
         Individual individual = individualBusiness.updateIndividualInfo(userId, individualDTO);
         return new Response<>(ResponseCode.SUCCESS, individual);
     }

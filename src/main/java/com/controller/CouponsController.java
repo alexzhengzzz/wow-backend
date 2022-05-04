@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -32,13 +33,13 @@ public class CouponsController {
 
     @ApiOperation("issue coupons to all the employees of Corporation, will create a new batch")
     @PostMapping("/corporation")
-    public Response<List<Coupons>> issueCouponsToCorporation(@RequestBody CouponCorpDTO couponCorpDTO){
+    public Response<List<Coupons>> issueCouponsToCorporation(@Valid @RequestBody CouponCorpDTO couponCorpDTO){
         List<Coupons> res = couponsBusiness.issueCouponsToCorporation(couponCorpDTO);
         return new Response<>(ResponseCode.SUCCESS, res);
     }
     @ApiOperation("issue coupons to Individual, need a batchId")
     @PostMapping("/individual")
-    public Response<CouponWithOutIdVO> issueCouponsToIndividual(@RequestBody CouponIndividualDTO couponIndividualDTO){
+    public Response<CouponWithOutIdVO> issueCouponsToIndividual(@Valid @RequestBody CouponIndividualDTO couponIndividualDTO){
         CouponWithOutIdVO coupons = couponsBusiness.issueCouponsToIndividual(couponIndividualDTO);
         return new Response<>(ResponseCode.SUCCESS, coupons);
     }

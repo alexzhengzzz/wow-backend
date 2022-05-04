@@ -27,7 +27,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/admin/**")
                 .excludePathPatterns("/swagger-ui/**")
                 .excludePathPatterns("/login")
-                .excludePathPatterns("/register");
+                .excludePathPatterns("/register")
+                .excludePathPatterns("/reset");
     }
 
     @Override
