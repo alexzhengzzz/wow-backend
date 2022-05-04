@@ -1,5 +1,6 @@
 package com.business.impl;
 
+import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.bean.LoginUser;
 import com.business.LoginBusiness;
@@ -8,10 +9,7 @@ import com.dto.*;
 import com.entity.*;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
-import com.service.ICorpEmployeeService;
-import com.service.ICorporationService;
-import com.service.IIndividualService;
-import com.service.IUserAddressService;
+import com.service.*;
 import com.service.impl.UserServiceImpl;
 import com.utils.cache.IGlobalCache;
 import com.utils.cache.JWTUtils;
@@ -20,6 +18,7 @@ import com.vo.TokenContent;
 import com.vo.TokenInfoVO;
 import com.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -54,6 +53,7 @@ public class LoginBusinessImpl implements LoginBusiness {
     private IGlobalCache iGlobalCache;
 
     private final static String TOKEN_KEY_HEADER = "login:";
+    private final static String EMAIL_KEY = "email:";
 
     @Override
     public UserVO login(LoginDTO loginDTO) {
@@ -80,6 +80,49 @@ public class LoginBusinessImpl implements LoginBusiness {
         LoginUser loginUser = (LoginUser) iGlobalCache.get(redisKey);
         return convertToTokenInfoVO(loginUser, tokenContent);
     }
+
+    @Override
+    public void reset(ResetDTO resetDTO) {
+        String email = resetDTO.getEmail();
+        String newPWD = encryptPass(resetDTO.getNewPassword());
+        User user = new User();
+        user.setPassword(newPWD);
+        if (resetDTO.getSecret() != null) {
+            String secret = (String) iGlobalCache.get(EMAIL_KEY + resetDTO.getEmail());
+            if (!StringUtils.isBlank(secret) && secret.equals(resetDTO.getSecret())) {
+                boolean isSuccess = userService.update(user, new LambdaQueryWrapper<User>().eq(User::getEmail, email));
+                if (!isSuccess) {
+                    throw GeneralExceptionFactory.create(ErrorCode.CUSTOMER_ERROR, "error secret or email");
+                }
+                iGlobalCache.del(EMAIL_KEY + resetDTO.getEmail());
+            } else {
+                throw GeneralExceptionFactory.create(ErrorCode.CUSTOMER_ERROR, "secret may expired or wrong");
+            }
+        } else { // old password check
+            String oldPWD = encryptPass(resetDTO.getOldPassword());
+            boolean isSuccess = userService.update(user, new LambdaQueryWrapper<User>().eq(User::getEmail, email).eq(User::getPassword, oldPWD));
+            if (!isSuccess) {
+                throw GeneralExceptionFactory.create(ErrorCode.CUSTOMER_ERROR, "error password or error email");
+            }
+        }
+    }
+
+
+    @Autowired
+    private EmailService emailService;
+
+    @Override
+    public void sendRandomPWDWithEmail(String email) {
+        String secret = RandomUtil.randomString(20);
+        User user = userService.getOne(new LambdaQueryWrapper<User>().eq(User::getEmail, email));
+        if (user == null || user.getBakEmail() == null) {
+            throw GeneralExceptionFactory.create(ErrorCode.USER_NOT_FOUND, "email not found or not set backup email");
+        }
+        iGlobalCache.set(EMAIL_KEY + email, secret, 60 * 30); // 30 minutes expire
+        emailService.sendSimpleMessage(user.getBakEmail(), "reset password",
+                "please use this secret to reset the password in 30 minutes:" + secret);
+    }
+
 
     public static TokenInfoVO convertToTokenInfoVO(LoginUser item, TokenContent tokenContent) {
         TokenInfoVO result = new TokenInfoVO();
@@ -222,6 +265,7 @@ public class LoginBusinessImpl implements LoginBusiness {
         user.setLname(registerDTO.getLname());
         user.setEmail(registerDTO.getEmail());
         user.setRoleType(registerDTO.getRole_type());
+        user.setBakEmail(registerDTO.getBakEmail());
         user.setPhoneNum(registerDTO.getPhoneNum());
         return user;
     }

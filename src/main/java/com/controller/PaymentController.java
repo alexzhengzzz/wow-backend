@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -44,7 +45,7 @@ public class PaymentController {
 
     @ApiOperation("create payment")
     @PostMapping
-    public Response createPayment(@RequestBody PaymentDTO paymentDTO) {
+    public Response createPayment(@Valid @RequestBody PaymentDTO paymentDTO) {
         paymentBusiness.createPayment(paymentDTO);
         return new Response(ResponseCode.SUCCESS, "success");
     }

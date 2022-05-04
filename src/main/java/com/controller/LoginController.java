@@ -3,6 +3,7 @@ package com.controller;
 import com.business.LoginBusiness;
 import com.dto.LoginDTO;
 import com.dto.RegisterDTO;
+import com.dto.ResetDTO;
 import com.enums.ResponseCode;
 import com.service.UserService;
 import com.utils.cache.Response;
@@ -11,10 +12,7 @@ import com.vo.UserVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -38,6 +36,20 @@ public class LoginController {
     public Response<UserVO> register(@Valid @RequestBody RegisterDTO registerDTO) {
         UserVO userVo = loginBusiness.register(registerDTO);
         return new Response<>(ResponseCode.SUCCESS, userVo);
+    }
+
+    @ApiOperation("use backup email secret to reset password, or old password")
+    @PostMapping("/reset")
+    public Response<ResponseCode> reset(@RequestBody ResetDTO resetDTO) {
+        loginBusiness.reset(resetDTO);
+        return new Response<>(ResponseCode.SUCCESS);
+    }
+
+    @ApiOperation("enter email and will send a secret code to the backup email")
+    @GetMapping("/reset/{email}")
+    public Response<ResponseCode> resetWithOldPWD(@PathVariable("email") String email) {
+        loginBusiness.sendRandomPWDWithEmail(email);
+        return new Response<>(ResponseCode.SUCCESS);
     }
 
     @ApiOperation("decode token, [add request params], e.g: token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUz")

@@ -29,6 +29,7 @@ public enum ErrorCode {
     RATE_LIMIT_ERROR(111001013L, "{0}",ErrorCodeType.GENERAL),
     PAYMENT_ERROR(111001014L, "{0}", ErrorCodeType.GENERAL),
     NULL_POINTER(111001015L, "null pointer value", ErrorCodeType.GENERAL),
+    CUSTOMER_ERROR(111001016L, "{0}", ErrorCodeType.GENERAL),
 
     // USER 111 002 001
     USER_NOT_FOUND(111002001L, "user not found. details: --> {0}", ErrorCodeType.USER),
