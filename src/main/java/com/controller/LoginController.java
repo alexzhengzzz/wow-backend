@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @Api("login")
 public class LoginController {
@@ -27,13 +29,13 @@ public class LoginController {
     private LoginBusiness loginBusiness;
 
     @PostMapping("/login")
-    public Response<UserVO> login(@RequestBody LoginDTO loginDTO) {
+    public Response<UserVO> login(@Valid @RequestBody LoginDTO loginDTO) {
         UserVO userVo = loginBusiness.login(loginDTO);
         return new Response<>(ResponseCode.SUCCESS, userVo);
     }
 
     @PostMapping("/register")
-    public Response<UserVO> register(@RequestBody RegisterDTO registerDTO) {
+    public Response<UserVO> register(@Valid @RequestBody RegisterDTO registerDTO) {
         UserVO userVo = loginBusiness.register(registerDTO);
         return new Response<>(ResponseCode.SUCCESS, userVo);
     }

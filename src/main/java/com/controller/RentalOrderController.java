@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -31,7 +32,7 @@ public class RentalOrderController {
 
     @ApiOperation("init an order")
     @PostMapping
-    public Response<OrderInvoiceVO> initOrder(@RequestBody OrderDTO orderDTO) {
+    public Response<OrderInvoiceVO> initOrder(@Valid @RequestBody OrderDTO orderDTO) {
         OrderInvoiceVO orderInvoiceVO = rentalOrderBusiness.initOrder(orderDTO);
         return new Response(ResponseCode.SUCCESS, orderInvoiceVO);
     }

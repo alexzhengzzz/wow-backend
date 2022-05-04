@@ -2,7 +2,6 @@ package com.business.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.bean.LoginUser;
-import com.business.CorporationBusiness;
 import com.business.LoginBusiness;
 import com.context.ServiceContextHolder;
 import com.dto.*;
@@ -21,7 +20,6 @@ import com.vo.TokenContent;
 import com.vo.TokenInfoVO;
 import com.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -55,9 +53,8 @@ public class LoginBusinessImpl implements LoginBusiness {
     @Autowired
     private IGlobalCache iGlobalCache;
 
-    @Autowired
-    private CorporationBusiness corporationBusiness;
     private final static String TOKEN_KEY_HEADER = "login:";
+
     @Override
     public UserVO login(LoginDTO loginDTO) {
         // 1. query user
@@ -213,13 +210,9 @@ public class LoginBusinessImpl implements LoginBusiness {
 
 
     private void isIllegal(RegisterDTO registerDTO) {
-        String email = registerDTO.getEmail();
-        String fname = registerDTO.getFname();
-        String lname = registerDTO.getLname();
-        String password = registerDTO.getPassword();
         Integer roleType = Integer.valueOf(registerDTO.getRole_type());
-        if (StringUtils.isBlank(email) || StringUtils.isBlank(fname) || StringUtils.isBlank(lname) || StringUtils.isBlank(password) || (roleType > 2 && roleType < 0)) {
-            throw GeneralExceptionFactory.create(ErrorCode.ILLEGAL_DATA);
+        if (roleType > 2 && roleType < 0) {
+            throw GeneralExceptionFactory.create(ErrorCode.ILLEGAL_DATA, "illegal roleType");
         }
     }
 

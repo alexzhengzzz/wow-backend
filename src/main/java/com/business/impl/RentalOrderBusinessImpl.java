@@ -6,10 +6,17 @@ import com.business.RentalOrderBusiness;
 import com.dto.OrderCompleteDTO;
 import com.dto.OrderDTO;
 import com.entity.*;
+import com.enums.OrderStatus;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
-import com.service.*;
-import com.service.impl.*;
+import com.service.CarClassService;
+import com.service.ICouponsBatchService;
+import com.service.IRentalOrderService;
+import com.service.InvoiceService;
+import com.service.impl.CouponsServiceImpl;
+import com.service.impl.OfficeServiceImpl;
+import com.service.impl.UserServiceImpl;
+import com.service.impl.VehicleServiceImpl;
 import com.utils.cache.TimestampUtil;
 import com.vo.OrderInvoiceVO;
 import com.vo.OrderVO;
@@ -53,6 +60,7 @@ public class RentalOrderBusinessImpl implements RentalOrderBusiness {
     // only create order with basic info
     public OrderInvoiceVO initOrder(OrderDTO orderDTO) {
         checkStartParams(orderDTO);
+        // check car status; if not available, throw exception
         RentalOrder rentalOrder = setNewRentalOrder(orderDTO);
         Boolean isSuccess = rentalOrderService.save(rentalOrder);
         if (!isSuccess) {
@@ -84,7 +92,7 @@ public class RentalOrderBusinessImpl implements RentalOrderBusiness {
         return orderInvoiceVO;
     }
 
-    private Invoice setNewInvoice(RentalOrder rentalOrder, BigDecimal amount) {
+    private Invoice setNewInvoice(BigDecimal amount) {
         Invoice invoice = new Invoice();
         invoice.setAmount(amount);
         invoice.setInvoiceDate(new Timestamp(System.currentTimeMillis()));
@@ -138,18 +146,18 @@ public class RentalOrderBusinessImpl implements RentalOrderBusiness {
     public OrderInvoiceVO completeOrder(Long orderId, OrderCompleteDTO orderCompleteDTO) {
         // check
         Office dropLoc = officeService.getLocById(orderCompleteDTO.getDropLocId());
-
         RentalOrder rentalOrder = rentalOrderService.getOrderByOrderAndUserId(orderId, orderCompleteDTO.getUserId());
+        if (rentalOrder.getOrderStatus() == OrderStatus.FINISHED.getCode()) {
+            throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_ERROR, "order has been completed");
+        }
         rentalOrder.setDropLocId(orderCompleteDTO.getDropLocId());
         rentalOrder.setEndOdometer(orderCompleteDTO.getEndOdometer());
         rentalOrder.setDropDate(orderCompleteDTO.getDropDate());
-
-
         // cal discount
         BigDecimal discount = getDiscountByCouponId(rentalOrder.getCouponId());
         BigDecimal amount = calAmount(rentalOrder, discount);
         // set invoice
-        Invoice invoice = setNewInvoice(rentalOrder, amount);
+        Invoice invoice = setNewInvoice(amount);
         invoiceService.save(invoice);
         // set status
         rentalOrder.setInvoiceId(invoice.getInvoiceId());
@@ -194,7 +202,7 @@ public class RentalOrderBusinessImpl implements RentalOrderBusiness {
 
     private void checkStartParams(OrderDTO orderDTO) {
         if (DateUtil.compare(orderDTO.getPickDate(), new Timestamp(System.currentTimeMillis())) < 0) {
-            throw GeneralExceptionFactory.create(ErrorCode.ILLEGAL_DATA, "order date should before today");
+            throw GeneralExceptionFactory.create(ErrorCode.ILLEGAL_DATA, "order date should after today");
         }
         if (orderDTO.getStartOdometer().compareTo(BigDecimal.ZERO) < 0) {
             throw GeneralExceptionFactory.create(ErrorCode.ILLEGAL_DATA, "order date should before today");
@@ -209,7 +217,7 @@ public class RentalOrderBusinessImpl implements RentalOrderBusiness {
             throw GeneralExceptionFactory.create(ErrorCode.UNKNOWN_ERROR, "the coupon is invalid");
         }
     }
-
+    //  actually we should set coupon id to be 1, but not
     private RentalOrder setNewRentalOrder(OrderDTO orderDTO) {
         RentalOrder rentalOrder = new RentalOrder();
         rentalOrder.setPickDate(orderDTO.getPickDate());

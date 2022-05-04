@@ -1,7 +1,6 @@
 package com.exception;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.dao.DataAccessException;
@@ -22,6 +21,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
+
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,9 +34,9 @@ import java.util.Map;
  * 全局exceptionHandler
  */
 @Component
+@Slf4j
 public class GlobalExceptionHandler implements HandlerExceptionResolver {
 
-    private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     private List<ExceptionHandlerProcessor> exceptionHandlerProcessors;
 
 
@@ -67,7 +67,7 @@ public class GlobalExceptionHandler implements HandlerExceptionResolver {
         view.setAttributesMap(exceptionChain.process(ex));
         view.setPrettyPrint(true);
         mv.setView(view);
-        logger.error("resolve exception",ex);
+        log.error("resolve exception",ex);
         return mv;
     }
 
@@ -86,7 +86,7 @@ public class GlobalExceptionHandler implements HandlerExceptionResolver {
         public Map<String, Object> process(Exception ex) {
             // 拿到链表中的handler
             if (index >= exceptionHandlerProcessors.size()) {
-                logger.warn("exception handler processor not found {},so return null",ex);
+                log.warn("exception handler processor not found {},so return null",ex);
                 return null;
             }
             //根据index的值，取到对应的processor

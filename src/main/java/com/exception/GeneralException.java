@@ -11,7 +11,7 @@ public class GeneralException extends RuntimeException{
     private String message;
     private ErrorCode code;
 
-    public GeneralException(ErrorCode code) {
+    private GeneralException(ErrorCode code) {
         this.code = code;
     }
 
