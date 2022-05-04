@@ -8,5 +8,5 @@ import java.util.List;
 public interface OfficeMaintainBusiness {
     List<AvailableOfficeBO> getOfficeList();
 
-    List<OfficeBO> getOfficeInformation();
+    List<OfficeBO> getOfficeInfo();
 }

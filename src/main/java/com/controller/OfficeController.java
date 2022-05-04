@@ -1,7 +1,7 @@
 package com.controller;
 
 import com.bo.AvailableOfficeBO;
-import com.bo.CarInfoBO;
+import com.bo.OfficeBO;
 import com.business.OfficeMaintainBusiness;
 import com.enums.ResponseCode;
 import com.utils.cache.Response;
@@ -17,13 +17,20 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/officeMaintain")
 @Api("OfficeMaintain")
-public class OfficeMaintainController {
+public class OfficeController {
     @Autowired
     OfficeMaintainBusiness officeMaintainBusiness;
 
     @ApiOperation("get availabe return office")
-    @GetMapping("return office")
-    public Response<List<AvailableOfficeBO>> getAllCarList(){
+    @GetMapping("OfficeNameList")
+    public Response<List<AvailableOfficeBO>> getAllOfficeList(){
         return new Response<>(ResponseCode.SUCCESS, officeMaintainBusiness.getOfficeList());
     }
+
+    @ApiOperation("get availabe return office information")
+    @GetMapping("OfficeInformation")
+    public Response<List<OfficeBO>> getAllOfficeInfo(){
+        return new Response<>(ResponseCode.SUCCESS, officeMaintainBusiness.getOfficeInfo());
+    }
+
 }

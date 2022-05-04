@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class AvailableOfficeBO {
-    Long officeId;
+    Integer officeId;
     String officeName;
 }

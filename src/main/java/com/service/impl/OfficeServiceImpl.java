@@ -1,5 +1,6 @@
 package com.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.entity.Office;
 import com.exception.ErrorCode;
@@ -32,11 +33,12 @@ public class OfficeServiceImpl extends ServiceImpl<OfficeMapper, Office> impleme
     }
 
     public List<OfficeVO> getOfficeInfo(){
-/*        List<Office> officeList = this.baseMapper.selectList();
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.select();
+        List<Office> officeList = this.baseMapper.selectList(queryWrapper);
         if(officeList == null){
             throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "Office Table is Empty");
         }
-        return OfficeUtil.transferList(officeList);*/
-        return null;
+        return OfficeUtil.transferList(officeList);
     }
 }
