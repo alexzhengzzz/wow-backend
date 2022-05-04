@@ -1,11 +1,13 @@
 package com.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.math.BigDecimal;
 
 @Data
 public class CarInfo {
+    @TableId("vin_id")
     private String vin_id;
     private String image_url;
     private String status;
