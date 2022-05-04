@@ -48,5 +48,7 @@ public class RentalOrder implements Serializable {
 
     private BigDecimal dailyLimitOdometer;
 
+    private Integer orderStatus;
+
 
 }

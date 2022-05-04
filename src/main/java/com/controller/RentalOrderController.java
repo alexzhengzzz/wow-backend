@@ -1,6 +1,7 @@
 package com.controller;
 
 import com.business.RentalOrderBusiness;
+import com.dto.OrderCompleteDTO;
 import com.dto.OrderDTO;
 import com.enums.ResponseCode;
 import com.utils.cache.Response;
@@ -28,10 +29,10 @@ public class RentalOrderController {
     @Autowired
     private RentalOrderBusiness rentalOrderBusiness;
 
-    @ApiOperation("place an order")
+    @ApiOperation("init an order")
     @PostMapping
-    public Response<OrderInvoiceVO> placeOrder(@RequestBody OrderDTO orderDTO) {
-        OrderInvoiceVO orderInvoiceVO = rentalOrderBusiness.placeOrder(orderDTO);
+    public Response<OrderInvoiceVO> initOrder(@RequestBody OrderDTO orderDTO) {
+        OrderInvoiceVO orderInvoiceVO = rentalOrderBusiness.initOrder(orderDTO);
         return new Response(ResponseCode.SUCCESS, orderInvoiceVO);
     }
 
@@ -40,6 +41,14 @@ public class RentalOrderController {
 //    public Response<ResponseCode> getOrderByOrderId(@RequestParam("orderId") Long orderId) {
 //        return new Response(ResponseCode.SUCCESS, "success");
 //    }
+
+    @ApiOperation("complete order")
+    @PostMapping("/{orderId}")
+    public Response<OrderInvoiceVO> completeOrder(@PathVariable("orderId") Long orderId, @RequestBody OrderCompleteDTO orderCompleteDTO) {
+
+        OrderInvoiceVO orderInvoiceVO = rentalOrderBusiness.completeOrder(orderId, orderCompleteDTO);
+        return new Response(ResponseCode.SUCCESS, orderInvoiceVO);
+    }
 
     @ApiOperation("get order list by user id")
     @GetMapping("/u/{userId}")

@@ -12,4 +12,6 @@ import com.entity.RentalOrder;
  * @since 2022-05-02
  */
 public interface IRentalOrderService extends IService<RentalOrder> {
+
+    RentalOrder getOrderByOrderAndUserId(Long orderId, Long userId);
 }
