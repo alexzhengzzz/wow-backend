@@ -1,12 +1,11 @@
 package com.service;
 
-import com.dto.UserAddressDTO;
-import com.entity.UserAddress;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.entity.UserAddress;
 
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author zmh

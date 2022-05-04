@@ -20,10 +20,8 @@ public class CouponCacheBuilder{
     }
     public void prepare(Long id, int totalCount) {
         String key = getCacheKey(id);
-        Map<String, Object> goods = new HashMap<>();
+        Map<String, Object> goods = new HashMap<>(1);
         goods.put("totalCount", totalCount);
-//        goods.put("currentCount", 0);
         globalCache.hmset(key, goods);
-//        log.warn("coupon cache build success, key:{}, totalCount:{}", key, totalCount);
     }
 }

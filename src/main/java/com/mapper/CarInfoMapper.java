@@ -1,7 +1,7 @@
 package com.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.entity.CarInfo;
+import com.entity.info.CarInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -10,5 +10,5 @@ import java.util.List;
 //@Repository
 public interface CarInfoMapper extends BaseMapper<CarInfo> {
     @Autowired
-    public List<CarInfo> getCarList();
+    List<CarInfo> getCarList();
 }

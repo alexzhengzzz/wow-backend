@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author zmh
@@ -18,7 +18,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class CarClassServiceImpl extends ServiceImpl<CarClassMapper, CarClass> implements CarClassService {
-    CarClass getCarClassInfoById(Integer id) {
+    @Override
+    public CarClass getCarClassInfoById(Integer id) {
         CarClass carClass = baseMapper.selectById(id);
         if (carClass == null) {
             throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_ERROR, "car class id not found");

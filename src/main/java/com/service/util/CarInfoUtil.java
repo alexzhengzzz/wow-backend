@@ -1,6 +1,6 @@
 package com.service.util;
 
-import com.entity.CarInfo;
+import com.entity.info.CarInfo;
 import com.vo.CarInfoVO;
 import org.springframework.stereotype.Component;
 

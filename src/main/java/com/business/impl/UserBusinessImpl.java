@@ -11,7 +11,6 @@ import com.enums.RoleType;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
 import com.service.*;
-import com.utils.cache.TypeInfo;
 import com.vo.UserCorporationVO;
 import com.vo.UserIndividualVO;
 import com.vo.UserInfoAddressVO;
@@ -22,7 +21,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserBusinessImpl implements IUserBusiness {
     @Autowired
-    private IUserService userService;
+    private UserService userService;
 
     @Autowired
     private IUserAddressService userAddressService;

@@ -3,7 +3,6 @@ package com.business.impl;
 import com.business.IndividualBusiness;
 import com.dto.IndividualDTO;
 import com.entity.Individual;
-import com.entity.UserAddress;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
 import com.service.IIndividualService;

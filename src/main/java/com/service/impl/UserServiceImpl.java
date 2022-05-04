@@ -1,24 +1,23 @@
 package com.service.impl;
 
-import com.entity.Office;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.entity.User;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
 import com.mapper.UserMapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.service.IUserService;
+import com.service.UserService;
 import org.springframework.stereotype.Service;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author zmh
  * @since 2022-04-25
  */
 @Service
-public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
     public User getUserById(Long id) {
         User user = this.baseMapper.selectById(id);
         if (user == null) {

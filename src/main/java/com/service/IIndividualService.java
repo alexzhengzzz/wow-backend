@@ -1,11 +1,11 @@
 package com.service;
 
-import com.entity.Individual;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.entity.Individual;
 
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author zmh

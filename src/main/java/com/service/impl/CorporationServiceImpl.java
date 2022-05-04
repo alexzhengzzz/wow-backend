@@ -24,6 +24,7 @@ public class CorporationServiceImpl extends ServiceImpl<CorporationMapper, Corpo
     @Autowired
     private CorporationMapper corporationMapper;
 
+    @Override
     public Corporation getCorporationByName(String corporationName) {
 
         Corporation corporation = corporationMapper.selectOne(new LambdaQueryWrapper<Corporation>().eq(Corporation::getCompanyName, corporationName));

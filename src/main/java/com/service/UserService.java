@@ -5,11 +5,11 @@ import com.entity.User;
 
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author zmh
  * @since 2022-04-25
  */
-public interface IUserService extends IService<User> {
+public interface UserService extends IService<User> {
 }

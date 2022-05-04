@@ -1,8 +1,5 @@
 package com.dto;
 
-import com.entity.Corporation;
-import com.entity.Individual;
-import com.entity.UserAddress;
 import lombok.Data;
 
 @Data

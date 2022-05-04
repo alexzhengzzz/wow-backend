@@ -2,7 +2,6 @@ package com.business.impl;
 
 import com.annotation.PermissionChecker;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.business.CorporationBusiness;
 import com.dto.CorpEmployeeDTO;
 import com.dto.CorporationDTO;
@@ -15,7 +14,7 @@ import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
 import com.service.ICorpEmployeeService;
 import com.service.ICorporationService;
-import com.service.IUserService;
+import com.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,7 +33,7 @@ public class CorporationBusinessImpl implements CorporationBusiness {
     private ICorpEmployeeService corpEmployeeService;
 
     @Autowired
-    private IUserService userService;
+    private UserService userService;
 
 
     @Override
@@ -47,7 +46,7 @@ public class CorporationBusinessImpl implements CorporationBusiness {
         }
         corporation = getCorporation(corporationDTO);
         Boolean isSuccess = corporationService.save(corporation);
-        if (isSuccess != true) {
+        if (!isSuccess) {
             throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR);
         }
     }
@@ -62,7 +61,7 @@ public class CorporationBusinessImpl implements CorporationBusiness {
             throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR, "no such company in database");
         }
         boolean isSuccess = corporationService.remove(new LambdaQueryWrapper<>(corporation).eq(Corporation::getCompanyName, companyName));
-        if (isSuccess != true) {
+        if (!isSuccess) {
             throw GeneralExceptionFactory.create(ErrorCode.DB_DELETE_ERROR);
         }
     }
@@ -77,17 +76,17 @@ public class CorporationBusinessImpl implements CorporationBusiness {
         if (co == null) {
             throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_EXISTED_ERROR, "no such company in database");
         }
-        Long corp_id = co.getCorpId();
+        Long corpId = co.getCorpId();
         // check if exist in corp_employee
-        CorpEmployee ce = corpEmployeeService.getOne(new LambdaQueryWrapper<CorpEmployee>().eq(CorpEmployee::getCorpId, corp_id).eq(CorpEmployee::getEmployeeId, employeeId));
+        CorpEmployee ce = corpEmployeeService.getOne(new LambdaQueryWrapper<CorpEmployee>().eq(CorpEmployee::getCorpId, corpId).eq(CorpEmployee::getEmployeeId, employeeId));
         if (ce != null) {
             throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_EXISTED_ERROR);
         }
         CorpEmployee corpEmployee = new CorpEmployee();
         corpEmployee.setEmployeeId(employeeId);
-        corpEmployee.setCorpId(corp_id);
+        corpEmployee.setCorpId(corpId);
         Boolean isSuccess = corpEmployeeService.save(corpEmployee);
-        if (isSuccess != true) {
+        if (!isSuccess) {
             throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR);
         }
     }
@@ -98,8 +97,8 @@ public class CorporationBusinessImpl implements CorporationBusiness {
         if (corporation == null) {
             throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR);
         }
-        Long corp_id = corporation.getCorpId();
-        List<CorpEmployee> corpEmployees = corpEmployeeService.list(new LambdaQueryWrapper<CorpEmployee>().eq(CorpEmployee::getCorpId, corp_id));
+        Long corpId = corporation.getCorpId();
+        List<CorpEmployee> corpEmployees = corpEmployeeService.list(new LambdaQueryWrapper<CorpEmployee>().eq(CorpEmployee::getCorpId, corpId));
         List<User> users = new ArrayList<>();
         for (CorpEmployee ce : corpEmployees) {
             User user = userService.getOne(new LambdaQueryWrapper<User>().eq(User::getEmployeeId, ce.getEmployeeId()));

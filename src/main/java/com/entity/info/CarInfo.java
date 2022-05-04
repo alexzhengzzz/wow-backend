@@ -1,4 +1,4 @@
-package com.entity;
+package com.entity.info;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
