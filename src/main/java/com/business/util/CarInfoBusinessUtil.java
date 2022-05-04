@@ -19,6 +19,8 @@ public class CarInfoBusinessUtil {
         carInfoBO.setVin_id(carInfoVO.getVin_id());
         carInfoBO.setImage_url(carInfoVO.getImage_url());
         carInfoBO.setStatus(carInfoVO.getStatus());
+        carInfoBO.setLimitMilePerDay(carInfoVO.getLimitMilePerDay());
+        carInfoBO.setOverFee(carInfoVO.getOverFee());
         return carInfoBO;
     }
 

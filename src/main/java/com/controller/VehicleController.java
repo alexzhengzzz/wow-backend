@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/carMaintain")
 @Api("CarMaintain")
-public class CarMaintainController {
+public class VehicleController {
 
     @Autowired
     CarBusiness carBusiness;

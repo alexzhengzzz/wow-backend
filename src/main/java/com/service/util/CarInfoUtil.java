@@ -19,6 +19,8 @@ public class CarInfoUtil {
         carInfoVO.setVin_id(carInfo.getVin_id());
         carInfoVO.setClass_type(carInfo.getClass_type());
         carInfoVO.setStatus(carInfo.getStatus());
+        carInfoVO.setLimitMilePerDay(carInfo.getLimitMilePerDay());
+        carInfoVO.setOverFee(carInfo.getOverFee());
         return carInfoVO;
     }
 
