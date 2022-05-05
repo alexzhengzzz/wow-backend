@@ -2,6 +2,7 @@ package com.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.entity.Vehicle;
+import com.enums.VehicleStatus;
 import com.vo.VehicleVO;
 
 import java.util.List;
@@ -16,4 +17,6 @@ import java.util.List;
  */
 public interface VehicleService extends IService<Vehicle> {
     List<VehicleVO> getVehicleInfo();
+
+    boolean updateVehicleStatus(String vehicleId, VehicleStatus status);
 }

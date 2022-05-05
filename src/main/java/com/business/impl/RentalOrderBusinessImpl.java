@@ -7,12 +7,10 @@ import com.dto.OrderCompleteDTO;
 import com.dto.OrderDTO;
 import com.entity.*;
 import com.enums.OrderStatus;
+import com.enums.VehicleStatus;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
-import com.service.CarClassService;
-import com.service.ICouponsBatchService;
-import com.service.IRentalOrderService;
-import com.service.InvoiceService;
+import com.service.*;
 import com.service.impl.CouponsServiceImpl;
 import com.service.impl.OfficeServiceImpl;
 import com.service.impl.UserServiceImpl;
@@ -54,6 +52,7 @@ public class RentalOrderBusinessImpl implements RentalOrderBusiness {
 
     @Autowired
     private ICouponsBatchService couponsBatchService;
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -159,6 +158,8 @@ public class RentalOrderBusinessImpl implements RentalOrderBusiness {
         // set invoice
         Invoice invoice = setNewInvoice(amount);
         invoiceService.save(invoice);
+        // set vehicle status
+        vehicleService.updateVehicleStatus(rentalOrder.getVinId(), VehicleStatus.OUT_STOCK);
         // set status
         rentalOrder.setInvoiceId(invoice.getInvoiceId());
         rentalOrderService.updateById(rentalOrder);
