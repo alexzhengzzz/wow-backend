@@ -115,11 +115,11 @@ public class LoginBusinessImpl implements LoginBusiness {
     public void sendRandomPWDWithEmail(String email) {
         String secret = RandomUtil.randomString(20);
         User user = userService.getOne(new LambdaQueryWrapper<User>().eq(User::getEmail, email));
-        if (user == null || user.getBakEmail() == null) {
+        if (user == null) {
             throw GeneralExceptionFactory.create(ErrorCode.USER_NOT_FOUND, "email not found or not set backup email");
         }
         iGlobalCache.set(EMAIL_KEY + email, secret, 60 * 30); // 30 minutes expire
-        emailService.sendSimpleMessage(user.getBakEmail(), "reset password",
+        emailService.sendSimpleMessage(user.getEmail(), "reset password",
                 "please use this secret to reset the password in 30 minutes:" + secret);
     }
 
@@ -264,7 +264,6 @@ public class LoginBusinessImpl implements LoginBusiness {
         user.setLname(registerDTO.getLname());
         user.setEmail(registerDTO.getEmail());
         user.setRoleType(registerDTO.getRole_type());
-        user.setBakEmail(registerDTO.getBakEmail());
         user.setPhoneNum(registerDTO.getPhoneNum());
         return user;
     }
