@@ -11,13 +11,12 @@ import com.enums.VehicleStatus;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
 import com.service.*;
-import com.service.impl.CouponsServiceImpl;
-import com.service.impl.OfficeServiceImpl;
-import com.service.impl.UserServiceImpl;
-import com.service.impl.VehicleServiceImpl;
+import com.service.impl.*;
 import com.utils.cache.TimestampUtil;
-import com.vo.OrderInvoiceVO;
-import com.vo.OrderVO;
+import com.vo.orders.OrderInvoiceVO;
+import com.vo.orders.OrderListVO;
+import com.vo.orders.OrderVO;
+import com.vo.orders.OrderVehicleVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -53,6 +53,8 @@ public class RentalOrderBusinessImpl implements RentalOrderBusiness {
     @Autowired
     private ICouponsBatchService couponsBatchService;
 
+    @Autowired
+    private ModelServiceImpl modelService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -109,10 +111,10 @@ public class RentalOrderBusinessImpl implements RentalOrderBusiness {
      * has a limitation of total 1000 miles. If this rental service has used 1050 miles, then
      * customer will be charged as 2days*$40 + $2*50 extra miles, totaling to $180.
      */
-    private BigDecimal calAmount(RentalOrder rentalOrder, BigDecimal discount) {
+    private List<BigDecimal> calAmount(RentalOrder rentalOrder, BigDecimal discount) {
         Vehicle vehicle = vehicleService.getVehicleById(rentalOrder.getVinId());
         CarClass carClass = carClassService.getCarClassInfoById(vehicle.getClassId());
-
+        List<BigDecimal> amountList;
         BigDecimal rentalRatePerDay = carClass.getRentalRatePerDay();
         BigDecimal overFee = carClass.getOverFee();
         BigDecimal start = rentalOrder.getStartOdometer();
@@ -123,16 +125,20 @@ public class RentalOrderBusinessImpl implements RentalOrderBusiness {
         BigDecimal expectedOdometer = BigDecimal.valueOf(days).multiply(limit);
         BigDecimal overMileage = totalOdometer.subtract(expectedOdometer);
         if (overMileage.compareTo(BigDecimal.ZERO) > 0) {
-            BigDecimal overMileageFee = overMileage.multiply(overFee);
-            BigDecimal normalFee = totalOdometer.multiply(rentalRatePerDay);
-            return normalFee.add(overMileageFee).multiply(discount);
+            BigDecimal overMileageFee = overMileage.multiply(overFee).multiply(discount);
+            BigDecimal normalFee = totalOdometer.multiply(rentalRatePerDay).multiply(discount);
+            BigDecimal totalFee = normalFee.add(overMileageFee);
+            amountList = Arrays.asList(normalFee, overMileageFee, totalFee);
+            return amountList;
         }
-        return BigDecimal.valueOf(days).multiply(rentalRatePerDay).multiply(discount);
+        BigDecimal totalFee = BigDecimal.valueOf(days).multiply(rentalRatePerDay).multiply(discount);
+        amountList = Arrays.asList(totalFee, BigDecimal.ZERO, totalFee);
+        return amountList;
     }
 
 
     @Override
-    public List<OrderVO> getOrderByUserId(Long userId) {
+    public List<OrderListVO> getOrderByUserId(Long userId) {
         List<RentalOrder> orders = rentalOrderService.list(new LambdaQueryWrapper<RentalOrder>().eq(RentalOrder::getUserId, userId));
         if (orders == null || orders.isEmpty()) {
             throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_ERROR, "no order found");
@@ -154,9 +160,11 @@ public class RentalOrderBusinessImpl implements RentalOrderBusiness {
         rentalOrder.setDropDate(orderCompleteDTO.getDropDate());
         // cal discount
         BigDecimal discount = getDiscountByCouponId(rentalOrder.getCouponId());
-        BigDecimal amount = calAmount(rentalOrder, discount);
+        List<BigDecimal> bigDecimals = calAmount(rentalOrder, discount);
+        rentalOrder.setBasicCost(bigDecimals.get(0));
+        rentalOrder.setExtraCost(bigDecimals.get(1));
         // set invoice
-        Invoice invoice = setNewInvoice(amount);
+        Invoice invoice = setNewInvoice(bigDecimals.get(0).add(bigDecimals.get(1)));
         invoiceService.save(invoice);
         // set vehicle status
         vehicleService.updateVehicleStatus(rentalOrder.getVinId(), VehicleStatus.OUT_STOCK);
@@ -167,15 +175,16 @@ public class RentalOrderBusinessImpl implements RentalOrderBusiness {
 
     }
 
-    private List<OrderVO> convertToOrderVOs(List<RentalOrder> orders) {
-        List<OrderVO> orderVOs = new ArrayList<>();
+    private List<OrderListVO> convertToOrderVOs(List<RentalOrder> orders) {
+        List<OrderListVO> orderVOs = new ArrayList<>();
         orders.forEach(order -> {
             orderVOs.add(getRentalOrder(order));
         });
         return orderVOs;
     }
 
-    private OrderVO getRentalOrder(RentalOrder rentalOrder) {
+    private OrderListVO getRentalOrder(RentalOrder rentalOrder) {
+        OrderListVO orderListVO = new OrderListVO();
         OrderVO orderVO = new OrderVO();
         orderVO.setOrderId(rentalOrder.getOrderId());
         orderVO.setUserId(rentalOrder.getUserId());
@@ -188,7 +197,25 @@ public class RentalOrderBusinessImpl implements RentalOrderBusiness {
         orderVO.setStartOdometer(rentalOrder.getStartOdometer());
         orderVO.setEndOdometer(rentalOrder.getEndOdometer());
         orderVO.setDailyLimitOdometer(rentalOrder.getDailyLimitOdometer());
-        return orderVO;
+        orderVO.setBasicCost(rentalOrder.getBasicCost());
+        orderVO.setExtraCost(rentalOrder.getExtraCost());
+        orderVO.setExpectedDate(rentalOrder.getExpectedDate());
+        orderVO.setOrderStatus(rentalOrder.getOrderStatus());
+        orderVO.setInvoiceId(rentalOrder.getInvoiceId());
+        orderListVO.setOrderVO(orderVO);
+        vehicleService.getOne(new LambdaQueryWrapper<Vehicle>().eq(Vehicle::getVinId, rentalOrder.getVinId()));
+        OrderVehicleVO orderVehicleVO = new OrderVehicleVO();
+        Vehicle vehicle = vehicleService.getVehicleById(rentalOrder.getVinId());
+        Integer classId = vehicle.getClassId();
+        CarClass carClass = carClassService.getCarClassInfoById(classId);
+        Model model = modelService.getById(vehicle.getModelId());
+        orderVehicleVO.setName(model.getModelName());
+        orderVehicleVO.setVinId(vehicle.getVinId());
+        orderVehicleVO.setImgUrl(carClass.getImageUrl());
+        orderListVO.setOrderVehicleVO(orderVehicleVO);
+
+        orderListVO.setInvoiceId(rentalOrder.getInvoiceId());
+        return orderListVO;
     }
 
     // check odometer and date
@@ -223,6 +250,7 @@ public class RentalOrderBusinessImpl implements RentalOrderBusiness {
         RentalOrder rentalOrder = new RentalOrder();
         rentalOrder.setPickDate(orderDTO.getPickDate());
         rentalOrder.setDropDate(null);
+        rentalOrder.setExpectedDate(orderDTO.getExpectedDate());
         rentalOrder.setStartOdometer(orderDTO.getStartOdometer());
         rentalOrder.setEndOdometer(null);
         rentalOrder.setDailyLimitOdometer(orderDTO.getDailyLimitOdometer());
