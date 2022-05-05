@@ -19,7 +19,6 @@ public class RegisterDTO {
     private String password;
     @NotNull(message = "role not null")
     private Character role_type;
-    private String bakEmail;
     private RegisterUserAddressDTO userAddress;
     private RegisterIndividualDTO individual;
     private RegisterCorporDTO corporate;

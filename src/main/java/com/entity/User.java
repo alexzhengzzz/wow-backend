@@ -38,6 +38,5 @@ public class User implements Serializable {
 
     private String phoneNum;
 
-    private String bakEmail;
 
 }
