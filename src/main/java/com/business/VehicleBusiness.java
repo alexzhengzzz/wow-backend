@@ -10,4 +10,8 @@ public interface VehicleBusiness {
     List<VehicleBO> getVehicleInfo();
 
     List<VehicleSelectBO> getVehicleList();
+
+    boolean updateVehicleStatus(String vehicleId);
+
+
 }

@@ -3,6 +3,7 @@ package com.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.entity.Vehicle;
+import com.enums.VehicleStatus;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
 import com.mapper.VehiclesMapper;
@@ -40,5 +41,13 @@ public class VehicleServiceImpl extends ServiceImpl<VehiclesMapper, Vehicle> imp
             throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "Vehicle Table is Empty");
         }
         return VehicleUtil.transferList(vehicleList);
+    }
+
+    @Override
+    public boolean updateVehicleStatus(String vehicleId, VehicleStatus status) {
+        Vehicle vehicle = getVehicleById(vehicleId);
+        vehicle.setStatus(status.getStatus());
+        this.baseMapper.updateById(vehicle);
+        return true;
     }
 }

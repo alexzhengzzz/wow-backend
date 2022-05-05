@@ -28,4 +28,12 @@ public class VehicleBusinessImpl implements VehicleBusiness {
     public List<VehicleSelectBO> getVehicleList() {
         return VehicleBOUtil.transferToAvBOList(vehicleService.getVehicleInfo());
     }
+
+    @Override
+    public boolean updateVehicleStatus(String vehicleId) {
+        return false;
+    }
+
+
+
 }
