@@ -3,7 +3,7 @@ package com.bo;
 import lombok.Data;
 
 @Data
-public class AvailableOfficeBO {
+public class OfficeSelectBO {
     Integer officeId;
     String officeName;
 }

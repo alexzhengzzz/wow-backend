@@ -2,6 +2,9 @@ package com.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.entity.Vehicle;
+import com.vo.VehicleVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +15,5 @@ import com.entity.Vehicle;
  * @since 2022-05-02
  */
 public interface VehicleService extends IService<Vehicle> {
-
+    List<VehicleVO> getVehicleInfo();
 }

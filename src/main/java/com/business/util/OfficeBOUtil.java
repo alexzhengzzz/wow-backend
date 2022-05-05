@@ -1,28 +1,26 @@
 package com.business.util;
 
-import com.bo.AvailableOfficeBO;
+import com.bo.OfficeSelectBO;
 import com.bo.OfficeBO;
-import com.entity.Office;
 import com.vo.OfficeVO;
-import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class OfficeMaintainBusinessUtil {
-    public static List<AvailableOfficeBO> transferToPairs(List<OfficeVO> officeVOList){
-        List<AvailableOfficeBO> availableOfficeBOList = new ArrayList<>();
+public class OfficeBOUtil {
+    public static List<OfficeSelectBO> transferToPairs(List<OfficeVO> officeVOList){
+        List<OfficeSelectBO> officeSelectBOList = new ArrayList<>();
         for(OfficeVO officeVO:officeVOList){
-            availableOfficeBOList.add(transferToPair(officeVO));
+            officeSelectBOList.add(transferToPair(officeVO));
         }
-        return availableOfficeBOList;
+        return officeSelectBOList;
     }
 
-    public static AvailableOfficeBO transferToPair(OfficeVO officeVo){
-        AvailableOfficeBO availableOfficeBO = new AvailableOfficeBO();
-        availableOfficeBO.setOfficeId(officeVo.getOfficeId());
-        availableOfficeBO.setOfficeName(officeVo.getName());
-        return availableOfficeBO;
+    public static OfficeSelectBO transferToPair(OfficeVO officeVo){
+        OfficeSelectBO officeSelectBO = new OfficeSelectBO();
+        officeSelectBO.setOfficeId(officeVo.getOfficeId());
+        officeSelectBO.setOfficeName(officeVo.getName());
+        return officeSelectBO;
     }
 
     public static List<OfficeBO>    transferToBOs(List<OfficeVO> officeVOList){
