@@ -2,6 +2,7 @@ package com.vo;
 
 import lombok.Data;
 
+@Deprecated
 @Data
 public class CarVO {
     private String vin_id;

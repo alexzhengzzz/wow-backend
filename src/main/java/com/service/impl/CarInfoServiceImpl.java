@@ -2,7 +2,9 @@ package com.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dto.VehicleInfoDTO;
+import com.entity.info.CarInfo;
 import com.mapper.CarInfoMapper;
 import com.service.ICarInfoService;
 import com.service.util.CarInfoUtil;
@@ -17,7 +19,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
-public class CarInfoServiceImpl implements ICarInfoService {
+public class CarInfoServiceImpl extends ServiceImpl<CarInfoMapper, CarInfo> implements ICarInfoService {
     @Autowired
     private CarInfoMapper carInfoMapper;
 
@@ -26,48 +28,4 @@ public class CarInfoServiceImpl implements ICarInfoService {
         return CarInfoUtil.transferList(carInfoMapper.getCarList());
     }
 
-    @Override
-    public boolean saveBatch(Collection<VehicleInfoDTO> entityList, int batchSize) {
-        return false;
-    }
-
-    @Override
-    public boolean saveOrUpdateBatch(Collection<VehicleInfoDTO> entityList, int batchSize) {
-        return false;
-    }
-
-    @Override
-    public boolean updateBatchById(Collection<VehicleInfoDTO> entityList, int batchSize) {
-        return false;
-    }
-
-    @Override
-    public boolean saveOrUpdate(VehicleInfoDTO entity) {
-        return false;
-    }
-
-    @Override
-    public VehicleInfoDTO getOne(Wrapper<VehicleInfoDTO> queryWrapper, boolean throwEx) {
-        return null;
-    }
-
-    @Override
-    public Map<String, Object> getMap(Wrapper<VehicleInfoDTO> queryWrapper) {
-        return new HashMap<>();
-    }
-
-    @Override
-    public <V> V getObj(Wrapper<VehicleInfoDTO> queryWrapper, Function<? super Object, V> mapper) {
-        return null;
-    }
-
-    @Override
-    public BaseMapper<VehicleInfoDTO> getBaseMapper() {
-        return null;
-    }
-
-    @Override
-    public Class<VehicleInfoDTO> getEntityClass() {
-        return null;
-    }
 }
