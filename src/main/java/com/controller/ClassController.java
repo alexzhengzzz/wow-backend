@@ -1,8 +1,8 @@
 package com.controller;
 
-import com.bo.ModelSelectBO;
-import com.bo.ModelBO;
-import com.business.ModelBusiness;
+import com.bo.CarClassSelectBO;
+import com.bo.CarClassBO;
+import com.business.CarClassBusiness;
 import com.enums.ResponseCode;
 import com.utils.cache.Response;
 import io.swagger.annotations.Api;
@@ -15,21 +15,22 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/ModelMaintain")
-@Api("Model")
-public class ModelController {
+@RequestMapping("/api/ClassMaintain")
+@Api("ClassMaintain")
+public class ClassController {
+
     @Autowired
-    ModelBusiness modelBusiness;
+    CarClassBusiness carClassBusiness;
 
     @ApiOperation("get availabe return class list")
-    @GetMapping("getModelNameList")
-    public Response<List<ModelSelectBO>> getAllModelList(){
-        return new Response<>(ResponseCode.SUCCESS, modelBusiness.getModelList());
+    @GetMapping("classNameList")
+    public Response<List<CarClassSelectBO>> getAllClassList(){
+        return new Response<>(ResponseCode.SUCCESS, carClassBusiness.getClassList());
     }
 
     @ApiOperation("get availabe return class information")
-    @GetMapping("getModelInfo")
-    public Response<List<ModelBO>> getAllModelOInfo(){
-        return new Response<>(ResponseCode.SUCCESS, modelBusiness.getModelInfo());
+    @GetMapping("officeInformation")
+    public Response<List<CarClassBO>> getAllClassOInfo(){
+        return new Response<>(ResponseCode.SUCCESS, carClassBusiness.getClassInfo());
     }
 }

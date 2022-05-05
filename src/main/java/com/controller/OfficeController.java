@@ -1,8 +1,8 @@
 package com.controller;
 
-import com.bo.AvailableOfficeBO;
+import com.bo.OfficeSelectBO;
 import com.bo.OfficeBO;
-import com.business.OfficeMaintainBusiness;
+import com.business.OfficeBusiness;
 import com.enums.ResponseCode;
 import com.utils.cache.Response;
 import io.swagger.annotations.Api;
@@ -19,18 +19,18 @@ import java.util.List;
 @Api("OfficeMaintain")
 public class OfficeController {
     @Autowired
-    OfficeMaintainBusiness officeMaintainBusiness;
+    OfficeBusiness officeBusiness;
 
     @ApiOperation("get availabe return office")
     @GetMapping("OfficeNameList")
-    public Response<List<AvailableOfficeBO>> getAllOfficeList(){
-        return new Response<>(ResponseCode.SUCCESS, officeMaintainBusiness.getOfficeList());
+    public Response<List<OfficeSelectBO>> getAllOfficeList(){
+        return new Response<>(ResponseCode.SUCCESS, officeBusiness.getOfficeList());
     }
 
     @ApiOperation("get availabe return office information")
     @GetMapping("OfficeInformation")
     public Response<List<OfficeBO>> getAllOfficeInfo(){
-        return new Response<>(ResponseCode.SUCCESS, officeMaintainBusiness.getOfficeInfo());
+        return new Response<>(ResponseCode.SUCCESS, officeBusiness.getOfficeInfo());
     }
 
 }

@@ -2,6 +2,9 @@ package com.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.entity.CarClass;
+import com.vo.CarClassVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,7 @@ import com.entity.CarClass;
  */
 public interface CarClassService extends IService<CarClass> {
     CarClass getCarClassInfoById(Integer id);
+
+    List<CarClassVO> getCarClassInfo();
+
 }

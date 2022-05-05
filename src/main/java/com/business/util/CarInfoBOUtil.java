@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class CarInfoBusinessUtil {
+public class CarInfoBOUtil {
     public static CarInfoBO transfer(CarInfoVO carInfoVO){
         CarInfoBO carInfoBO = new CarInfoBO();
         carInfoBO.setName(carInfoVO.getName());

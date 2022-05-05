@@ -229,7 +229,7 @@ public class LoginBusinessImpl implements LoginBusiness {
             throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR, "corporation not found");
         }
         Long corpId = co.getCorpId();
-        CorpEmployee res = corpEmployeeService.getOne(new LambdaQueryWrapper<CorpEmployee>().eq(CorpEmployee::getEmployeeId, employeeId).eq(CorpEmployee::getCorpId, corpId));
+        CorpEmployee res = corpEmployeeService.getOne(new LambdaQueryWrapper<CorpEmployee>().eq(CorpEmployee::getCorpId, corpId).eq(CorpEmployee::getEmployeeId, employeeId));
         if (res == null) {
             throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR, "corpId: " + corpId + "employeeId: " + employeeId);
         }
@@ -238,7 +238,6 @@ public class LoginBusinessImpl implements LoginBusiness {
             throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_NOT_EXISTED_ERROR, "existed companyId and employeeId");
         }
         return corpId;
-
     }
 
     private void checkUserInfo(RegisterDTO registerDTO) {

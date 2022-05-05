@@ -3,10 +3,11 @@ package com.entity.info;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Data
-public class CarInfo {
+public class CarInfo implements Serializable {
     @TableId("vin_id")
     private String vin_id;
     private String image_url;
