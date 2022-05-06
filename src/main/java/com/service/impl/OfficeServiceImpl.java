@@ -2,13 +2,11 @@ package com.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.dto.OfficeDTO;
 import com.entity.Office;
 import com.exception.ErrorCode;
-import com.exception.GeneralException;
 import com.exception.GeneralExceptionFactory;
 import com.mapper.OfficeMapper;
-import com.service.OfficeService;
+import com.service.IOfficeService;
 import com.service.util.OfficeUtil;
 import com.vo.OfficeVO;
 import org.springframework.stereotype.Service;
@@ -24,7 +22,7 @@ import java.util.List;
  * @since 2022-05-02
  */
 @Service
-public class OfficeServiceImpl extends ServiceImpl<OfficeMapper, Office> implements OfficeService {
+public class OfficeServiceImpl extends ServiceImpl<OfficeMapper, Office> implements IOfficeService {
     public Office getLocById(Integer id) {
         Office office = this.baseMapper.selectById(id);
         if (office == null) {
@@ -41,6 +39,11 @@ public class OfficeServiceImpl extends ServiceImpl<OfficeMapper, Office> impleme
             throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "Office Table is Empty");
         }
         return OfficeUtil.transferList(officeList);
+    }
+
+    @Override
+    public int insert(Office office) {
+        return this.baseMapper.insert(office);
     }
 
 //    @Override

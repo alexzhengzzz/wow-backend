@@ -15,7 +15,7 @@ import java.util.List;
  * @author zmh
  * @since 2022-05-02
  */
-public interface VehicleService extends IService<Vehicle> {
+public interface IVehicleService extends IService<Vehicle> {
     List<VehicleVO> getVehicleInfo();
 
     boolean updateVehicleStatus(String vehicleId, VehicleStatus status);

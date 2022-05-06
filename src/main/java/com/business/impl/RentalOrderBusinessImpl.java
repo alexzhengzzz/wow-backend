@@ -9,7 +9,7 @@ import com.entity.*;
 import com.enums.VehicleStatus;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
-import com.service.CarClassService;
+import com.service.ICarClassService;
 import com.service.ICouponsBatchService;
 import com.service.IRentalOrderService;
 import com.service.InvoiceService;
@@ -47,7 +47,7 @@ public class RentalOrderBusinessImpl implements RentalOrderBusiness {
     private IRentalOrderService rentalOrderService;
 
     @Autowired
-    private CarClassService carClassService;
+    private ICarClassService carClassService;
 
     @Autowired
     private InvoiceService invoiceService;

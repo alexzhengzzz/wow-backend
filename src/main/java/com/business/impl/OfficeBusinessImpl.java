@@ -6,7 +6,7 @@ import com.business.OfficeBusiness;
 import com.business.util.OfficeBOUtil;
 import com.dto.OfficeDTO;
 import com.entity.Office;
-import com.service.OfficeService;
+import com.service.IOfficeService;
 import com.service.util.OfficeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import java.util.List;
 public class OfficeBusinessImpl implements OfficeBusiness {
 
     @Autowired
-    OfficeService officeMaintainService;
+    IOfficeService officeMaintainService;
 
 
     @Override

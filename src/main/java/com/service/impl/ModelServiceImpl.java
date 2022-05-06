@@ -30,4 +30,9 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
         }
             return ModelUtil.transferList(modelList);
     }
+
+    @Override
+    public int insert(Model model) {
+        return this.baseMapper.insert(model);
+    }
 }

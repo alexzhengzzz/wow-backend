@@ -5,7 +5,7 @@ import com.bo.CarClassBO;
 import com.business.CarClassBusiness;
 import com.business.util.CarClassBOUtil;
 import com.dto.CarClassDTO;
-import com.service.CarClassService;
+import com.service.ICarClassService;
 import com.service.util.CarClassUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import java.util.List;
 public class CarClassBusinessImpl implements CarClassBusiness {
 
     @Autowired
-    CarClassService carClassService;
+    ICarClassService carClassService;
 
     @Override
     public List<CarClassSelectBO> getClassList() {

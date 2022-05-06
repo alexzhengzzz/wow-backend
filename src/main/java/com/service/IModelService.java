@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface IModelService extends IService<Model> {
     List<ModelVO>  getModelInfo();
+
+    int insert(Model model);
 }

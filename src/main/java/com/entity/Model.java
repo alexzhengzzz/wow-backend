@@ -12,7 +12,7 @@ import java.io.Serializable;
 public class Model implements Serializable {
     @TableId(value = "model_id", type = IdType.AUTO)
     public Integer modelId;
-    private Long manId;
+    private Integer manId;
     private String modelName;
     private String year;
     private Integer seatNum;

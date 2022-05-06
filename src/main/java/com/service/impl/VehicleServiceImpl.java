@@ -7,7 +7,7 @@ import com.enums.VehicleStatus;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
 import com.mapper.VehiclesMapper;
-import com.service.VehicleService;
+import com.service.IVehicleService;
 import com.service.util.VehicleUtil;
 import com.vo.VehicleVO;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ import java.util.List;
  * @since 2022-05-02
  */
 @Service
-public class VehicleServiceImpl extends ServiceImpl<VehiclesMapper, Vehicle> implements VehicleService {
+public class VehicleServiceImpl extends ServiceImpl<VehiclesMapper, Vehicle> implements IVehicleService {
     public Vehicle getVehicleById(String id) {
         Vehicle vehicle = baseMapper.selectById(id);
         if (vehicle == null) {

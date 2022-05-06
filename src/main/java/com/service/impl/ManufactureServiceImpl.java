@@ -26,4 +26,9 @@ public class ManufactureServiceImpl extends ServiceImpl<ManufactureMapper, Manuf
         }
         return ManufactureUtil.transferList(manufactureList);
     }
+
+    @Override
+    public int insert(Manufacture manufacture) {
+        return this.baseMapper.insert(manufacture);
+    }
 }
