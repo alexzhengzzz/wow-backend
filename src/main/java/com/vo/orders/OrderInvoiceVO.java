@@ -1,4 +1,4 @@
-package com.vo;
+package com.vo.orders;
 
 import com.entity.Invoice;
 import com.entity.RentalOrder;

@@ -3,10 +3,11 @@ package com.controller;
 import com.business.RentalOrderBusiness;
 import com.dto.OrderCompleteDTO;
 import com.dto.OrderDTO;
+import com.entity.RentalOrder;
 import com.enums.ResponseCode;
 import com.utils.cache.Response;
-import com.vo.OrderInvoiceVO;
-import com.vo.OrderVO;
+import com.vo.orders.OrderInvoiceVO;
+import com.vo.orders.OrderListVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +33,9 @@ public class RentalOrderController {
 
     @ApiOperation("init an order")
     @PostMapping
-    public Response<OrderInvoiceVO> initOrder(@Valid @RequestBody OrderDTO orderDTO) {
-        OrderInvoiceVO orderInvoiceVO = rentalOrderBusiness.initOrder(orderDTO);
-        return new Response(ResponseCode.SUCCESS, orderInvoiceVO);
+    public Response<RentalOrder> initOrder(@Valid @RequestBody OrderDTO orderDTO) {
+        RentalOrder rentalOrder = rentalOrderBusiness.initOrder(orderDTO);
+        return new Response(ResponseCode.SUCCESS, rentalOrder);
     }
 
 //    @ApiOperation("get order by order id")
@@ -53,7 +54,7 @@ public class RentalOrderController {
 
     @ApiOperation("get order list by user id")
     @GetMapping("/u/{userId}")
-    public Response<List<OrderVO>> getOrderByUserId(@PathVariable("userId") Long userId) {
+    public Response<List<OrderListVO>> getOrderByUserId(@PathVariable("userId") Long userId) {
         return new Response<>(ResponseCode.SUCCESS, rentalOrderBusiness.getOrderByUserId(userId));
     }
 

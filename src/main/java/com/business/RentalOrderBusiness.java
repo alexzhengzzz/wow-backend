@@ -2,16 +2,17 @@ package com.business;
 
 import com.dto.OrderCompleteDTO;
 import com.dto.OrderDTO;
-import com.vo.OrderInvoiceVO;
-import com.vo.OrderVO;
+import com.entity.RentalOrder;
+import com.vo.orders.OrderInvoiceVO;
+import com.vo.orders.OrderListVO;
 
 import java.util.List;
 
 public interface RentalOrderBusiness {
 
-    OrderInvoiceVO initOrder(OrderDTO orderDTO);
+    RentalOrder initOrder(OrderDTO orderDTO);
 
-    List<OrderVO> getOrderByUserId(Long userId);
+    List<OrderListVO> getOrderByUserId(Long userId);
 
     OrderInvoiceVO completeOrder(Long orderId, OrderCompleteDTO orderCompleteDTO);
 }

@@ -25,4 +25,5 @@ public class OrderDTO {
     private BigDecimal endOdometer;
     @NotNull(message = "dailyLimitOdometer can not be empty")
     private BigDecimal dailyLimitOdometer;
+    private Timestamp expectedDate;
 }
