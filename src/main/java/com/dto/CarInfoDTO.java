@@ -1,6 +1,4 @@
 package com.dto;
-
-import com.entity.Vehicle;
 import lombok.Data;
 
 @Data
