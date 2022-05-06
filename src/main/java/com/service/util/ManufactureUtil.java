@@ -1,5 +1,6 @@
 package com.service.util;
 
+import com.dto.ManufactureDTO;
 import com.entity.Manufacture;
 import com.vo.ManufactureVO;
 
@@ -22,4 +23,11 @@ public class ManufactureUtil {
         }
         return manufactureVOList;
     }
+
+    public static Manufacture transferDTO( ManufactureDTO manufactureDTO){
+        Manufacture manufacture = new Manufacture();
+        manufacture.setManName(manufactureDTO.getManName());
+        return manufacture;
+    }
+
 }
