@@ -74,10 +74,10 @@ mybatis-plus:
 
 # 服务器版本
 server:
-  port: 8086
+  port: 8080
 ---
 server:
-  port: 8086
+  port: 8080
 logging:
   level:
     root: info
