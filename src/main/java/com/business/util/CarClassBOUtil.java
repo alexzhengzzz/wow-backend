@@ -23,6 +23,7 @@ public class CarClassBOUtil {
         carClassBO.setImageUrl(carClassVO.getImageUrl());
         carClassBO.setOverFee(carClassVO.getOverFee());
         carClassBO.setRentalRatePerDay(carClassVO.getRentalRatePerDay());
+        carClassBO.setDailyMileLimit(carClassVO.getDailyMileLimit());
         return carClassBO;
     }
 

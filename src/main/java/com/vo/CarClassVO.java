@@ -12,6 +12,8 @@ public class CarClassVO {
 
     private String imageUrl;
 
+    private BigDecimal dailyMileLimit;
+
     private BigDecimal rentalRatePerDay;
 
     private BigDecimal overFee;

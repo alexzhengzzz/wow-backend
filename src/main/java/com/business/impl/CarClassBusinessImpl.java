@@ -4,7 +4,9 @@ import com.bo.CarClassSelectBO;
 import com.bo.CarClassBO;
 import com.business.CarClassBusiness;
 import com.business.util.CarClassBOUtil;
+import com.dto.CarClassDTO;
 import com.service.CarClassService;
+import com.service.util.CarClassUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,5 +29,20 @@ public class CarClassBusinessImpl implements CarClassBusiness {
     @Override
     public List<CarClassBO> getClassInfo() {
         return CarClassBOUtil.transferToList(carClassService.getCarClassInfo());
+    }
+
+    @Override
+    public boolean updateCarClassById(Integer carClassId, CarClassDTO carClassDTO) {
+        return carClassService.updateById(CarClassUtil.transferDTO(carClassId, carClassDTO));
+    }
+
+    @Override
+    public boolean deleteCarClassById(Integer carClassId) {
+        return carClassService.removeById(carClassId);
+    }
+
+    @Override
+    public boolean createCarClassById(CarClassDTO carClassDTO) {
+        return carClassService.save(CarClassUtil.transferDTO(null, carClassDTO));
     }
 }
