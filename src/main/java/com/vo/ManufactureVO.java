@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class ManufactureVO {
-    private Long manId;
+    private Integer manId;
     private String manName;
 }
