@@ -22,33 +22,33 @@ public class ModelController {
     ModelBusiness modelBusiness;
 
     @ApiOperation("get availabe return class list")
-    @GetMapping("getModelNameList")
+    @GetMapping("/getModelNameList")
     public Response<List<ModelSelectBO>> getAllModelList(){
         return new Response<>(ResponseCode.SUCCESS, modelBusiness.getModelList());
     }
 
     @ApiOperation("get availabe return class information")
-    @GetMapping("getModelInfo")
+    @GetMapping("/getModelInfo")
     public Response<List<ModelBO>> getAllModelOInfo(){
         return new Response<>(ResponseCode.SUCCESS, modelBusiness.getModelInfo());
     }
 
     @ApiOperation("delete manufacuture information")
-    @DeleteMapping("deleteModel/{modelId}")
+    @DeleteMapping("/deleteModel/{modelId}")
     public Response deleteModel(@PathVariable("modelId") Integer modelId){
         modelBusiness.deleteModel(modelId);
         return new Response(ResponseCode.SUCCESS, "success");
     }
 
     @ApiOperation("update manufacutre information")
-    @PutMapping("updateModel/{modelId}")
+    @PutMapping("/updateModel/{modelId}")
     public Response upadteModel(@PathVariable("modelId") Integer modelId, ModelDTO modelDTO){
         modelBusiness.updateModel(modelId, modelDTO);
         return new Response(ResponseCode.SUCCESS, "success");
     }
 
     @ApiOperation("create new manufacture")
-    @PostMapping("createManufacture")
+    @PostMapping("/createManufacture")
     public Response createModel(@RequestBody ModelDTO modelDTO){
         modelBusiness.createModel(modelDTO);
         return new Response(ResponseCode.SUCCESS, "success");

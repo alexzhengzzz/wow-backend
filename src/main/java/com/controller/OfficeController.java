@@ -21,33 +21,33 @@ public class OfficeController {
     OfficeBusiness officeBusiness;
 
     @ApiOperation("get availabe return office")
-    @GetMapping("OfficeNameList")
+    @GetMapping("/OfficeNameList")
     public Response<List<OfficeSelectBO>> getAllOfficeList(){
         return new Response<>(ResponseCode.SUCCESS, officeBusiness.getOfficeList());
     }
 
     @ApiOperation("get availabe return office information")
-    @GetMapping("getOfficeInfo")
+    @GetMapping("/getOfficeInfo")
     public Response<List<OfficeBO>> getAllOfficeInfo(){
         return new Response<>(ResponseCode.SUCCESS, officeBusiness.getOfficeInfo());
     }
 
     @ApiOperation("create new Office")
-    @PostMapping("createOfficeInfo")
+    @PostMapping("/createOfficeInfo")
     public Response createOfficeInfo(@RequestBody OfficeDTO officeDTO){
         officeBusiness.createOfficeInfo(officeDTO);
         return new Response(ResponseCode.SUCCESS,"success");
     }
 
     @ApiOperation("delete office")
-    @DeleteMapping ("deleteOffice/{officeId}")
+    @DeleteMapping ("/deleteOffice/{officeId}")
     public Response deleteOffice(@PathVariable("officeId") Integer officeId){
         officeBusiness.deleteOfficeById(officeId);
         return new Response(ResponseCode.SUCCESS, "success");
     }
 
     @ApiOperation("update office")
-    @PutMapping ("updateOffice/{officeId}")
+    @PutMapping ("/updateOffice/{officeId}")
     public Response updateOffice(@PathVariable("officeId") Integer officeId, @RequestBody OfficeDTO officeDTO){
         officeBusiness.updateOffice(officeId, officeDTO);
         return new Response(ResponseCode.SUCCESS, "success");

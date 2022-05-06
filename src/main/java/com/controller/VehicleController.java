@@ -24,33 +24,33 @@ public class VehicleController {
     VehicleBusiness vehicleBusiness;
 
     @ApiOperation("get availabe return vehicle")
-    @GetMapping("getVehiclePlateList")
+    @GetMapping("/getVehiclePlateList")
     public Response<List<VehicleSelectBO>> getAllVehicleList(){
         return new Response<>(ResponseCode.SUCCESS, vehicleBusiness.getVehicleList());
     }
 
     @ApiOperation("get availabe return office information")
-    @GetMapping("getVehicleInfo")
+    @GetMapping("/getVehicleInfo")
     public Response<List<VehicleBO>> getAllVehicleInfo(){
         return new Response<>(ResponseCode.SUCCESS, vehicleBusiness.getVehicleInfo());
     }
 
     @ApiOperation("delete vehicle by vinId")
-    @DeleteMapping("deleteVehicle/{vinId}")
+    @DeleteMapping("/deleteVehicle/{vinId}")
     public Response deleteVehicle(@PathVariable("vinId")  String vinId ){
         vehicleBusiness.deleteVehicleById(vinId);
         return new Response(ResponseCode.SUCCESS,"vehicle deleted");
     }
 
     @ApiOperation("update vehicle by vinId")
-    @PutMapping("updateVehicle/{vinId}")
+    @PutMapping("/updateVehicle/{vinId}")
     public Response updateVehicle(@PathVariable("vinId") String vinId,@RequestBody VehicleDTO vehicleDTO){
         vehicleBusiness.updateVehicle(vinId, vehicleDTO);
         return new Response(ResponseCode.SUCCESS,"vehicle updated");
     }
 
     @ApiOperation("create vehicle")
-    @PostMapping("createVehicle")
+    @PostMapping("/createVehicle")
     public Response createVehicle(@RequestBody VehicleDTO vehicleDTO){
         vehicleBusiness.createVehicleInfo(vehicleDTO);
         return new Response(ResponseCode.SUCCESS,"vehicle created");
