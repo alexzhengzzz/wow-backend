@@ -1,5 +1,6 @@
 package com.business.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.business.CouponsBatchBussiness;
 import com.dto.CouponsBatchDTO;
 import com.entity.CouponsBatch;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Component
 public class CouponsBatchBussinessImpl implements CouponsBatchBussiness {
@@ -29,6 +31,19 @@ public class CouponsBatchBussinessImpl implements CouponsBatchBussiness {
         }
         return couponsBatch;
     }
+
+    @Override
+    //    @PermissionChecker(requiredRole = Role.ADMIN) // only admin can create coupons batch
+    public List<CouponsBatch> getCouponsBatchList() {
+        return couponsBatchService.list();
+    }
+
+    @Override
+    public List<CouponsBatch> getCouponsBatchListByPage(Long currentPage, Long pageSize) {
+        Page<CouponsBatch> page = new Page<>(currentPage, pageSize);
+        return couponsBatchService.page(page).getRecords();
+    }
+
     @Autowired
     private CachePrepareServiceImpl cachePrepareService;
     private void checkAndSetParameters(CouponsBatchDTO couponsBatchDTO, CouponsBatch couponsBatch) {
