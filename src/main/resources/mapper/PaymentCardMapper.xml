@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.PaymentCardMapper">
+
+    <resultMap id="BasicResultMap" type = "com.entity.PaymentCard">
+        <result column="card_id" property="cardId" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="card_num" property="cardNum" jdbcType="INTEGER"/>
+        <result column="expire_date" property="expireDate" jdbcType="TIMESTAMP"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="country" property="country" jdbcType="VARCHAR"/>
+        <result column="state" property="state" jdbcType="VARCHAR"/>
+        <result column="street" property="street" jdbcType="VARCHAR"/>
+        <result column="city" property="city" jdbcType="DECIMAL"/>
+        <result column="zipcode" property="zipcode" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id = "selectCardListByUserId" resultMap="BasicResultMap">
+        select card_id, user_id, card_num, expire_date, name, country, state, street, city, zipcode, status
+        from payment_card
+        where user_id = ${userId}
+    </select>
+
+</mapper>

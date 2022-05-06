@@ -3,14 +3,13 @@ package com.controller;
 import com.bo.OfficeSelectBO;
 import com.bo.OfficeBO;
 import com.business.OfficeBusiness;
+import com.dto.OfficeDTO;
 import com.enums.ResponseCode;
 import com.utils.cache.Response;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,9 +27,30 @@ public class OfficeController {
     }
 
     @ApiOperation("get availabe return office information")
-    @GetMapping("OfficeInformation")
+    @GetMapping("getOfficeInfo")
     public Response<List<OfficeBO>> getAllOfficeInfo(){
         return new Response<>(ResponseCode.SUCCESS, officeBusiness.getOfficeInfo());
+    }
+
+    @ApiOperation("create new Office")
+    @PostMapping("createOfficeInfo")
+    public Response createOfficeInfo(OfficeDTO officeDTO){
+        officeBusiness.createOfficeInfo(officeDTO);
+        return new Response(ResponseCode.SUCCESS,"success");
+    }
+
+    @ApiOperation("delete office")
+    @PostMapping("deleteOffice/{officeId}")
+    public Response deleteOffice(@PathVariable("officeId") Integer officeId){
+        officeBusiness.deleteOfficeById(officeId);
+        return new Response(ResponseCode.SUCCESS, "success");
+    }
+
+    @ApiOperation("update office")
+    @PostMapping("updateOffice/{officeId}")
+    public Response updateOffice(@PathVariable("officeId") Integer officeId,OfficeDTO officeDTO){
+        officeBusiness.updateOffice(officeId, officeDTO);
+        return new Response(ResponseCode.SUCCESS, "success");
     }
 
 }
