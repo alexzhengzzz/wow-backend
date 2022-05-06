@@ -2,6 +2,7 @@ package com.dto;
 
 import lombok.Data;
 
+@Deprecated
 @Data
 public class VehicleInfoDTO {
     private String name;

@@ -4,7 +4,9 @@ import com.bo.VehicleSelectBO;
 import com.bo.VehicleBO;
 import com.business.VehicleBusiness;
 import com.business.util.VehicleBOUtil;
+import com.dto.VehicleDTO;
 import com.service.VehicleService;
+import com.service.util.VehicleUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,10 +31,26 @@ public class VehicleBusinessImpl implements VehicleBusiness {
         return VehicleBOUtil.transferToAvBOList(vehicleService.getVehicleInfo());
     }
 
+
     @Override
-    public boolean updateVehicleStatus(String vehicleId) {
-        return false;
+    public boolean createVehicleInfo(VehicleDTO vehicleDTO) {
+        return vehicleService.save(VehicleUtil.transferDTO(null, vehicleDTO));
     }
+
+    @Override
+    public boolean deleteVehicleById(String vehicleId) {
+        return vehicleService.removeById(vehicleId);
+    }
+
+    @Override
+    public boolean updateVehicle(String vehicleId, VehicleDTO vehicleDTO){
+        return vehicleService.updateById(VehicleUtil.transferDTO(vehicleId, vehicleDTO));
+    }
+
+//    @Override
+//    public boolean updateVehicleStatus(String vehicleId) {
+//        return false;
+//    }
 
 
 
