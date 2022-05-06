@@ -22,14 +22,14 @@ public class PaymentCardController {
     PaymentCardBusiness paymentCardBusiness;
 
     @ApiOperation("add new payment card")
-    @PostMapping()
+    @PostMapping("/createCard")
     public Response createPaymentCard(@RequestBody PaymentCardDTO paymentCardDTO){
         paymentCardBusiness.setPaymentCard(paymentCardDTO);
         return new Response(ResponseCode.SUCCESS, "success");
     }
 
     @ApiOperation("get user's Payment method")
-    @GetMapping("getUserCardList/{userId}")
+    @GetMapping("/getUserCardList/{userId}")
     public Response<List<PaymentCardBO>> getAllCarList(@PathVariable("userId") Long userId) {
         return new Response<>(ResponseCode.SUCCESS,paymentCardBusiness.getCardListByUserId(userId));
     }
