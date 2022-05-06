@@ -14,33 +14,33 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/ManufactureMaintain")
+@RequestMapping("/api/manufacture")
 @Api("Manufacture")
 public class ManufactureController {
     @Autowired
     ManufactureBusiness manufactureBusiness;
     @ApiOperation("getManufactureInfo")
-    @GetMapping("getManufactureInfo")
+    @GetMapping()
     public Response<List<ManufactureBO>> getAllManufactureInfo(){
         return new Response<>(ResponseCode.SUCCESS, manufactureBusiness.getManufactureInfo());
     }
 
     @ApiOperation("delete manufacuture information")
-    @DeleteMapping("deleteManufacture/{manId}")
+    @DeleteMapping("/{manId}")
     public Response deleteManufacture(@PathVariable("manId") Integer manId){
         manufactureBusiness.deleteManufacture(manId);
         return new Response(ResponseCode.SUCCESS, "success");
     }
 
     @ApiOperation("update manufacutre information")
-    @PutMapping("updateManufacture/{manId}")
+    @PutMapping("/{manId}")
     public Response upadteManufacture(@PathVariable("manId") Integer manId, ManufactureDTO manufactureDTO){
         manufactureBusiness.updateManufacture(manId, manufactureDTO);
         return new Response(ResponseCode.SUCCESS, "success");
     }
 
     @ApiOperation("create new manufacture")
-    @PostMapping("createManufacture")
+    @PostMapping()
     public Response createManufacture(@RequestBody ManufactureDTO manufactureDTO){
         manufactureBusiness.createManufacture(manufactureDTO);
         return new Response(ResponseCode.SUCCESS, "success");

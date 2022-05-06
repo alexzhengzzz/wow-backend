@@ -9,21 +9,21 @@ public class CarInfoDTO {
     //private  ManufactureDTO manufactureDTO;
     private Integer manId;
     private String manName;
+    private  Integer carClassId;
+    private  Integer officeId;
+    private  Integer modelId;
+    private  String vehicleId;
+    private  String plateNumber;
 
     // carClass
     private  CarClassDTO carClassDTO;
-    private  Integer carClassId;
-
     // office
     private  OfficeDTO officeDTO;
-    private  Integer officeId;
-
     // model
     private  ModelDTO modelDTO;
-    private  Integer modelId;
+
 
     // vehicle
     //private  VehicleDTO vehicleDTO;
-    private  String vehicleId;
-    private  String plateNumber;
+
 }

@@ -4,10 +4,7 @@ import com.bo.CarInfoBO;
 import com.business.CarInfoBusiness;
 import com.business.util.CarInfoBOUtil;
 import com.dto.*;
-import com.entity.CarClass;
-import com.entity.Manufacture;
-import com.entity.Model;
-import com.entity.Office;
+import com.entity.*;
 import com.enums.VehicleStatus;
 import com.service.*;
 import com.service.util.CarClassUtil;
@@ -46,21 +43,53 @@ public class CarInfoBusinessImpl implements CarInfoBusiness {
         return CarInfoBOUtil.transferList(carInfoService.getCarList(), type);
     }
 
+    private Integer manId;
+    private Integer carClassId;
+    private Integer modelId;
+    private Integer officeId;
+    private String vinId;
+    private String plateNumber;
+    private String manName;
+
+    private CarClassDTO carClassDTO;
+    private ModelDTO modelDTO;
+    private OfficeDTO officeDTO;
+
+    private Vehicle vehicle;
+
     @Override
-    public boolean createCar(CarInfoDTO carInfoDTO) {
+    public boolean updateCar(CarInfoDTO carInfoDTO, boolean isExist) {
+        setCarInfo(carInfoDTO);
+        setProperties();
+        createVehicle();
+        if(isExist){
+            vehicleService.updateById(vehicle);
+        }else{
+            vehicleService.save(vehicle);
+        }
+        return true;
+    }
 
-        Integer manId = carInfoDTO.getManId();
-        Integer carClassId = carInfoDTO.getCarClassId();
-        Integer modelId = carInfoDTO.getModelId();
-        Integer officeId = carInfoDTO.getOfficeId();
-        String vinId = carInfoDTO.getVehicleId();
-        String plateNumber = carInfoDTO.getPlateNumber();
-        String manName = carInfoDTO.getManName();
+    @Override
+    public boolean deleteCar(String vinId) {
+        return vehicleService.removeById(vinId);
+    }
 
-        CarClassDTO carClassDTO = carInfoDTO.getCarClassDTO();
-        ModelDTO modelDTO = carInfoDTO.getModelDTO();
-        OfficeDTO officeDTO = carInfoDTO.getOfficeDTO();
+    public void setCarInfo(CarInfoDTO carInfoDTO){
+        this.manId = carInfoDTO.getManId();
+        this.carClassId = carInfoDTO.getCarClassId();
+        this.modelId = carInfoDTO.getModelId();
+        this.officeId = carInfoDTO.getOfficeId();
+        this.vinId = carInfoDTO.getVehicleId();
+        this.plateNumber = carInfoDTO.getPlateNumber();
+        this.manName = carInfoDTO.getManName();
 
+        this.carClassDTO = carInfoDTO.getCarClassDTO();
+        this.modelDTO = carInfoDTO.getModelDTO();
+        this.officeDTO = carInfoDTO.getOfficeDTO();
+    }
+
+    public void setProperties(){
         if(manId == null){
             Manufacture manufacture = new Manufacture();
             manufacture.setManName(manName);
@@ -85,7 +114,9 @@ public class CarInfoBusinessImpl implements CarInfoBusiness {
             officeService.insert(office);
             officeId = office.getOfficeId();
         }
+    }
 
+    private void createVehicle(){
         VehicleDTO vehicleDTO = new VehicleDTO();
 
         vehicleDTO.setClassId(carClassId);
@@ -95,8 +126,8 @@ public class CarInfoBusinessImpl implements CarInfoBusiness {
         vehicleDTO.setStatus(VehicleStatus.IN_STOCK.getStatus());
         vehicleDTO.setPlateNumber(plateNumber);
 
-        vehicleService.save(VehicleUtil.transferDTO(vinId,vehicleDTO));
-
-        return false;
+        vehicle = VehicleUtil.transferDTO(vinId,vehicleDTO);
     }
+
+
 }

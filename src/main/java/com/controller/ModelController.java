@@ -15,40 +15,40 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/ModelMaintain")
+@RequestMapping("/api/model")
 @Api("Model")
 public class ModelController {
     @Autowired
     ModelBusiness modelBusiness;
 
     @ApiOperation("get availabe return class list")
-    @GetMapping("/getModelNameList")
+    @GetMapping("/nameList")
     public Response<List<ModelSelectBO>> getAllModelList(){
         return new Response<>(ResponseCode.SUCCESS, modelBusiness.getModelList());
     }
 
     @ApiOperation("get availabe return class information")
-    @GetMapping("/getModelInfo")
+    @GetMapping()
     public Response<List<ModelBO>> getAllModelOInfo(){
         return new Response<>(ResponseCode.SUCCESS, modelBusiness.getModelInfo());
     }
 
     @ApiOperation("delete manufacuture information")
-    @DeleteMapping("/deleteModel/{modelId}")
+    @DeleteMapping("/{modelId}")
     public Response deleteModel(@PathVariable("modelId") Integer modelId){
         modelBusiness.deleteModel(modelId);
         return new Response(ResponseCode.SUCCESS, "success");
     }
 
     @ApiOperation("update manufacutre information")
-    @PutMapping("/updateModel/{modelId}")
+    @PutMapping("/{modelId}")
     public Response upadteModel(@PathVariable("modelId") Integer modelId, ModelDTO modelDTO){
         modelBusiness.updateModel(modelId, modelDTO);
         return new Response(ResponseCode.SUCCESS, "success");
     }
 
     @ApiOperation("create new manufacture")
-    @PostMapping("/createManufacture")
+    @PostMapping()
     public Response createModel(@RequestBody ModelDTO modelDTO){
         modelBusiness.createModel(modelDTO);
         return new Response(ResponseCode.SUCCESS, "success");
