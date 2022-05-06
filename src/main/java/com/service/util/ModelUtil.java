@@ -1,5 +1,6 @@
 package com.service.util;
 
+import com.dto.ModelDTO;
 import com.entity.Model;
 import com.vo.ModelVO;
 
@@ -23,5 +24,15 @@ public class ModelUtil {
             modelVOList.add(transfer(model));
         }
         return modelVOList;
+    }
+
+    public static Model transferDTO(Integer modelId, ModelDTO modelDTO){
+        Model model = new Model();
+        model.setModelId(modelId);
+        model.setModelName(modelDTO.getModelName());
+        model.setManId(modelDTO.getManId());
+        model.setSeatNum(modelDTO.getSeatNum());
+        model.setYear(modelDTO.getYear());
+        return model;
     }
 }

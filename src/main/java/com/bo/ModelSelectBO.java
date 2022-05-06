@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class ModelSelectBO {
-    public Long modelId;
+    public Integer modelId;
     private String modelName;
 }
