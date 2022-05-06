@@ -11,7 +11,7 @@ import java.io.Serializable;
 @TableName("yzm_model")
 public class Model implements Serializable {
     @TableId(value = "model_id", type = IdType.AUTO)
-    public Long modelId;
+    public Integer modelId;
     private Long manId;
     private String modelName;
     private String year;
