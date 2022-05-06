@@ -1,5 +1,6 @@
 package com.service.util;
 
+import com.dto.OfficeDTO;
 import com.entity.Office;
 import com.vo.OfficeVO;
 
@@ -28,4 +29,19 @@ public class OfficeUtil {
         }
         return officeVOList;
     }
+
+    public static Office transferDTO(OfficeDTO officeDTO){
+        Office office = new Office();
+
+        office.setName(officeDTO.getName());
+
+        office.setCountry(officeDTO.getCountry());
+        office.setState(officeDTO.getState());
+        office.setCity(officeDTO.getCity());
+        office.setStreet(officeDTO.getStreet());
+        office.setZipcode(officeDTO.getZipcode());
+        office.setPhoneNum(officeDTO.getPhoneNum());
+        return office;
+    }
+
 }

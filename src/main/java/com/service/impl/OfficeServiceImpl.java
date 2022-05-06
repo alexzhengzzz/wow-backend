@@ -2,6 +2,7 @@ package com.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.dto.OfficeDTO;
 import com.entity.Office;
 import com.exception.ErrorCode;
 import com.exception.GeneralException;
@@ -41,4 +42,10 @@ public class OfficeServiceImpl extends ServiceImpl<OfficeMapper, Office> impleme
         }
         return OfficeUtil.transferList(officeList);
     }
+
+//    @Override
+//    public boolean createOfficeInfo(OfficeDTO officeDTO) {
+//        this.baseMapper.update(OfficeUtil.transferDTO(officeDTO));
+//        return true;
+//    }
 }

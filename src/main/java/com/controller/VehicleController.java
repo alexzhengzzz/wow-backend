@@ -32,4 +32,10 @@ public class VehicleController {
         return new Response<>(ResponseCode.SUCCESS, vehicleBusiness.getVehicleInfo());
     }
 
+//    @ApiOperation("set vehicle status")
+//    @GetMapping("setVehicleStatus")
+//    public Response setVehicleStatus(){
+//        ;
+//    }
+
 }

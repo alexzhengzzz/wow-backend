@@ -16,4 +16,6 @@ import java.util.List;
  */
 public interface OfficeService extends IService<Office> {
     List<OfficeVO> getOfficeInfo();
+
+    //boolean createOfficeInfo(OfficeVO officeVO);
 }
