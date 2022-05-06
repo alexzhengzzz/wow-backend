@@ -33,6 +33,7 @@ public class CarClass implements Serializable {
 
     private BigDecimal overFee;
 
+    private BigDecimal dailyMileLimit;
 
 
 }
