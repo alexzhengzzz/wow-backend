@@ -60,11 +60,14 @@ public class UserBusinessImpl implements IUserBusiness {
             if (corporation != null && corpEmployee != null) {
                 setCorporationInfo(userInfoVO, corporation, corpEmployee);
             }
+        } else if (roleType == RoleType.ADMIN) {
+                return userInfoVO;
         } else {
             throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_ERROR, "no such type");
         }
         return userInfoVO;
     }
+
 
     private void setCorporationInfo(UserInfoVO userInfoVO, Corporation corporation, CorpEmployee corpEmployee) {
         UserCorporationVO userCorporationVO = new UserCorporationVO();
