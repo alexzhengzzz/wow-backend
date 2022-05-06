@@ -3,6 +3,7 @@ package com.controller;
 import com.business.RentalOrderBusiness;
 import com.dto.OrderCompleteDTO;
 import com.dto.OrderDTO;
+import com.entity.RentalOrder;
 import com.enums.ResponseCode;
 import com.utils.cache.Response;
 import com.vo.orders.OrderInvoiceVO;
@@ -32,9 +33,9 @@ public class RentalOrderController {
 
     @ApiOperation("init an order")
     @PostMapping
-    public Response<OrderInvoiceVO> initOrder(@Valid @RequestBody OrderDTO orderDTO) {
-        OrderInvoiceVO orderInvoiceVO = rentalOrderBusiness.initOrder(orderDTO);
-        return new Response(ResponseCode.SUCCESS, orderInvoiceVO);
+    public Response<RentalOrder> initOrder(@Valid @RequestBody OrderDTO orderDTO) {
+        RentalOrder rentalOrder = rentalOrderBusiness.initOrder(orderDTO);
+        return new Response(ResponseCode.SUCCESS, rentalOrder);
     }
 
 //    @ApiOperation("get order by order id")
