@@ -6,7 +6,7 @@ import com.entity.CarClass;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
 import com.mapper.CarClassMapper;
-import com.service.CarClassService;
+import com.service.ICarClassService;
 import com.service.util.CarClassUtil;
 import com.vo.CarClassVO;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ import java.util.List;
  * @since 2022-05-02
  */
 @Service
-public class CarClassServiceImpl extends ServiceImpl<CarClassMapper, CarClass> implements CarClassService {
+public class CarClassServiceImpl extends ServiceImpl<CarClassMapper, CarClass> implements ICarClassService {
     @Override
     public CarClass getCarClassInfoById(Integer id) {
         CarClass carClass = baseMapper.selectById(id);
@@ -41,5 +41,10 @@ public class CarClassServiceImpl extends ServiceImpl<CarClassMapper, CarClass> i
             throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "CarClass Table is Empty");
         }
         return CarClassUtil.transferList(carClasseList);
+    }
+
+    @Override
+    public Integer insert(CarClass carClass) {
+        return this.baseMapper.insert(carClass);
     }
 }

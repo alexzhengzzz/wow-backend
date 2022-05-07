@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class VehicleDTO {
 
-    @NotBlank(message = "vinId not blank")
+    //@NotBlank(message = "vinId not blank")
     private String vinId;
     @NotBlank(message = "plateNumber not blank")
     private String plateNumber;

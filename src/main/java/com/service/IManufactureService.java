@@ -9,4 +9,6 @@ import java.util.List;
 public interface IManufactureService extends IService<Manufacture> {
 
     List<ManufactureVO> getManufactureInfo();
+
+    int insert(Manufacture manufacture);
 }

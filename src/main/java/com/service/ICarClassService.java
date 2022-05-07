@@ -14,9 +14,11 @@ import java.util.List;
  * @author zmh
  * @since 2022-05-02
  */
-public interface CarClassService extends IService<CarClass> {
+public interface ICarClassService extends IService<CarClass> {
     CarClass getCarClassInfoById(Integer id);
 
     List<CarClassVO> getCarClassInfo();
+
+    Integer insert(CarClass carClass);
 
 }

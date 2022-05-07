@@ -12,7 +12,8 @@ public enum ResponseCode {
     REQUIRE_USERNAME(504, "必需填写用户名"),
     CONTENT_NOT_NULL(506, "评论内容不能为空"),
     FILE_TYPE_ERROR(507, "文件类型错误，请上传png文件"),
-    LOGIN_ERROR(505,"用户名或密码错误");
+    LOGIN_ERROR(505,"用户名或密码错误"),
+    WRONG_OPTION(601,"选项错误请重试");
     int code;
     String msg;
 

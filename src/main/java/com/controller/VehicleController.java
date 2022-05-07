@@ -16,41 +16,41 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/carMaintain")
+@RequestMapping("/api/vehicle")
 @Api("VehicleMaintain")
 public class VehicleController {
 
     @Autowired
     VehicleBusiness vehicleBusiness;
 
-    @ApiOperation("get availabe return vehicle")
-    @GetMapping("/getVehiclePlateList")
+    @ApiOperation("get available return vehicle")
+    @GetMapping("/plateList")
     public Response<List<VehicleSelectBO>> getAllVehicleList(){
         return new Response<>(ResponseCode.SUCCESS, vehicleBusiness.getVehicleList());
     }
 
-    @ApiOperation("get availabe return office information")
-    @GetMapping("/getVehicleInfo")
+    @ApiOperation("get available vehicle information")
+    @GetMapping()
     public Response<List<VehicleBO>> getAllVehicleInfo(){
         return new Response<>(ResponseCode.SUCCESS, vehicleBusiness.getVehicleInfo());
     }
 
     @ApiOperation("delete vehicle by vinId")
-    @DeleteMapping("/deleteVehicle/{vinId}")
+    @DeleteMapping("/{vinId}")
     public Response deleteVehicle(@PathVariable("vinId")  String vinId ){
         vehicleBusiness.deleteVehicleById(vinId);
         return new Response(ResponseCode.SUCCESS,"vehicle deleted");
     }
 
     @ApiOperation("update vehicle by vinId")
-    @PutMapping("/updateVehicle/{vinId}")
+    @PutMapping("/{vinId}")
     public Response updateVehicle(@PathVariable("vinId") String vinId,@RequestBody VehicleDTO vehicleDTO){
         vehicleBusiness.updateVehicle(vinId, vehicleDTO);
         return new Response(ResponseCode.SUCCESS,"vehicle updated");
     }
 
     @ApiOperation("create vehicle")
-    @PostMapping("/createVehicle")
+    @PostMapping()
     public Response createVehicle(@RequestBody VehicleDTO vehicleDTO){
         vehicleBusiness.createVehicleInfo(vehicleDTO);
         return new Response(ResponseCode.SUCCESS,"vehicle created");
