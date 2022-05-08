@@ -14,10 +14,28 @@
         <result column="over_fee" property="overFee" jdbcType="DECIMAL"/>
         <result column="daily_mile_limit" property="limitMilePerDay" jdbcType="DECIMAL"/>
 
+        <result column="office_id" property="officeId" jdbcType="INTEGER"/>
+        <result column="man_id" property="manId" jdbcType="INTEGER"/>
+        <result column="office_name" property="officeName" jdbcType="VARCHAR"/>
+        <result column="man_name" property="manName" jdbcType="VARCHAR"/>
+
     </resultMap>
 
     <select id = "getCarList" resultMap="BasicResultMap">
-        select v.vin_id vin_id,c.daily_mile_limit daily_mile_limit, c.over_fee over_fee ,v.status status, c.image_url image_url, c.class_type class_type, model.model_name name, model.year year, model.seat_num seat_num, c.rental_rate_per_day price_per_day, o.name office_name
+        select v.vin_id vin_id,
+               c.daily_mile_limit daily_mile_limit,
+               c.over_fee over_fee ,
+               v.status status,
+               c.image_url image_url,
+               c.class_type class_type,
+               model.model_name name,
+               model.man_id man_id,
+               model.man_name man_name,
+               model.year year,
+               model.seat_num seat_num,
+               c.rental_rate_per_day price_per_day,
+               o.office_id office_id,
+               o.name office_name
         from yzm_vehicles v
                  join yzm_office o
                       on v.office_id = o.office_id
@@ -25,7 +43,7 @@
                       on v.class_id = c.class_id
                  join
              (
-                 select m.model_id model_id, m.model_name model_name , m.year year, m.seat_num seat_num, a.man_name man_name
+                 select m.model_id model_id,m.man_id man_id, m.model_name model_name , m.year year, m.seat_num seat_num, a.man_name man_name
                  from yzm_model m
                           join 	yzm_manufacture a
                                   on m.man_id = a.man_id
