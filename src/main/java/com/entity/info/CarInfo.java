@@ -23,4 +23,11 @@ public class CarInfo implements Serializable {
     private BigDecimal pricePerDay;
     private BigDecimal overFee;
     private BigDecimal limitMilePerDay;
+
+    private Integer manId;
+    private Integer officeId;
+    private String officeName;
+    private String manName;
+
+
 }
