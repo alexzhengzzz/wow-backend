@@ -52,8 +52,8 @@ public class CarInfoController {
     }
 
     @ApiOperation("delete vehicle")
-    @DeleteMapping("/{vinId}")
-    public Response deleteCar(@PathVariable("vinId") String vinId){
+    @DeleteMapping()
+    public Response deleteCar(String vinId){
         carInfoBusiness.deleteCar(vinId);
         return new Response(ResponseCode.SUCCESS, "carInfo deleted");
     }
