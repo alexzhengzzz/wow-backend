@@ -1,29 +1,26 @@
-# WOW backend project using springboot
-* front end repo [Front-end](https://github.com/YunfanXu/wow-carRental)
-## Tech Stack
-### Framework
-* springboot2.X (backend framework)
-* maven (package dependency manager)
-* mybatis (ORM framework)
-  * mybatis-plus (plugin)
+# World of Wheels 
 
-### Storage
-* mysql8.0
-* redis
+<!-- [START badges] -->
+![Springboot](https://img.shields.io/badge/Springboot-2.7.0--SNAPSHOT-brightgreen)![Mybatis](https://img.shields.io/badge/Mybatis-3.5.2-yellow)![](https://img.shields.io/badge/Mybatis--plus-3.5.2-red)![Kafka: 2.8.4 (shields.io)](https://img.shields.io/badge/Kafka-2.8.4-orange)![Redis: 6.2.6 (shields.io)](https://img.shields.io/badge/Redis-6.2.6-red)![Mysql: 8.0.29 (shields.io)](https://img.shields.io/badge/Mysql-8.0.29-blue)![JDK: 11 (shields.io)](https://img.shields.io/badge/JDK-11-9cf)![Docker: compose (shields.io)](https://img.shields.io/badge/Docker-compose-informational)
 
-### Safety
-* JWT token
-* MD5 Encryption(password)
+<!-- [END badges] -->
 
-### Tools
-* postman (API testing)
+[Front-End](https://github.com/YunfanXu/wow-carRental)
 
-### Mock data
-* javaFaker lib
-* UUID
+> World of Wheels is a modern website which provides customers with excellent rental car services ! 
 
-### API doc
-* swagger2
+## Getting Started
+
+### Installation Using Docker-Compose file
+
+To use our backend of website. 
+
+```bash
+sh deploy.sh
+```
+Remember to make sure that the docker is running, maven and java is preinstalled in the server.
+
+
 
 ## Backend layer ( MVC)
 1. Controller
@@ -42,10 +39,14 @@
 * relational model
 ![](https://aleximgzzzz.oss-cn-shanghai.aliyuncs.com/lc-python/202204181555253.png)
 
-# Git flow
+## Git flow
+
 ![](https://aleximgzzzz.oss-cn-shanghai.aliyuncs.com/myblog/202204281212342.png)
 
-# JWT token / redis / Spring AOP
+
+
+## JWT token / redis / Spring AOP
+
 JWT token format:
   * request header or request param
       * Authorization: Bearer {token}
@@ -55,3 +56,28 @@ JWT token format:
 ![](https://aleximgzzzz.oss-cn-shanghai.aliyuncs.com/myblog/202204290128932.png)
 * aop checker
 ![](https://aleximgzzzz.oss-cn-shanghai.aliyuncs.com/myblog/202204291919768.png)
+
+## Features
+
+### Safety
+
+* JWT token
+* MD5 Encryption(password)
+
+### Tools
+
+* postman (API testing)
+
+### Mock data
+
+* javaFaker lib
+* UUID
+
+### API doc
+
+* swagger2
+
+
+
+
+
