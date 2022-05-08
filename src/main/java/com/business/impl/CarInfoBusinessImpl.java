@@ -96,8 +96,9 @@ public class CarInfoBusinessImpl implements CarInfoBusiness {
             manufactureService.insert(manufacture);
             manId = manufacture.getManId();
         }
-        modelDTO.setManId(manId);
-
+        if(modelDTO!=null){
+            modelDTO.setManId(manId);
+        }
         if(carClassId == null){
             CarClass carClass = CarClassUtil.transferDTO( null,carClassDTO );
             carClassService.insert(carClass);
