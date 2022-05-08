@@ -1,5 +1,6 @@
 package com.controller;
 
+import com.annotation.SystemLog;
 import com.business.CarInfoBusiness;
 import com.dto.CarInfoDTO;
 import com.enums.ResponseCode;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class CarInfoController {
     @Autowired
     private CarInfoBusiness carInfoBusiness;
-
+    @SystemLog(businessName = "get carInfo")
     @ApiOperation(" get carInfo list 0:entire, 1:in-stock, 2:invalid")
     @GetMapping("/{opt}")
     public Response getCarList(@PathVariable("opt") int opt) {
