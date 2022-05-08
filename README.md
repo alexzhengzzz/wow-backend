@@ -13,14 +13,12 @@
 
 ### Installation Using Docker-Compose file
 
-To use our backend of website. 
+To use our backend of website. http://localhost:8090/
 
 ```bash
 sh quickstart.sh
 ```
 Remember to make sure that the docker is running, maven and java is preinstalled in the server.
-
-
 
 ## Backend layer ( MVC)
 1. Controller
