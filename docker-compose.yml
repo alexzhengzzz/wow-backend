@@ -1,0 +1,38 @@
+version: "3"
+services:
+  redis6:
+    image: redis:6.2.6
+    restart: always
+    ports:
+      - '6378:6379'
+    volumes:
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      - test_network
+  mysql8:
+    image: mysql:8.0.29-oracle
+    restart: on-failure
+    ports:
+      - '3305:3306'
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456a
+    volumes:
+      - /var/lib/mysql
+    networks:
+      - test_network
+  wow:
+    container_name: wow
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - mysql8
+      - redis6
+    ports:
+      - "8090:8080"
+    restart: always
+    networks:
+      - test_network
+networks:
+  test_network:

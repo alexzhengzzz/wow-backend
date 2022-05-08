@@ -47,7 +47,6 @@ public class RentalOrderController {
     @ApiOperation("complete order")
     @PostMapping("/{orderId}")
     public Response<OrderInvoiceVO> completeOrder(@PathVariable("orderId") Long orderId, @Valid @RequestBody OrderCompleteDTO orderCompleteDTO) {
-
         OrderInvoiceVO orderInvoiceVO = rentalOrderBusiness.completeOrder(orderId, orderCompleteDTO);
         return new Response(ResponseCode.SUCCESS, orderInvoiceVO);
     }
