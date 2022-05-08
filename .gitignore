@@ -1,5 +1,5 @@
 !.mvn/wrapper/maven-wrapper.jar
-
+!/target/wow-backend-0.0.3-SNAPSHOT.jar
 
 ### STS ###
 .apt_generated
@@ -29,8 +29,8 @@ test
 .vscode/
 
 ### customized ###
-**/src/main/**/target/
-**/src/test/**/target/
+#**/src/main/**/target/
+#**/src/test/**/target/
 **/target
 **/.DS_Store
 #**/src/main/**/resources/application.yml 去掉yml配置
