@@ -1,7 +1,9 @@
 package com.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.entity.RentalOrder;
+import com.enums.OrderStatus;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
 import com.mapper.RentalOrderMapper;
@@ -33,5 +35,15 @@ public class RentalOrderServiceImpl extends ServiceImpl<RentalOrderMapper, Renta
             throw GeneralExceptionFactory.create(ErrorCode.DB_QUERY_ERROR, "order id not found");
         }
         return order;
+    }
+
+    @Override
+    public RentalOrder PaymentSucceed(Long invoiceId) {
+        QueryWrapper<RentalOrder> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(true,"invoice_id",invoiceId);
+        RentalOrder rentalOrder = this.baseMapper.selectOne(queryWrapper);
+        rentalOrder.setOrderStatus(OrderStatus.PAID.getCode());
+        this.baseMapper.update(rentalOrder, queryWrapper);
+        return rentalOrder;
     }
 }

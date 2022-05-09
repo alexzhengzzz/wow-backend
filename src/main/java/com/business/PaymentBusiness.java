@@ -22,4 +22,6 @@ public interface PaymentBusiness {
 
     BillStatusVO withdrawPayment(CancelBillListDTO cancelBillListDTO);
 
+    boolean paymentSucceedUpdateOrderStatus(Long invoiceId);
+
 }

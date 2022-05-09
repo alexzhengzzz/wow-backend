@@ -11,11 +11,13 @@ import com.api.dto.PaymentDTO;
 import com.dto.PaymentUnitDTO;
 import com.entity.Payment;
 import com.entity.PaymentCard;
+import com.entity.RentalOrder;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.service.IPaymentCardService;
+import com.service.IRentalOrderService;
 import com.service.InvoiceService;
 import com.service.PaymentService;
 import com.service.util.PaymentCardUtil;
@@ -40,6 +42,9 @@ public class PaymentBusinessImpl implements PaymentBusiness {
 
     @Autowired
     PaySystem paySystem;
+
+    @Autowired
+    IRentalOrderService rentalOrderService;
 
 
 //    @Override
@@ -114,6 +119,12 @@ public class PaymentBusinessImpl implements PaymentBusiness {
     public BillStatusVO withdrawPayment(CancelBillListDTO cancelBillListDTO) {
            Response<BillStatusVO> res = paySystem.rollBackAllBills(cancelBillListDTO);
            return res.getData();
+    }
+
+    @Override
+    public boolean paymentSucceedUpdateOrderStatus(Long invoiceId) {
+        RentalOrder rentalOrder = rentalOrderService.PaymentSucceed(invoiceId);
+        return rentalOrder != null;
     }
 
     public PaymentDTO transferPayment(PaymentCard paymentCard, Payment payment){

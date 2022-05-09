@@ -6,7 +6,8 @@ package com.enums;
  */
 public enum OrderStatus {
     NEW(0),
-    FINISHED(1);
+    FINISHED(1),
+    PAID(2);
 
     private int code;
     OrderStatus(int code){
