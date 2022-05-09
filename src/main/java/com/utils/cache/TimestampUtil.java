@@ -13,9 +13,9 @@ public class TimestampUtil {
         Date date1 = new Date(timestamp1.getTime());
         Date date2 = new Date(timestamp2.getTime());
         Long days = DateUtil.between(date1, date2, DateUnit.DAY); // 1
-        Long hours = DateUtil.between(date1, date2, DateUnit.HOUR); // 25
-        Long minutes = DateUtil.between(date1, date2, DateUnit.MINUTE); // 1439
-        Long seconds = DateUtil.between(date1, date2, DateUnit.SECOND); // 86400
+        Long hours = DateUtil.between(date1, date2, DateUnit.HOUR) % 24; // 25
+        Long minutes = DateUtil.between(date1, date2, DateUnit.MINUTE) % (60 * 24); // 1439
+        Long seconds = DateUtil.between(date1, date2, DateUnit.SECOND) % (60 * 60 * 24); // 86400
 
         log.warn("days: {}", days);
         log.warn("hours: {}", hours);
