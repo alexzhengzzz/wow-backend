@@ -22,8 +22,9 @@ public class Payment implements Serializable {
     private static final long serialVersionUID = 1L;
     @TableId(value = "payment_id", type = IdType.AUTO)
     private Long paymentId;
-    private String payMethod;
-    private String cardNum;
+    //private String payMethod;
+    private Long cardId;
+    //private String cardNum;
     private BigDecimal payAmount;
     private Long invoiceId;
     private Timestamp payDate;

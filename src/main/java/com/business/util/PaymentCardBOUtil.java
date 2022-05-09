@@ -14,7 +14,8 @@ public class PaymentCardBOUtil {
         paymentCardBO.setCardId(paymentCardVO.getCardId());
         paymentCardBO.setCardNum(paymentCardVO.getCardNum());
         paymentCardBO.setExpireDate(paymentCardVO.getExpireDate());
-        paymentCardBO.setName(paymentCardVO.getName());
+        paymentCardBO.setLname(paymentCardVO.getLname());
+        paymentCardBO.setFname(paymentCardVO.getFname());
         paymentCardBO.setCity(paymentCardVO.getCity());
         paymentCardBO.setState(paymentCardVO.getState());
         paymentCardBO.setCountry(paymentCardVO.getCountry());

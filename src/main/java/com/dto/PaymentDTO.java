@@ -6,6 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
+@Deprecated
 @Data
 public class PaymentDTO {
     @NotBlank(message = "payMethod  is required")

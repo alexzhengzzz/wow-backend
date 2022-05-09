@@ -17,8 +17,9 @@ public class PaymentCard implements Serializable {
     private Long cardId;
     private Long userId;
     private String cardNum;
-    private Timestamp expireDate;
-    private String name;
+    private String expireDate;
+    private String fname;
+    private String lname;
     private String status;
     private String country;
     private String state;

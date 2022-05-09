@@ -1,14 +1,25 @@
 package com.business;
 
+import com.api.dto.CancelBillListDTO;
+import com.api.vo.BillStatusVO;
 import com.dto.PaymentDTO;
+import com.dto.PaymentUnitDTO;
 import com.entity.Payment;
+import com.utils.cache.Response;
 
 import java.util.List;
 
 public interface PaymentBusiness {
-    void createPayment(PaymentDTO paymentDTO);
+//    void createPayment(PaymentDTO paymentDTO);
+//
+//    List<Payment> getPaymentByInvoiceId(Long invoiceId);
+//
+//    Payment getPaymentById(Long paymentId);
 
-    List<Payment> getPaymentByInvoiceId(Long invoiceId);
+    Payment createPayment(Long invoiceId, PaymentUnitDTO paymentUnitDTO);
 
-    Payment getPaymentById(Long paymentId);
+    BillStatusVO payWithPayment(Payment payment);
+
+    BillStatusVO withdrawPayment(CancelBillListDTO cancelBillListDTO);
+
 }
