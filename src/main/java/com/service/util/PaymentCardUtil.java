@@ -17,9 +17,9 @@ public class PaymentCardUtil {
         paymentCard.setUserId(paymentCardDTO.getUserId());
         paymentCard.setCountry(paymentCardDTO.getCountry());
         paymentCard.setState(paymentCardDTO.getState());
-        paymentCard.setCity(paymentCard.getCity());
-        paymentCard.setStreet(paymentCard.getStreet());
-        paymentCard.setZipcode(paymentCard.getZipcode());
+        paymentCard.setCity(paymentCardDTO.getCity());
+        paymentCard.setStreet(paymentCardDTO.getStreet());
+        paymentCard.setZipcode(paymentCardDTO.getZipcode());
         paymentCard.setStatus("V");
         return paymentCard;
     }
