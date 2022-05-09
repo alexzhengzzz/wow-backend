@@ -208,23 +208,22 @@ public class RentalOrderBusinessImpl implements RentalOrderBusiness {
         Vehicle vehicle = vehicleService.getVehicleById(orderDTO.getVinId());
         userService.getUserById(orderDTO.getUserId());
         Coupons coupons = couponsService.getById(orderDTO.getCouponId());
-        if (coupons == null) {
-            throw GeneralExceptionFactory.create(ErrorCode.UNKNOWN_ERROR, "coupon not found");
-        }
-        if (coupons.getIsUsed()) {
-            throw GeneralExceptionFactory.create(ErrorCode.UNKNOWN_ERROR, "the coupon is invalid");
-        }
-        // set coupon status
-        coupons.setIsUsed(true);
-        Boolean isSuccess = couponsService.updateById(coupons);
-        if (!isSuccess) {
-            throw GeneralExceptionFactory.create(ErrorCode.UNKNOWN_ERROR, "update coupon status failed");
-        }
-        Long batchId = coupons.getBatchId();
-        CouponsBatch batch = couponsBatchService.getById(batchId);
-        if (batch != null || batch.getStock() != null) {
-            batch.setStock(batch.getStock() - 1);
-            couponsBatchService.updateById(batch);
+        if (coupons != null) {
+            if (coupons.getIsUsed()) {
+                throw GeneralExceptionFactory.create(ErrorCode.UNKNOWN_ERROR, "the coupon is invalid");
+            }
+            // set coupon status
+            coupons.setIsUsed(true);
+            Boolean isSuccess = couponsService.updateById(coupons);
+            if (!isSuccess) {
+                throw GeneralExceptionFactory.create(ErrorCode.UNKNOWN_ERROR, "update coupon status failed");
+            }
+            Long batchId = coupons.getBatchId();
+            CouponsBatch batch = couponsBatchService.getById(batchId);
+            if (batch != null || batch.getStock() != null) {
+                batch.setStock(batch.getStock() - 1);
+                couponsBatchService.updateById(batch);
+            }
         }
         // set car status
         if (!vehicle.getStatus().equals(VehicleStatus.IN_STOCK.getStatus())) {
