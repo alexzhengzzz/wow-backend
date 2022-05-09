@@ -1,5 +1,6 @@
 package com.service.impl;
 
+import com.dto.PaymentUnitDTO;
 import com.entity.Payment;
 import com.exception.ErrorCode;
 import com.exception.GeneralExceptionFactory;
@@ -7,6 +8,8 @@ import com.mapper.PaymentMapper;
 import com.service.PaymentService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
 
 /**
  * <p>
@@ -25,6 +28,21 @@ public class PaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment> impl
         if (payment == null) {
             throw GeneralExceptionFactory.create(ErrorCode.PAYMENT_ERROR, "payment not found");
         }
+        return payment;
+    }
+
+    @Override
+    public Payment insertPayment(Long invoiceId, Long cardId, PaymentUnitDTO paymentUnitDTO) {
+        Payment payment = new Payment();
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+        payment.setCardId(paymentUnitDTO.getCardId());
+        payment.setPayAmount(paymentUnitDTO.getPayAmount());
+        payment.setInvoiceId(invoiceId);
+        payment.setPayDate(timestamp);
+        payment.setCardId(cardId);
+
+        this.baseMapper.insert(payment);
         return payment;
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface IPaymentCardService extends IService<PaymentCard> {
 
-    void setPaymentCard(PaymentCardDTO paymentCardDTO);
+    PaymentCard setPaymentCard(PaymentCardDTO paymentCardDTO);
 
     List<PaymentCardVO> getCardListByUserId(Long userId);
 }

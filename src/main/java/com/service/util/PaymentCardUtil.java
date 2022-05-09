@@ -11,7 +11,8 @@ public class PaymentCardUtil {
     public static PaymentCard transferDTO(PaymentCardDTO paymentCardDTO){
         PaymentCard paymentCard = new PaymentCard();
         paymentCard.setCardNum(paymentCardDTO.getCardNum());
-        paymentCard.setName(paymentCardDTO.getName());
+        paymentCard.setLname(paymentCardDTO.getLname());
+        paymentCard.setFname(paymentCardDTO.getFname());
         paymentCard.setExpireDate(paymentCardDTO.getExpireDate());
         paymentCard.setUserId(paymentCardDTO.getUserId());
         paymentCard.setCountry(paymentCardDTO.getCountry());
@@ -31,7 +32,8 @@ public class PaymentCardUtil {
         paymentCardVO.setExpireDate(paymentCard.getExpireDate());
         paymentCardVO.setUserId(paymentCard.getUserId());
         paymentCardVO.setStatus(paymentCard.getStatus());
-        paymentCardVO.setName(paymentCard.getName());
+        paymentCardVO.setLname(paymentCard.getLname());
+        paymentCardVO.setFname(paymentCard.getFname());
 
         paymentCardVO.setCountry(paymentCard.getCountry());
         paymentCardVO.setCity(paymentCard.getCity());

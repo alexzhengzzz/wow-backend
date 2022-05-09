@@ -14,9 +14,11 @@ public class PaymentCardDTO {
     @NotNull(message = "cardNum can not be empty")
     private String cardNum;
     @NotNull(message = "expireDate can not be empty")
-    private Timestamp expireDate;
+    private String expireDate;
     @NotNull(message = "name can not be empty")
-    private String name;
+    private String fname;
+    @NotNull(message = "name can not be empty")
+    private String lname;
 
     private String country;
     private String state;

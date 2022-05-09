@@ -1,5 +1,6 @@
 package com.service;
 
+import com.dto.PaymentUnitDTO;
 import com.entity.Payment;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface PaymentService extends IService<Payment> {
     Payment getPaymentById(Long id);
+
+    Payment insertPayment(Long invoiceId, Long cardId, PaymentUnitDTO paymentUnitDTO);
 }

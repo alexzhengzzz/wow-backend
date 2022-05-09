@@ -9,8 +9,9 @@ public class PaymentCardVO {
     private Long cardId;
     private Long userId;
     private String cardNum;
-    private Timestamp expireDate;
-    private String name;
+    private String expireDate;
+    private String lname;
+    private String fname;
     private String status;
     private String country;
     private String state;

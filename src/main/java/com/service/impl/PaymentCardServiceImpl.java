@@ -19,9 +19,10 @@ public class PaymentCardServiceImpl extends ServiceImpl<PaymentCardMapper, Payme
     PaymentCardMapper paymentCardMapper;
 
     @Override
-    public void setPaymentCard(PaymentCardDTO paymentCardDTO) {
+    public PaymentCard setPaymentCard(PaymentCardDTO paymentCardDTO) {
         PaymentCard paymentCard = PaymentCardUtil.transferDTO(paymentCardDTO);
         this.baseMapper.insert(paymentCard);
+        return paymentCard;
     }
 
     @Override
