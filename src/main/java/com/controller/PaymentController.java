@@ -60,7 +60,10 @@ public class PaymentController {
         if(billStatusVO.getStatus() == 0){
             return new Response<>(ResponseCode.SYSTEM_ERROR,billStatusVO);
         }else{
-            return new Response<>(ResponseCode.SUCCESS, billStatusVO);
+            if(paymentBusiness.paymentSucceedUpdateOrderStatus(invoiceId))
+                return new Response<>(ResponseCode.SUCCESS, billStatusVO);
+            else
+                return new Response<>(ResponseCode.ORDER_STATUS_ERROR, billStatusVO);
         }
     }
 

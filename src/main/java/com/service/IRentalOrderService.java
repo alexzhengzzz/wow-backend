@@ -14,4 +14,5 @@ import com.entity.RentalOrder;
 public interface IRentalOrderService extends IService<RentalOrder> {
 
     RentalOrder getOrderByOrderAndUserId(Long orderId, Long userId);
+    RentalOrder PaymentSucceed(Long invoiceId);
 }
