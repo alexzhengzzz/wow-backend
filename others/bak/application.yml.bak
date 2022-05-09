@@ -1,16 +1,18 @@
+# DataSource Config
 spring:
   profiles:
-    active: main
+    active: dev
   application:
     name: wow
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://67.207.80.139:3306/wow?characterEncoding=utf-8&userSSL=false
+    url: jdbc:mysql://mysql:3305/wow?characterEncoding=utf-8&userSSL=false
     username: root
     password: 123456a
   redis:
     database: 0
-    host: 67.207.80.139
+    host: redis
+    #host: localhost
     password: 123456a
     timeout: 1000
     jedis:
@@ -52,6 +54,7 @@ spring:
       concurrency: 4
       # 避免出现主题未创建报错
       missing-topics-fatal: false
+
 swagger:
   enable: true
   application-name: ${spring.application.name}
@@ -67,25 +70,65 @@ mybatis-plus:
   #  configuration:
   #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations: classpath:mapper/*.xml
+
+# 服务器版本
 server:
   port: 8080
-
-
 ---
 server:
-  port: 8083
+  port: 8080
+logging:
+  level:
+    root: info
+spring:
+  datasource:
+    #url: jdbc:mysql://localhost:3306/wow?characterEncoding=utf-8&userSSL=false
+    url: jdbc:mysql://67.207.80.139:3306/wow?characterEncoding=utf-8&userSSL=false
+  config:
+    activate:
+      on-profile: dev
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+    #bootstrap-servers: 67.207.80.139:9092
+  redis:
+    host: localhost
+    #host: 67.207.80.139
+
+# 个人版本
+---
+logging:
+  level:
+    root: info
+server:
+  port: 8080
 spring:
   config:
     activate:
       on-profile: zmh
     datasource:
-      url: jdbc:mysql://67.207.80.139:3306/wow?characterEncoding=utf-8&userSSL=false
+      url: jdbc:mysql://localhost:3306/wow?characterEncoding=utf-8&userSSL=false
     kafka:
       bootstrap-servers: 67.207.80.139:9093
     redis:
-      host: 67.207.80.139
-      port: 6379
-
+      host: localhost
+      port: 6378
+---
+logging:
+  level:
+    root: info
+server:
+  port: 8080
+spring:
+  config:
+    activate:
+      on-profile: docker
+    datasource:
+      url: jdbc:mysql://mysql:3305/wow?characterEncoding=utf-8&userSSL=false
+    kafka:
+      bootstrap-servers: 67.207.80.139:9093
+    redis:
+      host: redis
+      port: 6378
 ---
 server:
   port: 8086
@@ -99,6 +142,7 @@ spring:
       bootstrap-servers: 67.207.80.139:9093
     redis:
       host: 67.207.80.139
+
 ---
 server:
   port: 8086
@@ -112,18 +156,3 @@ spring:
       bootstrap-servers: localhost:9093
     redis:
       host: localhost
----
-    server:
-      port: 8080
-    spring:
-      config:
-        activate:
-          on-profile: docker
-        datasource:
-          url: jdbc:mysql://mysql:3305/wow?characterEncoding=utf-8&userSSL=false
-        kafka:
-          bootstrap-servers: 67.207.80.139:9093
-        redis:
-          host: redis
-          port: 6378
----

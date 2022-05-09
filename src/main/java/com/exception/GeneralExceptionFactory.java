@@ -8,7 +8,7 @@ import java.text.MessageFormat;
  * @date 2021/01/01 2:19 PM
  * Modified By:
  */
-public class GeneralExceptionFactory {
+public class GeneralExceptionFactory extends Throwable {
     public static GeneralException create(ErrorCode code, Object... args) {
         return create(code, null, args);
     }

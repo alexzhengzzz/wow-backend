@@ -98,7 +98,7 @@ public class CouponsBusinessImpl implements CouponsBusiness {
         // list all the employee/user of the corporation
         List<User> lis = corporationBusiness.getEmployeeList(couponCorpDTO.getCompanyName());
         if (lis == null || lis.isEmpty()) {
-            throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR);
+            throw GeneralExceptionFactory.create(ErrorCode.DB_INSERT_ERROR, "No employee found in the corporation");
         }
         List<Coupons> res = new ArrayList<>();
         lis.forEach(user -> {

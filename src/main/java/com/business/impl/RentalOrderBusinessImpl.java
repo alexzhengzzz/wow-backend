@@ -19,6 +19,7 @@ import com.vo.orders.OrderInvoiceVO;
 import com.vo.orders.OrderListVO;
 import com.vo.orders.OrderVO;
 import com.vo.orders.OrderVehicleVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
+@Slf4j
 public class RentalOrderBusinessImpl implements RentalOrderBusiness {
     @Autowired
     private VehicleServiceImpl vehicleService;
@@ -206,23 +208,22 @@ public class RentalOrderBusinessImpl implements RentalOrderBusiness {
         Vehicle vehicle = vehicleService.getVehicleById(orderDTO.getVinId());
         userService.getUserById(orderDTO.getUserId());
         Coupons coupons = couponsService.getById(orderDTO.getCouponId());
-        if (coupons == null) {
-            throw GeneralExceptionFactory.create(ErrorCode.UNKNOWN_ERROR, "coupon not found");
-        }
-        if (coupons.getIsUsed()) {
-            throw GeneralExceptionFactory.create(ErrorCode.UNKNOWN_ERROR, "the coupon is invalid");
-        }
-        // set coupon status
-        coupons.setIsUsed(true);
-        Boolean isSuccess = couponsService.updateById(coupons);
-        if (!isSuccess) {
-            throw GeneralExceptionFactory.create(ErrorCode.UNKNOWN_ERROR, "update coupon status failed");
-        }
-        Long batchId = coupons.getBatchId();
-        CouponsBatch batch = couponsBatchService.getById(batchId);
-        if (batch != null || batch.getStock() != null) {
-            batch.setStock(batch.getStock() - 1);
-            couponsBatchService.updateById(batch);
+        if (coupons != null) {
+            if (coupons.getIsUsed()) {
+                throw GeneralExceptionFactory.create(ErrorCode.UNKNOWN_ERROR, "the coupon is invalid");
+            }
+            // set coupon status
+            coupons.setIsUsed(true);
+            Boolean isSuccess = couponsService.updateById(coupons);
+            if (!isSuccess) {
+                throw GeneralExceptionFactory.create(ErrorCode.UNKNOWN_ERROR, "update coupon status failed");
+            }
+            Long batchId = coupons.getBatchId();
+            CouponsBatch batch = couponsBatchService.getById(batchId);
+            if (batch != null || batch.getStock() != null) {
+                batch.setStock(batch.getStock() - 1);
+                couponsBatchService.updateById(batch);
+            }
         }
         // set car status
         if (!vehicle.getStatus().equals(VehicleStatus.IN_STOCK.getStatus())) {
@@ -272,9 +273,15 @@ public class RentalOrderBusinessImpl implements RentalOrderBusiness {
         orderVO.setOrderStatus(rentalOrder.getOrderStatus());
         orderVO.setInvoiceId(rentalOrder.getInvoiceId());
         orderListVO.setOrderVO(orderVO);
-        vehicleService.getOne(new LambdaQueryWrapper<Vehicle>().eq(Vehicle::getVinId, rentalOrder.getVinId()));
         OrderVehicleVO orderVehicleVO = new OrderVehicleVO();
-        Vehicle vehicle = vehicleService.getVehicleById(rentalOrder.getVinId());
+        orderListVO.setInvoiceId(rentalOrder.getInvoiceId());
+        Vehicle vehicle = null;
+        try {
+            vehicle = vehicleService.getVehicleById(rentalOrder.getVinId());
+        } catch (Exception e) {
+            log.warn("car not found" + e.getMessage() + rentalOrder.getVinId());
+            return orderListVO;
+        }
         Integer classId = vehicle.getClassId();
         CarClass carClass = carClassService.getCarClassInfoById(classId);
         Model model = modelService.getById(vehicle.getModelId());
@@ -282,8 +289,6 @@ public class RentalOrderBusinessImpl implements RentalOrderBusiness {
         orderVehicleVO.setVinId(vehicle.getVinId());
         orderVehicleVO.setImgUrl(carClass.getImageUrl());
         orderListVO.setOrderVehicleVO(orderVehicleVO);
-
-        orderListVO.setInvoiceId(rentalOrder.getInvoiceId());
         return orderListVO;
     }
 }

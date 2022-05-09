@@ -1,5 +1,5 @@
 !.mvn/wrapper/maven-wrapper.jar
-
+!/target/wow-backend-0.0.3-SNAPSHOT.jar
 
 ### STS ###
 .apt_generated
