@@ -113,28 +113,56 @@ public class RentalOrderBusinessImpl implements RentalOrderBusiness {
      * has a limitation of total 1000 miles. If this rental service has used 1050 miles, then
      * customer will be charged as 2days*$40 + $2*50 extra miles, totaling to $180.
      */
+//    private List<BigDecimal> calAmount(RentalOrder rentalOrder, BigDecimal discount) {
+//        Vehicle vehicle = vehicleService.getVehicleById(rentalOrder.getVinId());
+//        CarClass carClass = carClassService.getCarClassInfoById(vehicle.getClassId());
+//        List<BigDecimal> amountList;
+//        BigDecimal rentalRatePerDay = carClass.getRentalRatePerDay();
+//        BigDecimal overFee = carClass.getOverFee();
+//        BigDecimal start = rentalOrder.getStartOdometer();
+//        BigDecimal end = rentalOrder.getEndOdometer();
+//        Long days = TimestampUtil.getDiffDays(rentalOrder.getDropDate(), rentalOrder.getPickDate());
+//        BigDecimal limit = rentalOrder.getDailyLimitOdometer();
+//        BigDecimal totalOdometer = end.subtract(start);
+//        BigDecimal expectedOdometer = BigDecimal.valueOf(days).multiply(limit);
+//        BigDecimal overMileage = totalOdometer.subtract(expectedOdometer);
+//        if (overMileage.compareTo(BigDecimal.ZERO) > 0) {
+//            BigDecimal overMileageFee = overMileage.multiply(overFee).multiply(discount);
+//            BigDecimal normalFee = totalOdometer.multiply(rentalRatePerDay).multiply(discount);
+//            BigDecimal totalFee = normalFee.add(overMileageFee);
+//            amountList = Arrays.asList(normalFee, overMileageFee, totalFee);
+//            return amountList;
+//        }
+//        BigDecimal totalFee = BigDecimal.valueOf(days).multiply(rentalRatePerDay).multiply(discount);
+//        amountList = Arrays.asList(totalFee, BigDecimal.ZERO, totalFee);
+//        return amountList;
+//    }
+
     private List<BigDecimal> calAmount(RentalOrder rentalOrder, BigDecimal discount) {
         Vehicle vehicle = vehicleService.getVehicleById(rentalOrder.getVinId());
         CarClass carClass = carClassService.getCarClassInfoById(vehicle.getClassId());
         List<BigDecimal> amountList;
+        // basic rate & over rate
         BigDecimal rentalRatePerDay = carClass.getRentalRatePerDay();
         BigDecimal overFee = carClass.getOverFee();
+        // total days
         BigDecimal start = rentalOrder.getStartOdometer();
         BigDecimal end = rentalOrder.getEndOdometer();
         Long days = TimestampUtil.getDiffDays(rentalOrder.getDropDate(), rentalOrder.getPickDate());
+        // over mile
         BigDecimal limit = rentalOrder.getDailyLimitOdometer();
         BigDecimal totalOdometer = end.subtract(start);
         BigDecimal expectedOdometer = BigDecimal.valueOf(days).multiply(limit);
         BigDecimal overMileage = totalOdometer.subtract(expectedOdometer);
+        // fee calculation
+        BigDecimal baseFee = BigDecimal.valueOf(days).multiply(rentalRatePerDay).multiply(discount);
+        BigDecimal totalFee = baseFee;
+        BigDecimal overMileageFee = BigDecimal.ZERO;
         if (overMileage.compareTo(BigDecimal.ZERO) > 0) {
-            BigDecimal overMileageFee = overMileage.multiply(overFee).multiply(discount);
-            BigDecimal normalFee = totalOdometer.multiply(rentalRatePerDay).multiply(discount);
-            BigDecimal totalFee = normalFee.add(overMileageFee);
-            amountList = Arrays.asList(normalFee, overMileageFee, totalFee);
-            return amountList;
+            overMileageFee = overMileage.multiply(overFee).multiply(discount);
+            totalFee = baseFee.add(overMileageFee);
         }
-        BigDecimal totalFee = BigDecimal.valueOf(days).multiply(rentalRatePerDay).multiply(discount);
-        amountList = Arrays.asList(totalFee, BigDecimal.ZERO, totalFee);
+        amountList = Arrays.asList(baseFee, overMileageFee, totalFee);
         return amountList;
     }
 

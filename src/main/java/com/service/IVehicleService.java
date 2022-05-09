@@ -19,4 +19,6 @@ public interface IVehicleService extends IService<Vehicle> {
     List<VehicleVO> getVehicleInfo();
 
     boolean updateVehicleStatus(String vehicleId, VehicleStatus status);
+
+    public Vehicle getVehicleById(String id);
 }

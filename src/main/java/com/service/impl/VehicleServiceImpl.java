@@ -24,6 +24,7 @@ import java.util.List;
  */
 @Service
 public class VehicleServiceImpl extends ServiceImpl<VehiclesMapper, Vehicle> implements IVehicleService {
+   @Override
     public Vehicle getVehicleById(String id) {
         Vehicle vehicle = baseMapper.selectById(id);
         if (vehicle == null) {
