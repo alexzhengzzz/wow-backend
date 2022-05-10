@@ -155,11 +155,11 @@ public class RentalOrderBusinessImpl implements RentalOrderBusiness {
         BigDecimal expectedOdometer = BigDecimal.valueOf(days).multiply(limit);
         BigDecimal overMileage = totalOdometer.subtract(expectedOdometer);
         // fee calculation
-        BigDecimal baseFee = BigDecimal.valueOf(days).multiply(rentalRatePerDay).multiply(BigDecimal.valueOf(1.0).subtract(discount));
+        BigDecimal baseFee = BigDecimal.valueOf(days).multiply(rentalRatePerDay).multiply(discount);
         BigDecimal totalFee = baseFee;
         BigDecimal overMileageFee = BigDecimal.ZERO;
         if (overMileage.compareTo(BigDecimal.ZERO) > 0) {
-            overMileageFee = overMileage.multiply(overFee).multiply(BigDecimal.valueOf(1.0).subtract(discount));
+            overMileageFee = overMileage.multiply(overFee).multiply(discount);
             totalFee = baseFee.add(overMileageFee);
         }
         amountList = Arrays.asList(baseFee, overMileageFee, totalFee);
