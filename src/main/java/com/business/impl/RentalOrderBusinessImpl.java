@@ -76,7 +76,7 @@ public class RentalOrderBusinessImpl implements RentalOrderBusiness {
 
     private BigDecimal getDiscountByCouponId(Long couponId) {
         if (couponId == null) {
-            return BigDecimal.ZERO;
+            return BigDecimal.ONE;
         }
         Coupons coupons = couponsService.getById(couponId);
         CouponsBatch couponsBatch = null;
